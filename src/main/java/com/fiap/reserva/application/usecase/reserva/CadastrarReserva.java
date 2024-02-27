@@ -1,4 +1,4 @@
-package com.fiap.reserva.application.usecase;
+package com.fiap.reserva.application.usecase.reserva;
 
 import com.fiap.reserva.domain.entity.Reserva;
 import com.fiap.reserva.domain.repository.ReservaRepository;

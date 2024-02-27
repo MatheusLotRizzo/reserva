@@ -22,6 +22,10 @@ public class Restaurante {
         this.tipoCozinha = tipoCozinha;
     }
 
+    public Restaurante(String cnpj) {
+        this.cnpj = new CnpjVo(cnpj);
+    }
+
     public CnpjVo getCnpj() {
         return cnpj;
     }

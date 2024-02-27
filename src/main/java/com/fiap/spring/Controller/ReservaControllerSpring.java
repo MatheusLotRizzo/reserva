@@ -10,6 +10,6 @@ public class ReservaControllerSpring {
     private ReservaController reservaController;
     @PostMapping("/")
     public void criarReserva(@RequestBody ReservaDto reservaDto){
-        this.reservaController.cadastrar(reservaDto);
+        this.reservaController.cadastrarReserva(null, null, null, 0);
     }
 }

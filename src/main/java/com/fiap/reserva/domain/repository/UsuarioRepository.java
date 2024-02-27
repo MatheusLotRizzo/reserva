@@ -1,7 +1,5 @@
 package com.fiap.reserva.domain.repository;
 
-import com.fiap.reserva.domain.entity.Reserva;
-import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.entity.Usuario;
 import com.fiap.reserva.domain.vo.EmailVo;
 
