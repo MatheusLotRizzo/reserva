@@ -28,7 +28,7 @@ public class AvaliacaoController {
         this.restauranteRepository = restauranteRepository;
     }
 
-    public void avaliar(final String email, final String cnpj, final String pontuacao, final String comentario){
+    public void avaliar(final String email, final String cnpj, final int pontuacao, final String comentario){
         final Avaliacao avaliacao = construirAvaliacao(email,cnpj,pontuacao,comentario);
 
         new DeixarAvaliação(repository).executar(avaliacao);
@@ -39,11 +39,11 @@ public class AvaliacaoController {
         return new BuscarAvaliacaoPorRestaurante(repository).todasAvaliacoes(restaurante);
     }
 
-    private Avaliacao construirAvaliacao(final String email, final String cnpj, final String pontuacao, final String comentario) {
+    private Avaliacao construirAvaliacao(final String email, final String cnpj, final int pontuacao, final String comentario) {
         try {
             final Usuario usuario = new BuscarUsuario(usuarioRepository).getUsuarioPor(email);
             final Restaurante restaurante =  new BuscarRestaurante(restauranteRepository).getRestaurantePor(cnpj);
-            return new Avaliacao(usuario,restaurante,Integer.parseInt(pontuacao),comentario);
+            return new Avaliacao(usuario,restaurante,pontuacao,comentario);
         } catch (BusinessException e) {
             System.err.println("Erro de negócios: " + e.getMessage());
 

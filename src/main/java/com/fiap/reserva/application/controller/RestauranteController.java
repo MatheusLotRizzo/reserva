@@ -31,7 +31,7 @@ public class RestauranteController {
 
     public void cadastrar(final String cnpj,
                           final String nome,
-                          final String capacidade,
+                          final int capacidade,
                           final String tipoCozinha,
                           final String horarioAbertura,
                           final String horarioEncerramento,
@@ -61,7 +61,7 @@ public class RestauranteController {
 
     public void alterar(final String cnpj,
                         final String nome,
-                        final String capacidade,
+                        final int capacidade,
                         final String tipoCozinha,
                         final String horarioAbertura,
                         final String horarioEncerramento,
@@ -109,7 +109,7 @@ public class RestauranteController {
     private Restaurante construirRestaurante(
             final String cnpj,
              final String nome,
-             final String capacidade,
+             final int capacidade,
              final String tipoCozinha,
              final String horarioAbertura,
              final String horarioEncerramento,
@@ -127,7 +127,7 @@ public class RestauranteController {
                 nome,
                 enderecoVo,
                 horarioFuncionamento,
-                Integer.parseInt(capacidade),
+                capacidade,
                 TipoCozinha.valueOf(tipoCozinha));
     }
 }

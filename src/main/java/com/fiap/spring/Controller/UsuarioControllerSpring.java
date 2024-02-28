@@ -34,10 +34,10 @@ public class UsuarioControllerSpring {
         }
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> excluirUsuario(@RequestBody UsuarioDto usuarioDto ){
+    @DeleteMapping("/{email}")
+    public ResponseEntity<?> excluirUsuario(@PathVariable String email ){
         try{
-            usuarioController.excluir(usuarioDto.email());
+            usuarioController.excluir(email);
             return ResponseEntity.status(HttpStatus.CREATED).body("Sucesso");
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
