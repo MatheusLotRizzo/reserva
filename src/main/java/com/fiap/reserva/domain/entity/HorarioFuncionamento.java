@@ -1,6 +1,7 @@
 package com.fiap.reserva.domain.entity;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class HorarioFuncionamento {
     private LocalDateTime horarioInicial;

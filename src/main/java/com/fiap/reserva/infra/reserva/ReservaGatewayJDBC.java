@@ -1,4 +1,4 @@
-package com.fiap.reserva.infra;
+package com.fiap.reserva.infra.reserva;
 
 import com.fiap.reserva.domain.entity.Reserva;
 import com.fiap.reserva.domain.entity.Restaurante;
@@ -7,10 +7,16 @@ import com.fiap.reserva.domain.repository.ReservaRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EmailVo;
 
+import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class ReservaEmMemoria implements ReservaRepository {
+public class ReservaGatewayJDBC implements ReservaRepository {
+    final Connection connection;
+
+    public ReservaGatewayJDBC(Connection connection) {
+        this.connection = connection;
+    }
 
     @Override
     public List<Reserva> buscarTodasPor(Restaurante restaurante) {
