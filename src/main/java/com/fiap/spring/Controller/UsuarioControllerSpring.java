@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/reserva")
+@RequestMapping("/usuario")
 public class UsuarioControllerSpring {
 
     private UsuarioController usuarioController;
