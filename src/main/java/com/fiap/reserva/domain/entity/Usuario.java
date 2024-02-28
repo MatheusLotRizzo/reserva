@@ -5,20 +5,24 @@ import com.fiap.reserva.domain.vo.EmailVo;
 public class Usuario {
     private final String nome;
     private final EmailVo email;
+    private final String celular;
 
-    public Usuario(String nome, EmailVo email) {
+    public Usuario(String nome, EmailVo email, String celular) {
         this.nome = nome;
         this.email = email;
+        this.celular = celular;
     }
 
-    public Usuario(String nome, String email){
+    public Usuario(String nome, String email, String celular){
         this.nome = nome;
         this.email = new EmailVo(email);
+        this.celular = celular;
     }
 
     public Usuario(String email){
         this.nome = null;
         this.email = new EmailVo(email);
+        this.celular = null;
     }
 
     public EmailVo getEmail() {

@@ -1,4 +1,4 @@
-package com.fiap.reserva.application.controller;
+package com.fiap.spring.Controller.Dto;
 
 import java.time.LocalDateTime;
 

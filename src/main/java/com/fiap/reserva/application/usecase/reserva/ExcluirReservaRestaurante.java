@@ -14,7 +14,7 @@ public class ExcluirReservaRestaurante {
         this.repository = repository;
     }
 
-    public void execultar(final String email, final String cnpj, final String dataHora){
+    public void executar(final String email, final String cnpj, final String dataHora){
         final EmailVo  emailVo = new EmailVo(email);
         final CnpjVo cnpjVo = new CnpjVo(cnpj);
         final LocalDateTime dataHoraTime = LocalDateTime.parse(dataHora);

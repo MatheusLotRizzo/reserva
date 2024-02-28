@@ -1,22 +1,23 @@
 package com.fiap.spring.Controller;
 
 import com.fiap.reserva.application.controller.ReservaController;
+import com.fiap.reserva.application.controller.UsuarioController;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.spring.Controller.Dto.ReservaDto;
+import com.fiap.spring.Controller.Dto.UsuarioDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/reserva")
-public class ReservaControllerSpring {
+public class UsuarioControllerSpring {
 
-    private ReservaController reservaController;
+    private UsuarioController usuarioController;
     @PostMapping
-    public ResponseEntity<?> criarReserva(@RequestBody ReservaDto reservaDto){
+    public ResponseEntity<?> criarUsuario(@RequestBody UsuarioDto usuarioDto){
         try {
-            reservaController.cadastrarReserva(reservaDto.emailUsuario(), reservaDto.cnpjRestaurante(), reservaDto.dataHora().toString(), reservaDto.quantidadeLugares());
+            usuarioController.cadastrar(usuarioDto.nome(),usuarioDto.email(),usuarioDto.celular());
             return ResponseEntity.status(HttpStatus.CREATED).body("Sucesso");
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
@@ -24,9 +25,9 @@ public class ReservaControllerSpring {
     }
 
     @PutMapping
-    public ResponseEntity<?> alterarReserva(@RequestBody ReservaDto reservaDto ){
+    public ResponseEntity<?> alterarUsuario(@RequestBody UsuarioDto usuarioDto ){
         try {
-            reservaController.alterarReserva(reservaDto.emailUsuario(),reservaDto.cnpjRestaurante(),reservaDto.dataHora().toString(),reservaDto.quantidadeLugares());
+            usuarioController.alterar(usuarioDto.nome(),usuarioDto.email(),usuarioDto.celular());
             return ResponseEntity.status(HttpStatus.CREATED).body("Sucesso");
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
@@ -34,9 +35,9 @@ public class ReservaControllerSpring {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> excluirReserva(@RequestBody ReservaDto reservaDto ){
+    public ResponseEntity<?> excluirUsuario(@RequestBody UsuarioDto usuarioDto ){
         try{
-            reservaController.excluirReserva(reservaDto.emailUsuario(),reservaDto.cnpjRestaurante(),reservaDto.dataHora().toString());
+            usuarioController.excluir(usuarioDto.email());
             return ResponseEntity.status(HttpStatus.CREATED).body("Sucesso");
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
@@ -44,10 +45,10 @@ public class ReservaControllerSpring {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<?> buscarTodasReservaDoUsuarioPeloEmail(@PathVariable String email) {
+    public ResponseEntity<?> buscarPorUsuario(@PathVariable UsuarioDto usuarioDto) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(
-                    reservaController.getBuscarTodasReservaDoUsuarioPeloEmail(email)
+                    usuarioController.getBuscarPor(usuarioDto.nome(),usuarioDto.email(),usuarioDto.celular())
             );
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -55,10 +56,10 @@ public class ReservaControllerSpring {
     }
 
     @GetMapping("/{cnpj}")
-    public ResponseEntity<?> buscarTodasReservaDoUsuarioPeloCnpj(@PathVariable String cnpj){
+    public ResponseEntity<?> buscarPorEmail(@PathVariable String cnpj){
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(
-                    reservaController.getBuscarTodasRerservasRestaurantePeloCNPJ(cnpj)
+                    usuarioController.getBuscarPorEmail(cnpj)
             );
         } catch (BusinessException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

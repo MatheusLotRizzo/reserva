@@ -12,5 +12,5 @@ public interface UsuarioRepository {
     Usuario buscarPorEmail(EmailVo email);
     void cadastrar(Usuario usuario);
     void alterar(Usuario usuario);
-    void excluir(Usuario usuario);
+    void excluir(EmailVo email);
 }

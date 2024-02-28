@@ -10,5 +10,5 @@ public interface RestauranteRepository {
     Restaurante buscarPorTipoCozinha(TipoCozinha tipoCozinha);
     void cadastrar(Restaurante restaurante);
     void alterar(Restaurante restaurante);
-    void excluir(Restaurante restaurante);
+    void excluir(CnpjVo cnpj);
 }

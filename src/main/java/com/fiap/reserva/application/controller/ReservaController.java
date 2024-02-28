@@ -41,9 +41,8 @@ public class ReservaController {
         new AlterarReservaRestaurante(repository).executar(reserva);
     }
 
-
     public void excluirReserva(final String email, final String cnpj, final String dataHora){
-        new ExcluirReservaRestaurante(repository).execultar(email, cnpj, dataHora);
+        new ExcluirReservaRestaurante(repository).executar(email, cnpj, dataHora);
     }
 
     public List<Reserva> getBuscarTodasReservaDoUsuarioPeloEmail(final String email) throws BusinessException{
@@ -57,10 +56,15 @@ public class ReservaController {
     }
 
     private Reserva construirReserva(final String email, final String cnpj, final String dataHora ,final int quantidadeLugares) {
-        final Usuario usuario = new BuscarUsuario(usuarioRepository).getUsuarioPor(email);
-        final Restaurante restaurante =  new BuscarRestaurante(restauranteRepository).getRestaurantePor(cnpj);
-        final Reserva reserva = new Reserva(usuario, restaurante, LocalDateTime.parse(dataHora), quantidadeLugares);
-        
-        return reserva;
+        try {
+            final Usuario usuario = new BuscarUsuario(usuarioRepository).getUsuarioPor(email);
+            final Restaurante restaurante = new BuscarRestaurante(restauranteRepository).getRestaurantePor(cnpj);
+            final Reserva reserva = new Reserva(usuario, restaurante, LocalDateTime.parse(dataHora), quantidadeLugares);
+            return reserva;
+        } catch (BusinessException e) {
+            System.err.println("Erro de negócios: " + e.getMessage());
+
+            return null;
+        }
     }
 }
