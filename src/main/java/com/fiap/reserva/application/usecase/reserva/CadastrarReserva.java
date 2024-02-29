@@ -5,14 +5,14 @@ import com.fiap.reserva.domain.repository.ReservaRepository;
 
 public class CadastrarReserva {
 
-    private final ReservaRepository reservaRepository;
+    private final ReservaRepository repository;
 
-    public CadastrarReserva(ReservaRepository reservaRepository) {
-        this.reservaRepository = reservaRepository;
+    public CadastrarReserva(ReservaRepository repository) {
+        this.repository = repository;
     }
 
-    public void executar(Reserva reserva){
+    public Reserva executar(Reserva reserva){
         reserva.reservar();
-        this.reservaRepository.cadastrar(reserva);
+        return this.repository.criar(reserva);
     }
 }

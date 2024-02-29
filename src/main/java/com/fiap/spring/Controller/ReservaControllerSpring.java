@@ -1,18 +1,17 @@
 package com.fiap.spring.Controller;
 
-import com.fiap.reserva.application.controller.ReservaController;
+import com.fiap.reserva.application.controller.ReservaControllerApplication;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.spring.Controller.Dto.ReservaDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/reserva")
 public class ReservaControllerSpring {
 
-    private ReservaController reservaController;
+    private ReservaControllerApplication reservaController;
     @PostMapping
     public ResponseEntity<?> criarReserva(@RequestBody ReservaDto reservaDto){
         try {

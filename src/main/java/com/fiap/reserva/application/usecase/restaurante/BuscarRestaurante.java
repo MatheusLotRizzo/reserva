@@ -13,8 +13,8 @@ public class BuscarRestaurante {
         this.repository =  restauranteRepository;
     }
 
-    public Restaurante getRestaurantePor(String cnpjRestaurante) throws BusinessException  {
-        return repository.buscarPorCnpj(new CnpjVo(cnpjRestaurante));
+    public Restaurante getRestaurantePor(CnpjVo cnpjRestaurante) throws BusinessException  {
+        return repository.buscarPorCnpj(cnpjRestaurante);
     }
 
     public Restaurante getRestaurantePorNome(String nome) throws BusinessException {

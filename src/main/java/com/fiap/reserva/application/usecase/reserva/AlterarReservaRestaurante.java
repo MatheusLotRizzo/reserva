@@ -11,7 +11,7 @@ public class AlterarReservaRestaurante {
         this.repository = repository;
     }
 
-     public void executar(Reserva reserva) throws BusinessException{
+     public Reserva executar(Reserva reserva) throws BusinessException{
         if(reserva == null){
             throw new BusinessException("Reserva é obrigatorio");
         }
@@ -20,6 +20,6 @@ public class AlterarReservaRestaurante {
             throw new BusinessException("Reserva não pode ser alterada, pois nao foi encontrada");
         }
 
-        repository.alterar(reserva);
+        return repository.alterar(reserva);
      }
 }

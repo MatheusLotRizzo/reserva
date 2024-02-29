@@ -32,6 +32,12 @@ public class Reserva {
         this.quantidadeLugares = quantidadeLugares;
     }
 
+    public Reserva(Usuario usuario, Restaurante restaurante, LocalDateTime dataHora, int quantidadeLugares, StatusReserva status) {
+        this(usuario, restaurante, dataHora, quantidadeLugares);
+        this.status = status;
+    }
+
+
     public void reservar(){
         if (this.status == StatusReserva.CANCELADO) {
             throw new IllegalArgumentException("Esta reserva ja esta cancelada");

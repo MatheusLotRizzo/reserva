@@ -1,8 +1,7 @@
-package com.fiap.reserva.infra.h2;
+package com.fiap.reserva.infra.jdbc;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import com.fiap.reserva.infra.exception.TechnicalException;
@@ -18,19 +17,5 @@ public class H2Connection{
             throw new TechnicalException(e);
         } 
     }
-    
-public static void main(String[] args) throws SQLException {
-
-    try (
-        Connection conectar = H2Connection.conectar();
-        PreparedStatement ps2 = conectar.prepareStatement("select * from tb_reserva")
-
-    ) {
-        ps2.executeQuery();
-
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
 }
 

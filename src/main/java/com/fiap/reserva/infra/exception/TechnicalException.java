@@ -4,6 +4,7 @@ public class TechnicalException extends RuntimeException {
     
     public TechnicalException(Throwable throwable){
         super(throwable);
+        throwable.printStackTrace();
     }
 
 }

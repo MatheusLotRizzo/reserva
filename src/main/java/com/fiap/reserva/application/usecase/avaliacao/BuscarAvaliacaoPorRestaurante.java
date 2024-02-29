@@ -1,12 +1,9 @@
 package com.fiap.reserva.application.usecase.avaliacao;
 
 import com.fiap.reserva.domain.entity.Avaliacao;
-import com.fiap.reserva.domain.entity.Reserva;
 import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.AvaliacaoRepository;
-import com.fiap.reserva.domain.repository.ReservaRepository;
-
 import java.util.List;
 
 public class BuscarAvaliacaoPorRestaurante {

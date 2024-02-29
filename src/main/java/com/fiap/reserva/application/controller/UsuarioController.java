@@ -7,6 +7,7 @@ import com.fiap.reserva.application.usecase.usuario.ExcluirUsuario;
 import com.fiap.reserva.domain.entity.Usuario;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.UsuarioRepository;
+import com.fiap.reserva.domain.vo.EmailVo;
 
 public class UsuarioController {
 
@@ -37,7 +38,7 @@ public class UsuarioController {
     }
 
     public Usuario getBuscarPorEmail(final String email) throws BusinessException{
-        return new BuscarUsuario(repository).getUsuarioPor(email);
+        return new BuscarUsuario(repository).getUsuarioPor(new EmailVo(email));
     }
 
     private Usuario construirUsuario(final String nome, final String email, final String celular) {

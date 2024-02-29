@@ -1,9 +1,7 @@
 package com.fiap.spring.Controller;
 
-import com.fiap.reserva.application.controller.ReservaController;
 import com.fiap.reserva.application.controller.UsuarioController;
 import com.fiap.reserva.domain.exception.BusinessException;
-import com.fiap.spring.Controller.Dto.ReservaDto;
 import com.fiap.spring.Controller.Dto.UsuarioDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

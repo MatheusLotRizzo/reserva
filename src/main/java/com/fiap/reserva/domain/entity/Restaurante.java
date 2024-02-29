@@ -20,6 +20,15 @@ public class Restaurante {
         this.tipoCozinha = tipoCozinha;
     }
 
+    public Restaurante(String cnpj, String nome, EnderecoVo endereco, HorarioFuncionamento horarioFuncionamento, int capacidade, TipoCozinha tipoCozinha) {
+        this(cnpj);
+        this.nome = nome;
+        this.endereco = endereco;
+        this.horarioFuncionamento = horarioFuncionamento;
+        this.capacidade = capacidade;
+        this.tipoCozinha = tipoCozinha;
+    }
+
     public Restaurante(String cnpj) {
         this.cnpj = new CnpjVo(cnpj);
     }
@@ -31,4 +40,25 @@ public class Restaurante {
     public String getCnpjString() {
         return cnpj.getNumero();
     }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public EnderecoVo getEndereco() {
+        return endereco;
+    }
+
+    public HorarioFuncionamento getHorarioFuncionamento() {
+        return horarioFuncionamento;
+    }
+
+    public int getCapacidade() {
+        return capacidade;
+    }
+
+    public TipoCozinha getTipoCozinha() {
+        return tipoCozinha;
+    }
+    
 }

@@ -32,4 +32,13 @@ public class Usuario {
     public String getEmailString() {
         return email.getEndereco();
     }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getCelular() {
+        return celular;
+    }
+    
 }

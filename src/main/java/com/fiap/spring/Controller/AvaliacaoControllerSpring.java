@@ -2,7 +2,6 @@ package com.fiap.spring.Controller;
 
 import com.fiap.reserva.application.controller.AvaliacaoController;
 import com.fiap.spring.Controller.Dto.AvaliacaoDto;
-import com.fiap.spring.Controller.Dto.UsuarioDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
