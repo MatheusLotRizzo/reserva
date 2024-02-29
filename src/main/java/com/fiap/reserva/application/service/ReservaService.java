@@ -1,37 +1,34 @@
 package com.fiap.reserva.application.service;
 
-import java.util.List;
-
-import com.fiap.reserva.application.usecase.reserva.AlterarReservaRestaurante;
-import com.fiap.reserva.application.usecase.reserva.BuscarReservaRestaurante;
-import com.fiap.reserva.application.usecase.reserva.BuscarReservaUsuario;
-import com.fiap.reserva.application.usecase.reserva.CadastrarReserva;
-import com.fiap.reserva.application.usecase.reserva.ExcluirReservaRestaurante;
-import com.fiap.reserva.application.usecase.restaurante.BuscarRestaurante;
-import com.fiap.reserva.application.usecase.usuario.BuscarUsuario;
+import com.fiap.reserva.application.usecase.reserva.*;
 import com.fiap.reserva.domain.entity.Reserva;
 import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.entity.Usuario;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.ReservaRepository;
-import com.fiap.reserva.domain.repository.RestauranteRepository;
-import com.fiap.reserva.domain.repository.UsuarioRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EmailVo;
 
+import java.util.List;
+
 public class ReservaService {
     private final ReservaRepository repository;
-    private final UsuarioRepository usuarioRepository;
-    private final RestauranteRepository restauranteRepository;
+    private RestauranteService restauranteService;
+    private UsuarioService usuarioService;
 
-    public ReservaService(ReservaRepository repository, UsuarioRepository usuarioRepository, RestauranteRepository restauranteRepository) {
+    public ReservaService(ReservaRepository repository) {
         this.repository = repository;
-        this.usuarioRepository = usuarioRepository;
-        this.restauranteRepository = restauranteRepository;
     }
 
-    public Reserva cadastrarReserva(final Reserva reserva){
-       return new CadastrarReserva(repository).executar(reserva);
+    public Reserva cadastrarReserva(final Reserva reserva) throws BusinessException{
+
+        Integer lotacaoReserva = new ObterLotacaoaReserva(repository).executar(reserva);
+        Integer lotacaoRestaurante = restauranteService.obterLocacaoMaxRestaurante(reserva.getRestaurante());
+        if (lotacaoReserva >= lotacaoRestaurante){
+            throw new BusinessException("Não existe disponibilidade para este dia");
+        }
+
+        return new CadastrarReserva(repository).executar(reserva);
     }
 
     public Reserva alterarReserva(final Reserva reserva) throws BusinessException{
@@ -43,14 +40,17 @@ public class ReservaService {
     }
 
     public List<Reserva> getBuscarTodasReservaDoUsuarioPeloEmail(final EmailVo email) throws BusinessException{
-        final Usuario usuario = new BuscarUsuario(usuarioRepository).getUsuarioPor(email);
+        final Usuario usuario = usuarioService.getBuscarPorEmail(email);
         return new BuscarReservaUsuario(repository).todasReservasPor(usuario);
     }
 
     public List<Reserva> getBuscarTodasRerservasRestaurantePeloCNPJ(final CnpjVo cnpj) throws BusinessException{
-        final Restaurante restaurante = new BuscarRestaurante(restauranteRepository).getRestaurantePor(cnpj);
+        final Restaurante restaurante = restauranteService.getBuscarPor(cnpj);
         return new BuscarReservaRestaurante(repository).todasReservasPor(restaurante);
     }
 
-   
+    public List<Reserva> getBuscarTodasRerservas(final Reserva reserva) throws BusinessException{
+        return new BuscarReserva(repository).todasReservasPor(reserva);
+    }
+
 }

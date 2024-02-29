@@ -61,4 +61,15 @@ public class ReservaControllerSpring {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @GetMapping
+    public ResponseEntity<?> buscarTodasReservas(@RequestBody ReservaDto reservaDto){
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(
+                    reservaController.getBuscarTodas(reservaDto)
+            );
+        } catch (BusinessException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 }

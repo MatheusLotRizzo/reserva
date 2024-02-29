@@ -70,6 +70,14 @@ public class Restaurante {
         return tipoCozinha;
     }
 
+    public EnderecoVo getEndereco() {
+        return endereco;
+    }
+
+    public HorarioFuncionamento getHorarioFuncionamento() {
+        return horarioFuncionamento;
+    }
+
     public RestauranteDto toDto(){
         final HorarioFuncionamentoDto horarioFuncionamentoDtos = this.horarioFuncionamento.toDto();
         final EnderecoDto enderecoDto = this.endereco.toDto();

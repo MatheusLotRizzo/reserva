@@ -112,14 +112,20 @@ public class ReservaRepositoryImpl implements ReservaRepository{
                 .append("ON r.cd_restaurante = re.rowid ")
                 .append("INNER JOIN tb_usuario u ")
                 .append("ON r.cd_usuario = u.rowid ")
-                .append("WHERE r.cd_restaurante = ? ")
-                .append("AND r.cd_usuario = ? ")
+                .append("WHERE 1 = 1 ")
                 ;
 
         queryExecutor = new PrepararQuery();
 
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, reserva.getUsuario().getEmailString());
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, reserva.getRestaurante().getCnpjString());
+        if (reserva.getUsuario() != null) {
+            query.append("AND r.cd_usuario = ? ");
+            queryExecutor.adicionaItem(parametros, TipoDados.STRING, reserva.getUsuario().getEmailString());
+        }
+
+        if (reserva.getRestaurante() != null) {
+            query.append("AND r.cd_restaurante = ? ");
+            queryExecutor.adicionaItem(parametros, TipoDados.STRING, reserva.getRestaurante().getCnpjString());
+        }
 
         if (reserva.getStatus() != null) {
             query.append("AND r.dt_hr_reserva = ? ");
@@ -151,11 +157,13 @@ public class ReservaRepositoryImpl implements ReservaRepository{
     public Reserva buscar(Reserva reserva) {
         final StringBuilder query = new StringBuilder()
                 .append("SELECT * FROM tb_reserva r ")
-                .append("INNER JOIN tb_restaurante u ")
-                .append("ON r.cd_restaurante = u.rowid ")
+                .append("INNER JOIN tb_restaurante re ")
+                .append("ON r.cd_restaurante = re.cnpj ")
                 .append("INNER JOIN tb_usuario u ")
-                .append("ON r.cd_usuario = u.rowid ")
-                .append("WHERE u.cnpj = ? ")
+                .append("ON r.cd_usuario = u.email ")
+                .append("WHERE r.cd_restaurante = ? ")
+                .append("AND r.cd_usuario = ? ")
+                .append("AND r.dt_hr_reserva = ? ")
                 ;
 
         queryExecutor = new PrepararQuery();
@@ -166,6 +174,27 @@ public class ReservaRepositoryImpl implements ReservaRepository{
         try {
             try (final ResultSet rs = queryExecutor.construir(connection,query,parametros).executeQuery()) {
                 return contruirReserva(rs);
+            }
+        } catch (SQLException e) {
+            throw new TechnicalException(e);
+        }
+    }
+
+    @Override
+    public Integer obterLotacaoaReserva(Reserva reserva) {
+        final StringBuilder query = new StringBuilder()
+                .append("SELECT ROUND(SUM(r.qt_lugares)/4,0) total_Mesas FROM tb_reserva r ")
+                .append("WHERE r.cd_restaurante = ? ")
+                .append("AND r.dt_hr_reserva = ? ")
+                ;
+
+        queryExecutor = new PrepararQuery();
+        queryExecutor.adicionaItem(parametros, TipoDados.STRING, reserva.getRestaurante().getCnpjString());
+        queryExecutor.adicionaItem(parametros, TipoDados.DATE, reserva.getDataHora());
+
+        try {
+            try (final ResultSet rs = queryExecutor.construir(connection,query,parametros).executeQuery()) {
+                return Integer.parseInt(rs.getString("r.total_Mesas"));
             }
         } catch (SQLException e) {
             throw new TechnicalException(e);

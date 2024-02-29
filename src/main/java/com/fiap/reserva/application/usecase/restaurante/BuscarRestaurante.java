@@ -5,6 +5,7 @@ import com.fiap.reserva.domain.entity.TipoCozinha;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.RestauranteRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
+import com.fiap.reserva.domain.vo.EnderecoVo;
 
 import java.util.List;
 
@@ -25,6 +26,10 @@ public class BuscarRestaurante {
 
     public List<Restaurante> getRestaurantePorTipoCozinha(TipoCozinha tipoCozinha) {
         return repository.buscarPorTipoCozinha(tipoCozinha);
+    }
+
+    public List<Restaurante> getRestaurantePorLocalizacao(EnderecoVo enderecoVo) {
+        return repository.buscarPorLocalizacao(enderecoVo);
     }
 
 }

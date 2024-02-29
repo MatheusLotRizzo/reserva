@@ -11,6 +11,7 @@ public interface ReservaRepository {
     List<Reserva> buscarTodasPor(Usuario usuario);
     List<Reserva> buscarTodasPor(Reserva reserva);
     Reserva buscar(Reserva reserva);
+    Integer obterLotacaoaReserva(Reserva reserva);
     Reserva criar(Reserva reserva);
     Reserva alterar(Reserva reserva);
     void excluir(Reserva reserva);

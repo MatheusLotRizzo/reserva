@@ -1,12 +1,10 @@
 package com.fiap.reserva.application.service;
 
-import com.fiap.reserva.application.usecase.restaurante.AlterarRestaurante;
-import com.fiap.reserva.application.usecase.restaurante.BuscarRestaurante;
-import com.fiap.reserva.application.usecase.restaurante.CadastrarRestaurante;
-import com.fiap.reserva.application.usecase.restaurante.ExcluirRestaurante;
+import com.fiap.reserva.application.usecase.restaurante.*;
 import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.entity.TipoCozinha;
 import com.fiap.reserva.domain.exception.BusinessException;
+import com.fiap.reserva.domain.repository.ReservaRepository;
 import com.fiap.reserva.domain.repository.RestauranteRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
 
@@ -14,12 +12,28 @@ import java.util.List;
 
 public class RestauranteService {
     private RestauranteRepository repository;
+    private EnderecoService enderecoService;
+    private HorarioSuncionamentoService horarioSuncionamentoService;
 
-    public Restaurante cadastrar(final Restaurante restaurante){
-        return new CadastrarRestaurante(repository).executar(restaurante);
+    public RestauranteService(RestauranteRepository repository) {
+        this.repository = repository;
+    }
+
+    public Restaurante cadastrar(final Restaurante restaurante) throws BusinessException {
+        Restaurante restauranteRetorno = new CadastrarRestaurante(repository).executar(restaurante);
+        enderecoService.cadastrar(restaurante.getCnpj(),restaurante.getEndereco());
+        horarioSuncionamentoService.cadastrar(restaurante.getCnpj(),restaurante.getHorarioFuncionamento());
+        return restauranteRetorno;
     }
 
     public Restaurante alterar(final Restaurante restaurante) throws BusinessException {
+
+        if (restaurante.getEndereco() != null) {
+            enderecoService.alterar(restaurante.getCnpj(), restaurante.getEndereco());
+        }
+        if (restaurante.getHorarioFuncionamento() != null) {
+            horarioSuncionamentoService.alterar(restaurante.getCnpj(), restaurante.getHorarioFuncionamento());
+        }
         return new AlterarRestaurante(repository).executar(restaurante);
     }
 
@@ -37,5 +51,9 @@ public class RestauranteService {
 
     public Restaurante getBuscarPor(final CnpjVo cnpj) throws BusinessException{
         return new BuscarRestaurante(repository).getRestaurantePor(cnpj);
+    }
+
+    public Integer obterLocacaoMaxRestaurante(Restaurante restaurante) throws BusinessException{
+        return new ObterLotacaoMaximaRestaurante(repository).executar(restaurante);
     }
 }

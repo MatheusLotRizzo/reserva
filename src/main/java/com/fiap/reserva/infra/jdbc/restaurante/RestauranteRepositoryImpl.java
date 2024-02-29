@@ -1,9 +1,11 @@
 package com.fiap.reserva.infra.jdbc.restaurante;
 
+import com.fiap.reserva.domain.entity.Reserva;
 import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.entity.TipoCozinha;
 import com.fiap.reserva.domain.repository.RestauranteRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
+import com.fiap.reserva.domain.vo.EnderecoVo;
 import com.fiap.reserva.infra.adapter.PrepararQuery;
 import com.fiap.reserva.infra.adapter.TipoDados;
 import com.fiap.reserva.infra.exception.TechnicalException;
@@ -90,6 +92,72 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
 
         queryExecutor = new PrepararQuery();
         queryExecutor.adicionaItem(parametros, TipoDados.STRING, tipoCozinha.name());
+
+        try {
+            try (final ResultSet rs = queryExecutor.construir(connection,query,parametros).executeQuery()) {
+                while(rs.next()){
+                    list.add(contruirRestaurante(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new TechnicalException(e);
+        }
+
+        return list;
+    }
+
+    @Override
+    public Integer obterLotacaoMaximaRestaurante(Restaurante restaurante) {
+        final StringBuilder query = new StringBuilder()
+                .append("SELECT SUM(re.qt_capacidade) total_Mesas FROM tb_restaurante re ")
+                .append("WHERE re.cnpj = ? ")
+                ;
+
+        queryExecutor = new PrepararQuery();
+        queryExecutor.adicionaItem(parametros, TipoDados.STRING, restaurante.getCnpjString());
+
+        try {
+            try (final ResultSet rs = queryExecutor.construir(connection,query,parametros).executeQuery()) {
+                return Integer.parseInt(rs.getString("re.total_Mesas"));
+            }
+        } catch (SQLException e) {
+            throw new TechnicalException(e);
+        }
+    }
+
+    @Override
+    public List<Restaurante> buscarPorLocalizacao(EnderecoVo enderecoVo) {
+        final List<Restaurante> list = new ArrayList<>();
+        final StringBuilder query = new StringBuilder()
+                .append("SELECT * FROM tb_restaurante re ")
+                .append("INNER JOIN tb_horario_funcionamento hf ")
+                .append("ON re.cnpj = hf.cd_restaurante ")
+                .append("INNER JOIN tb_endereco e ")
+                .append("ON re.cnpj = e.cd_restaurante ")
+                .append("WHERE 1 = 1 ")
+                ;
+
+        queryExecutor = new PrepararQuery();
+        if (enderecoVo.getCep() != null) {
+            query.append("AND e.nome = ? ");
+            queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getCep());
+        }
+        if (enderecoVo.getLogradouro() != null) {
+            query.append("AND e.ds_logradouro = ? ");
+            queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getLogradouro());
+        }
+        if (enderecoVo.getBairro() != null) {
+            query.append("AND e.ds_bairro = ? ");
+            queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getBairro());
+        }
+        if (enderecoVo.getCidade() != null) {
+            query.append("AND e.ds_cidade = ? ");
+            queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getCidade());
+        }
+        if (enderecoVo.getEstado() != null) {
+            query.append("AND e.ds_estado = ? ");
+            queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getEstado());
+        }
 
         try {
             try (final ResultSet rs = queryExecutor.construir(connection,query,parametros).executeQuery()) {

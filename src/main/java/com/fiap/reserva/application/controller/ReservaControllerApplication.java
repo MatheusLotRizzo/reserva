@@ -19,7 +19,7 @@ public class ReservaControllerApplication {
     private UsuarioService usuarioService;
     private RestauranteService restauranteService;
     
-    public ReservaDto cadastrarReserva(ReservaDto reservaDto){
+    public ReservaDto cadastrarReserva(ReservaDto reservaDto)throws BusinessException{
         final Reserva reserva = construirReserva(reservaDto);
        
        return construirReservaDto(service.cadastrarReserva(reserva));
@@ -46,6 +46,14 @@ public class ReservaControllerApplication {
 
     public List<ReservaDto> getBuscarTodasRerservasRestaurantePeloCNPJ(final String cnpj) throws BusinessException {
         List<Reserva> reservas = service.getBuscarTodasRerservasRestaurantePeloCNPJ(new CnpjVo(cnpj));
+
+        return reservas.stream()
+                .map(this::construirReservaDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ReservaDto> getBuscarTodas(final ReservaDto reservaDto) throws BusinessException {
+        List<Reserva> reservas = service.getBuscarTodasRerservas(construirReserva(reservaDto));
 
         return reservas.stream()
                 .map(this::construirReservaDto)
