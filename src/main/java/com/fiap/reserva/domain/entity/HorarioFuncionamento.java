@@ -15,6 +15,14 @@ public class HorarioFuncionamento {
         this.horarioFinal = horarioFinal;
     }
 
+    public LocalDateTime getHorarioInicial() {
+        return horarioInicial;
+    }
+
+    public LocalDateTime getHorarioFinal() {
+        return horarioFinal;
+    }
+
     public HorarioFuncionamentoDto toDto(){
         return new HorarioFuncionamentoDto(
                 this.horarioInicial,

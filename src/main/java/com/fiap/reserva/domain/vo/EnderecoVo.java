@@ -22,6 +22,34 @@ public class EnderecoVo {
         this.estado = estado;
     }
 
+    public String getCep() {
+        return cep;
+    }
+
+    public String getLogradouro() {
+        return logradouro;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public String getComplemento() {
+        return complemento;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
     public EnderecoDto toDto(){
         return new EnderecoDto(
                 this.cep,

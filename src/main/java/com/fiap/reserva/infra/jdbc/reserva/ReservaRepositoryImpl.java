@@ -1,10 +1,7 @@
 package com.fiap.reserva.infra.jdbc.reserva;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,33 +9,39 @@ import com.fiap.reserva.domain.entity.Reserva;
 import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.entity.Usuario;
 import com.fiap.reserva.domain.repository.ReservaRepository;
+import com.fiap.reserva.domain.vo.CnpjVo;
+import com.fiap.reserva.infra.adapter.PrepararQuery;
+import com.fiap.reserva.infra.adapter.TipoDados;
 import com.fiap.reserva.infra.exception.TechnicalException;
+import javafx.util.Pair;
 
 public class ReservaRepositoryImpl implements ReservaRepository{
     final Connection connection;
-    
+    private PrepararQuery queryExecutor;
+    private List<Pair<TipoDados, Object>> parametros;
+
     public ReservaRepositoryImpl(Connection connection) {
         this.connection = connection;
+        this.parametros = new ArrayList<>();
     }
 
     @Override
     public Reserva criar(Reserva reserva){
         final StringBuilder query = new StringBuilder()
-            .append("INSERT INTO tb_reserva ")
-            .append("(cd_usuario, cd_restaurante, dt_hr_reserva, qt_lugares, ds_status) ")
-            .append("VALUES ")
-            .append("(?, ?, ?, ?, ?) ")
-            ;
+                .append("INSERT INTO tb_reserva ")
+                .append("(cd_usuario, cd_restaurante, dt_hr_reserva, qt_lugares, ds_status) ")
+                .append("VALUES ")
+                .append("(?, ?, ?, ?, ?) ")
+                ;
 
-        try (final PreparedStatement ps = connection.prepareStatement(query.toString(), Statement.RETURN_GENERATED_KEYS)) {
-            int i = 1;
-            ps.setString(i++, reserva.getUsuario().getEmailString());
-            ps.setString(i++, reserva.getRestaurante().getCnpjString());
-            //ps.setDate(i++, new java.sql.Date(reserva.getDataHora().atZone(ZoneId.systemDefault()).toInstant()));
-            ps.setInt(i++, reserva.getQuantidadeLugares());
-            ps.setString(i++, reserva.getStatus().name());
-            ps.execute();
-            
+        queryExecutor = new PrepararQuery(Statement.RETURN_GENERATED_KEYS);
+        queryExecutor.adicionaItem(parametros, TipoDados.STRING, reserva.getUsuario().getEmailString());
+        queryExecutor.adicionaItem(parametros, TipoDados.STRING, reserva.getRestaurante().getCnpjString());
+        queryExecutor.adicionaItem(parametros, TipoDados.NUMBER, reserva.getQuantidadeLugares());
+        queryExecutor.adicionaItem(parametros, TipoDados.STRING, reserva.getStatus().name());
+
+        try {
+            queryExecutor.construir(connection,query,parametros).execute();
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
@@ -48,20 +51,23 @@ public class ReservaRepositoryImpl implements ReservaRepository{
     public List<Reserva> buscarTodasPor(Usuario usuario) {
         final List<Reserva> list = new ArrayList<>();
         final StringBuilder query = new StringBuilder()
-            .append("SELECT * FROM tb_reserva r ")
-            .append("INNER JOIN tb_usuario u ")
-            .append("ON r.cd_usuario = u.rowid ")
-            .append("WHERE u.ic_email = ? ")
-            ;
+                .append("SELECT * FROM tb_reserva r ")
+                .append("INNER JOIN tb_usuario u ")
+                .append("ON r.cd_usuario = u.rowid ")
+                .append("INNER JOIN tb_restaurante re ")
+                .append("ON r.cd_cnpj = re.rowid ")
+                .append("WHERE u.email = ? ")
+                ;
 
-        try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
-            ps.setString(1, usuario.getEmailString());
-            
-            try (final ResultSet rs = ps.executeQuery()) {
+        queryExecutor = new PrepararQuery();
+        queryExecutor.adicionaItem(parametros, TipoDados.STRING, usuario.getEmailString());
+
+        try {
+            try (final ResultSet rs = queryExecutor.construir(connection,query,parametros).executeQuery()) {
                 while(rs.next()){
-                    
+                    list.add(contruirReserva(rs));
                 }
-            } 
+            }
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
@@ -71,31 +77,154 @@ public class ReservaRepositoryImpl implements ReservaRepository{
 
     @Override
     public List<Reserva> buscarTodasPor(Restaurante restaurante) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'buscarTodasPor'");
+        final List<Reserva> list = new ArrayList<>();
+        final StringBuilder query = new StringBuilder()
+                .append("SELECT * FROM tb_reserva r ")
+                .append("INNER JOIN tb_restaurante re ")
+                .append("ON r.cd_restaurante = re.rowid ")
+                .append("INNER JOIN tb_usuario u ")
+                .append("ON r.cd_usuario = u.rowid ")
+                .append("WHERE u.cnpj = ? ")
+                ;
+
+        queryExecutor = new PrepararQuery();
+        queryExecutor.adicionaItem(parametros, TipoDados.STRING, restaurante.getCnpjString());
+
+        try {
+            try (final ResultSet rs = queryExecutor.construir(connection,query,parametros).executeQuery()) {
+                while(rs.next()){
+                    list.add(contruirReserva(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new TechnicalException(e);
+        }
+
+        return list;
     }
 
     @Override
     public List<Reserva> buscarTodasPor(Reserva reserva) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'buscarTodasPor'");
+        final List<Reserva> list = new ArrayList<>();
+        final StringBuilder query = new StringBuilder()
+                .append("SELECT * FROM tb_reserva r ")
+                .append("INNER JOIN tb_restaurante re ")
+                .append("ON r.cd_restaurante = re.rowid ")
+                .append("INNER JOIN tb_usuario u ")
+                .append("ON r.cd_usuario = u.rowid ")
+                .append("WHERE r.cd_restaurante = ? ")
+                .append("AND r.cd_usuario = ? ")
+                ;
+
+        queryExecutor = new PrepararQuery();
+
+        queryExecutor.adicionaItem(parametros, TipoDados.STRING, reserva.getUsuario().getEmailString());
+        queryExecutor.adicionaItem(parametros, TipoDados.STRING, reserva.getRestaurante().getCnpjString());
+
+        if (reserva.getStatus() != null) {
+            query.append("AND r.dt_hr_reserva = ? ");
+            queryExecutor.adicionaItem(parametros, TipoDados.DATE, reserva.getDataHora());
+        }
+        if (reserva.getStatus() != null) {
+            query.append("AND r.status = ? ");
+            queryExecutor.adicionaItem(parametros, TipoDados.STRING, reserva.getStatus().name());
+        }
+        if (reserva.getQuantidadeLugares() > 0){
+            query.append("AND r.qt_lugares = ? ");
+            queryExecutor.adicionaItem(parametros, TipoDados.NUMBER, reserva.getQuantidadeLugares());
+        }
+
+        try {
+            try (final ResultSet rs = queryExecutor.construir(connection,query,parametros).executeQuery()) {
+                while(rs.next()){
+                    list.add(contruirReserva(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new TechnicalException(e);
+        }
+
+        return list;
     }
 
     @Override
     public Reserva buscar(Reserva reserva) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'buscar'");
+        final StringBuilder query = new StringBuilder()
+                .append("SELECT * FROM tb_reserva r ")
+                .append("INNER JOIN tb_restaurante u ")
+                .append("ON r.cd_restaurante = u.rowid ")
+                .append("INNER JOIN tb_usuario u ")
+                .append("ON r.cd_usuario = u.rowid ")
+                .append("WHERE u.cnpj = ? ")
+                ;
+
+        queryExecutor = new PrepararQuery();
+        queryExecutor.adicionaItem(parametros, TipoDados.STRING, reserva.getUsuario().getEmailString());
+        queryExecutor.adicionaItem(parametros, TipoDados.STRING, reserva.getRestaurante().getCnpjString());
+        queryExecutor.adicionaItem(parametros, TipoDados.DATE, reserva.getDataHora());
+
+        try {
+            try (final ResultSet rs = queryExecutor.construir(connection,query,parametros).executeQuery()) {
+                return contruirReserva(rs);
+            }
+        } catch (SQLException e) {
+            throw new TechnicalException(e);
+        }
     }
 
     @Override
     public Reserva alterar(Reserva reserva) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'alterar'");
+        final StringBuilder query = new StringBuilder()
+                .append("UPDATE tb_reserva ")
+                .append("SET qt_lugares = ?, ")
+                .append("ds_status = ? ")
+                .append("WHERE cd_usuario = ? ")
+                .append("AND cd_restaurante = ? ")
+                .append("AND dt_hr_reserva = ? ")
+                ;
+
+        queryExecutor = new PrepararQuery(Statement.RETURN_GENERATED_KEYS);
+        queryExecutor.adicionaItem(parametros, TipoDados.NUMBER, reserva.getQuantidadeLugares());
+        queryExecutor.adicionaItem(parametros, TipoDados.STRING, reserva.getStatus().name());
+        queryExecutor.adicionaItem(parametros, TipoDados.STRING, reserva.getUsuario().getEmailString());
+        queryExecutor.adicionaItem(parametros, TipoDados.STRING, reserva.getRestaurante().getCnpjString());
+        queryExecutor.adicionaItem(parametros, TipoDados.DATE, reserva.getDataHora());
+
+        try {
+            queryExecutor.construir(connection,query,parametros).executeUpdate();
+        } catch (SQLException e) {
+            throw new TechnicalException(e);
+        }
+        return reserva;
     }
 
     @Override
     public void excluir(Reserva reserva) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'excluir'");
+        final StringBuilder query = new StringBuilder()
+                .append("DELETE FROM tb_reserva ")
+                .append("WHERE cd_usuario = ? ")
+                .append("AND cd_restaurante = ? ")
+                .append("AND dt_hr_reserva = ? ")
+                ;
+
+        queryExecutor = new PrepararQuery(Statement.RETURN_GENERATED_KEYS);
+        queryExecutor.adicionaItem(parametros, TipoDados.STRING, reserva.getUsuario().getEmailString());
+        queryExecutor.adicionaItem(parametros, TipoDados.STRING, reserva.getRestaurante().getCnpjString());
+        queryExecutor.adicionaItem(parametros, TipoDados.DATE, reserva.getDataHora());
+
+        try {
+            queryExecutor.construir(connection,query,parametros).execute();
+        } catch (SQLException e) {
+            throw new TechnicalException(e);
+        }
+    }
+
+    private Reserva contruirReserva(ResultSet rs) throws SQLException {
+        return new Reserva(
+                new Usuario(rs.getString("u.nome"),rs.getString("u.email")),
+                new Restaurante(new CnpjVo(rs.getString("re.cnpj")), rs.getString("re.nome")),
+                LocalDateTime.parse(rs.getString("r.dt_hr_reserva")),
+                Integer.parseInt(rs.getString("r.qt_lugares"))
+        );
     }
 }

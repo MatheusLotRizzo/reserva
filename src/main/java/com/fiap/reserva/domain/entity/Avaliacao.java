@@ -20,6 +20,18 @@ public class Avaliacao {
         return restaurante;
     }
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public int getPontuacao() {
+        return pontuacao;
+    }
+
+    public String getComentario() {
+        return comentario;
+    }
+
     public AvaliacaoDto toDto(){
         return new AvaliacaoDto(
                 usuario.getEmailString(),

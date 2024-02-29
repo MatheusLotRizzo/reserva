@@ -9,6 +9,11 @@ public class Usuario {
     private final EmailVo email;
     private final String celular;
 
+    public Usuario(String nome, String email){
+        this.nome = nome;
+        this.email = new EmailVo(email);
+        this.celular = null;
+    }
     public Usuario(String nome, EmailVo email, String celular) {
         this.nome = nome;
         this.email = email;
