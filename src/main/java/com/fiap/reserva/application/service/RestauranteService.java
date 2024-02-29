@@ -7,6 +7,7 @@ import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.ReservaRepository;
 import com.fiap.reserva.domain.repository.RestauranteRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
+import com.fiap.reserva.domain.vo.EnderecoVo;
 
 import java.util.List;
 
@@ -47,6 +48,10 @@ public class RestauranteService {
 
     public List<Restaurante> getBuscarPorTipoCozinha(final TipoCozinha tipoCozinha) throws BusinessException{
         return new BuscarRestaurante(repository).getRestaurantePorTipoCozinha(tipoCozinha);
+    }
+
+    public List<Restaurante> getBuscarPorLocalizacao(final EnderecoVo enderecoVo) throws BusinessException{
+        return new BuscarRestaurante(repository).getRestaurantePorLocalizacao(enderecoVo);
     }
 
     public Restaurante getBuscarPor(final CnpjVo cnpj) throws BusinessException{

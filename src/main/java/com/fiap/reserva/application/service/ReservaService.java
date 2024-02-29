@@ -50,7 +50,11 @@ public class ReservaService {
     }
 
     public List<Reserva> getBuscarTodasRerservas(final Reserva reserva) throws BusinessException{
-        return new BuscarReserva(repository).todasReservasPor(reserva);
+        return new BuscarReserva(repository).getTodasReserva(reserva);
+    }
+
+    public Reserva getObter(final Reserva reserva) throws BusinessException{
+        return new BuscarReserva(repository).getReserva(reserva);
     }
 
 }

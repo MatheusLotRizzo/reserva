@@ -9,6 +9,8 @@ import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.UsuarioRepository;
 import com.fiap.reserva.domain.vo.EmailVo;
 
+import java.util.List;
+
 public class UsuarioService {
     private final UsuarioRepository repository;
 
@@ -34,5 +36,9 @@ public class UsuarioService {
 
     public Usuario getBuscarPorEmail(final EmailVo email) throws BusinessException{
         return new BuscarUsuario(repository).getUsuarioPor(email);
+    }
+
+    public List<Usuario> getTodos(final Usuario usuario) throws BusinessException{
+        return new BuscarUsuario(repository).getTodos(usuario);
     }
 }

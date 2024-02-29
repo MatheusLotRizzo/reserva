@@ -60,6 +60,10 @@ public class ReservaControllerApplication {
                 .collect(Collectors.toList());
     }
 
+    public ReservaDto getObter(final ReservaDto reservaDto) throws BusinessException {
+        return construirReservaDto(service.getObter(construirReserva(reservaDto)) );
+    }
+
      private Reserva construirReserva(final ReservaDto reservaDto) {
         try {
             final Usuario usuario = usuarioService.getBuscarPorEmail(new EmailVo(reservaDto.emailUsuario()));

@@ -16,7 +16,7 @@ public class RestauranteControllerApplication {
 
     private RestauranteService service;
 
-    public RestauranteDto cadastrar(final RestauranteDto restauranteDto){
+    public RestauranteDto cadastrar(final RestauranteDto restauranteDto) throws BusinessException{
         return construirRestauranteDto(service.cadastrar(construirRestaurante(restauranteDto)));
     }
 
@@ -39,6 +39,15 @@ public class RestauranteControllerApplication {
     public List<RestauranteDto> getBuscarPorTipoCozinha(final String tipoCozinha) throws BusinessException{
 
         List<Restaurante> restaurantes = service.getBuscarPorTipoCozinha(TipoCozinha.valueOf(tipoCozinha));
+
+        return restaurantes.stream()
+                .map(this::construirRestauranteDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<RestauranteDto> getBuscarPorLocalizacao(final RestauranteDto restauranteDto) throws BusinessException{
+
+        List<Restaurante> restaurantes = service.getBuscarPorLocalizacao(construirRestaurante(restauranteDto).getEndereco());
 
         return restaurantes.stream()
                 .map(this::construirRestauranteDto)
