@@ -91,4 +91,15 @@ public class ReservaControllerSpring {
         }
     }
 
+    @GetMapping("/obter")
+    public ResponseEntity<?> obterReservas(@RequestBody ReservaDto reservaDto){
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(
+                    reservaController.getObter(reservaDto)
+            );
+        } catch (BusinessException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
 }
