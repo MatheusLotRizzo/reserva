@@ -35,6 +35,18 @@ public class ReservaService {
         return new AlterarReservaRestaurante(repository).executar(reserva);
     }
 
+    public Reserva cancelarReserva(final Reserva reserva) throws BusinessException{
+        Reserva reservaCancelada = reserva;
+        reservaCancelada.cancelar();
+        return new AlterarReservaRestaurante(repository).executar(reservaCancelada);
+    }
+
+    public Reserva baixarReserva(final Reserva reserva) throws BusinessException{
+        Reserva reservaCancelada = reserva;
+        reservaCancelada.baixarReserva();
+        return new AlterarReservaRestaurante(repository).executar(reservaCancelada);
+    }
+
     public void excluirReserva(final Reserva reserva){
         new ExcluirReservaRestaurante(repository).executar(reserva);
     }

@@ -53,6 +53,10 @@ public class Reserva {
         }
     }
 
+    public void baixarReserva(){
+        this.status = StatusReserva.DISPONIVEL;
+    }
+
     public Usuario getUsuario() {
         return usuario;
     }

@@ -186,6 +186,7 @@ public class ReservaRepositoryImpl implements ReservaRepository{
                 .append("SELECT ROUND(SUM(r.qt_lugares)/4,0) total_Mesas FROM tb_reserva r ")
                 .append("WHERE r.cd_restaurante = ? ")
                 .append("AND r.dt_hr_reserva = ? ")
+                .append("AND r.ds_status = 'RESERVADO' ")
                 ;
 
         queryExecutor = new PrepararQuery();

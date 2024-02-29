@@ -30,6 +30,24 @@ public class ReservaControllerSpring {
         }
     }
 
+    @PutMapping("/cancelar")
+    public ResponseEntity<?> cancelarReserva(@RequestBody ReservaDto reservaDto ){
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(reservaController.cancelarReserva(reservaDto));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        }
+    }
+
+    @PutMapping("/baixar")
+    public ResponseEntity<?> baixarReserva(@RequestBody ReservaDto reservaDto ){
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(reservaController.baixarReserva(reservaDto));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        }
+    }
+
     @DeleteMapping
     public ResponseEntity<?> excluirReserva(@RequestBody ReservaDto reservaDto ){
         try{
