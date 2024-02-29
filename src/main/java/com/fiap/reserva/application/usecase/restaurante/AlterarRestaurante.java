@@ -11,7 +11,7 @@ public class AlterarRestaurante {
         this.repository = restauranteRepository;
     }
 
-    public void executar(Restaurante restaurante) throws BusinessException{
+    public Restaurante executar(Restaurante restaurante) throws BusinessException{
         if(restaurante == null){
             throw new BusinessException("Restaurante é obrigatorio");
         }
@@ -20,6 +20,6 @@ public class AlterarRestaurante {
             throw new BusinessException("Restaurante não pode ser alterado, pois nao foi encontrada");
         }
 
-        repository.alterar(restaurante);
+        return repository.alterar(restaurante);
     }
 }

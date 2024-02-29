@@ -10,7 +10,7 @@ public class ExcluirRestaurante {
         this.repository = restauranteRepository;
     }
 
-    public void executar(final String cnpj){
-        repository.excluir(new CnpjVo(cnpj));
+    public void executar(final CnpjVo cnpj){
+        repository.excluir(cnpj);
     }
 }

@@ -15,8 +15,7 @@ public class ReservaControllerSpring {
     @PostMapping
     public ResponseEntity<?> criarReserva(@RequestBody ReservaDto reservaDto){
         try {
-            reservaController.cadastrarReserva(reservaDto.emailUsuario(), reservaDto.cnpjRestaurante(), reservaDto.dataHora().toString(), reservaDto.quantidadeLugares());
-            return ResponseEntity.status(HttpStatus.CREATED).body("Sucesso");
+            return ResponseEntity.status(HttpStatus.CREATED).body(reservaController.cadastrarReserva(reservaDto));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
         }
@@ -25,8 +24,7 @@ public class ReservaControllerSpring {
     @PutMapping
     public ResponseEntity<?> alterarReserva(@RequestBody ReservaDto reservaDto ){
         try {
-            reservaController.alterarReserva(reservaDto.emailUsuario(),reservaDto.cnpjRestaurante(),reservaDto.dataHora().toString(),reservaDto.quantidadeLugares());
-            return ResponseEntity.status(HttpStatus.CREATED).body("Sucesso");
+            return ResponseEntity.status(HttpStatus.CREATED).body(reservaController.alterarReserva(reservaDto));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
         }
@@ -35,7 +33,7 @@ public class ReservaControllerSpring {
     @DeleteMapping
     public ResponseEntity<?> excluirReserva(@RequestBody ReservaDto reservaDto ){
         try{
-            reservaController.excluirReserva(reservaDto.emailUsuario(),reservaDto.cnpjRestaurante(),reservaDto.dataHora().toString());
+            reservaController.excluirReserva(reservaDto);
             return ResponseEntity.status(HttpStatus.CREATED).body("Sucesso");
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());

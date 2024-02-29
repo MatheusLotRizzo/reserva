@@ -1,5 +1,8 @@
 package com.fiap.reserva.domain.entity;
 
+import com.fiap.spring.Controller.Dto.AvaliacaoDto;
+import com.fiap.spring.Controller.Dto.ReservaDto;
+
 import java.time.LocalDateTime;
 
 public class Reserva {
@@ -37,7 +40,6 @@ public class Reserva {
         this.status = status;
     }
 
-
     public void reservar(){
         if (this.status == StatusReserva.CANCELADO) {
             throw new IllegalArgumentException("Esta reserva ja esta cancelada");
@@ -47,7 +49,7 @@ public class Reserva {
 
     public void cancelar(){
         if (this.status == StatusReserva.RESERVADO) {
-            this.status = StatusReserva.RESERVADO;
+            this.status = StatusReserva.CANCELADO;
         }
     }
 
@@ -71,7 +73,13 @@ public class Reserva {
         return status;
     }
 
-    public String getStatusString() {
-        return status.toString();
+    public ReservaDto toDto(){
+        return new ReservaDto(
+                this.usuario.getEmailString(),
+                this.restaurante.getCnpjString(),
+                this.dataHora,
+                this.quantidadeLugares,
+                this.status.toString()
+        );
     }
 }

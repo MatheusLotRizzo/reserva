@@ -1,6 +1,6 @@
 package com.fiap.spring.Controller;
 
-import com.fiap.reserva.application.controller.UsuarioController;
+import com.fiap.reserva.application.controller.UsuarioControllerApplication;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.spring.Controller.Dto.UsuarioDto;
 import org.springframework.http.HttpStatus;
@@ -11,12 +11,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/usuario")
 public class UsuarioControllerSpring {
 
-    private UsuarioController usuarioController;
+    private UsuarioControllerApplication usuarioController;
     @PostMapping
     public ResponseEntity<?> criarUsuario(@RequestBody UsuarioDto usuarioDto){
         try {
-            usuarioController.cadastrar(usuarioDto.nome(),usuarioDto.email(),usuarioDto.celular());
-            return ResponseEntity.status(HttpStatus.CREATED).body("Sucesso");
+            return ResponseEntity.status(HttpStatus.CREATED).body(usuarioController.cadastrar(usuarioDto));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
         }
@@ -25,8 +24,7 @@ public class UsuarioControllerSpring {
     @PutMapping
     public ResponseEntity<?> alterarUsuario(@RequestBody UsuarioDto usuarioDto ){
         try {
-            usuarioController.alterar(usuarioDto.nome(),usuarioDto.email(),usuarioDto.celular());
-            return ResponseEntity.status(HttpStatus.CREATED).body("Sucesso");
+            return ResponseEntity.status(HttpStatus.CREATED).body(usuarioController.alterar(usuarioDto));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
         }
@@ -46,7 +44,7 @@ public class UsuarioControllerSpring {
     public ResponseEntity<?> buscarPorUsuario(@PathVariable UsuarioDto usuarioDto) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(
-                    usuarioController.getBuscarPor(usuarioDto.nome(),usuarioDto.email(),usuarioDto.celular())
+                    usuarioController.getBuscarPor(usuarioDto)
             );
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

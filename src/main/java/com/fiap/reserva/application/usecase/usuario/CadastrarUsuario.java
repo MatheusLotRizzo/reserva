@@ -10,7 +10,7 @@ public class CadastrarUsuario {
         this.repository = usuarioRepository;
     }
 
-    public void executar(Usuario usuario){
-        this.repository.cadastrar(usuario);
+    public Usuario executar(Usuario usuario){
+        return this.repository.cadastrar(usuario);
     }
 }

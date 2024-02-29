@@ -12,14 +12,7 @@ public record RestauranteDto(
         String nome,
         int capacidade,
         String tipoCozinha,
-        String horarioAbertura,
-        String horarioEncerramento,
-        String cep,
-        String logradouro,
-        String numero,
-        String complemento,
-        String bairro,
-        String cidade,
-        String estado
+        HorarioFuncionamentoDto horarioFuncionamento,
+        EnderecoDto endereco
 ) {
 }

@@ -11,7 +11,7 @@ public class AlterarUsuario {
         this.repository = usuarioRepository;
     }
 
-    public void executar(Usuario usuario) throws BusinessException {
+    public Usuario executar(Usuario usuario) throws BusinessException {
         if(usuario == null){
             throw new BusinessException("Usuario é obrigatorio");
         }
@@ -20,6 +20,6 @@ public class AlterarUsuario {
             throw new BusinessException("Usuário não pode ser alterado, pois nao foi encontrada");
         }
 
-        repository.alterar(usuario);
+        return repository.alterar(usuario);
     }
 }

@@ -10,8 +10,7 @@ public class CadastrarRestaurante {
         this.repository = restauranteRepository;
     }
 
-    public void executar(Restaurante restaurante){
-        this.repository.cadastrar(restaurante);
-
+    public Restaurante executar(Restaurante restaurante){
+        return this.repository.cadastrar(restaurante);
     }
 }

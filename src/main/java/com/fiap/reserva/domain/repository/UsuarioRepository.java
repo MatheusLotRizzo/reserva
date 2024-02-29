@@ -10,7 +10,7 @@ public interface UsuarioRepository {
     List<Usuario> buscarTodos(Usuario usuario);
     Usuario buscar(Usuario usuario);
     Usuario buscarPorEmail(EmailVo email);
-    void cadastrar(Usuario usuario);
-    void alterar(Usuario usuario);
+    Usuario cadastrar(Usuario usuario);
+    Usuario alterar(Usuario usuario);
     void excluir(EmailVo email);
 }

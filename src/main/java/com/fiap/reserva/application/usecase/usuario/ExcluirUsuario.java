@@ -10,7 +10,7 @@ public class ExcluirUsuario {
         this.repository = usuarioRepository;
     }
 
-    public void executar(final String email){
-        repository.excluir(new EmailVo(email));
+    public void executar(final EmailVo email){
+        repository.excluir(email);
     }
 }

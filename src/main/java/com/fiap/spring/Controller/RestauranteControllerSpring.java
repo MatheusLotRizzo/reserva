@@ -1,6 +1,6 @@
 package com.fiap.spring.Controller;
 
-import com.fiap.reserva.application.controller.RestauranteController;
+import com.fiap.reserva.application.controller.RestauranteControllerApplication;
 import com.fiap.spring.Controller.Dto.RestauranteDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,26 +10,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/restaurante")
 public class RestauranteControllerSpring {
 
-    private RestauranteController restauranteController;
+    private RestauranteControllerApplication restauranteController;
     @PostMapping
     public ResponseEntity<?> criarRestaurante(@RequestBody RestauranteDto restauranteDto){
         try {
-            restauranteController.cadastrar(
-                restauranteDto.cnpj(),
-                restauranteDto.nome(),
-                restauranteDto.capacidade(),
-                restauranteDto.tipoCozinha(),
-                restauranteDto.horarioAbertura(),
-                restauranteDto.horarioEncerramento(),
-                restauranteDto.cep(),
-                restauranteDto.logradouro(),
-                restauranteDto.numero(),
-                restauranteDto.complemento(),
-                restauranteDto.bairro(),
-                restauranteDto.cidade(),
-                restauranteDto.estado()
-            );
-            return ResponseEntity.status(HttpStatus.CREATED).body("Sucesso");
+            return ResponseEntity.status(HttpStatus.CREATED).body(restauranteController.cadastrar(restauranteDto));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
         }
@@ -38,22 +23,7 @@ public class RestauranteControllerSpring {
     @PutMapping
     public ResponseEntity<?> alterarRestaurante(@RequestBody RestauranteDto restauranteDto ){
         try {
-            restauranteController.alterar(
-                    restauranteDto.cnpj(),
-                    restauranteDto.nome(),
-                    restauranteDto.capacidade(),
-                    restauranteDto.tipoCozinha(),
-                    restauranteDto.horarioAbertura(),
-                    restauranteDto.horarioEncerramento(),
-                    restauranteDto.cep(),
-                    restauranteDto.logradouro(),
-                    restauranteDto.numero(),
-                    restauranteDto.complemento(),
-                    restauranteDto.bairro(),
-                    restauranteDto.cidade(),
-                    restauranteDto.estado()
-            );
-            return ResponseEntity.status(HttpStatus.CREATED).body("Sucesso");
+            return ResponseEntity.status(HttpStatus.CREATED).body(restauranteController.alterar(restauranteDto));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
         }

@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface AvaliacaoRepository {
     List<Avaliacao> buscarTodos(Restaurante restaurante);
-    void avaliar(Avaliacao avaliacao);
+    Avaliacao avaliar(Avaliacao avaliacao);
 }

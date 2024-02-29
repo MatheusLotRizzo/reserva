@@ -1,6 +1,8 @@
 package com.fiap.reserva.domain.entity;
 
 import com.fiap.reserva.domain.vo.EmailVo;
+import com.fiap.spring.Controller.Dto.AvaliacaoDto;
+import com.fiap.spring.Controller.Dto.UsuarioDto;
 
 public class Usuario {
     private final String nome;
@@ -40,5 +42,13 @@ public class Usuario {
     public String getCelular() {
         return celular;
     }
-    
+
+    public UsuarioDto toDto(){
+        return new UsuarioDto(
+                this.nome,
+                this.getEmailString(),
+                this.celular
+        );
+    }
+
 }
