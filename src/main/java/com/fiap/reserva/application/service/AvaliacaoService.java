@@ -19,7 +19,7 @@ public class AvaliacaoService {
         this.repository = avaliacaoRepository;
     }
 
-    public Avaliacao avaliar(final Avaliacao avaliacao){
+    public Avaliacao avaliar(final Avaliacao avaliacao) throws BusinessException{
         return new DeixarAvaliacao(repository).executar(avaliacao);
     }
 

@@ -10,5 +10,6 @@ import java.util.List;
 public interface EnderecoRepository {
     void cadastrar(CnpjVo cnpj, EnderecoVo enderecoVo);
     void alterar(CnpjVo cnpj, EnderecoVo enderecoVo);
+    EnderecoVo obter(CnpjVo cnpj, EnderecoVo enderecoVo);
 
 }

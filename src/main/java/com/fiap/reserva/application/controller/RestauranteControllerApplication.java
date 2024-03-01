@@ -24,7 +24,7 @@ public class RestauranteControllerApplication {
         return construirRestauranteDto(service.alterar(construirRestaurante(restauranteDto)));
     }
 
-    public void excluir(final String cnpj){
+    public void excluir(final String cnpj) throws BusinessException{
         service.excluir(new CnpjVo(cnpj));
     }
 

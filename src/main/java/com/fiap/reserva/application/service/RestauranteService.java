@@ -1,6 +1,7 @@
 package com.fiap.reserva.application.service;
 
 import com.fiap.reserva.application.usecase.restaurante.*;
+import com.fiap.reserva.domain.entity.HorarioFuncionamento;
 import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.entity.TipoCozinha;
 import com.fiap.reserva.domain.exception.BusinessException;
@@ -22,23 +23,18 @@ public class RestauranteService {
 
     public Restaurante cadastrar(final Restaurante restaurante) throws BusinessException {
         Restaurante restauranteRetorno = new CadastrarRestaurante(repository).executar(restaurante);
-        enderecoService.cadastrar(restaurante.getCnpj(),restaurante.getEndereco());
-        horarioSuncionamentoService.cadastrar(restaurante.getCnpj(),restaurante.getHorarioFuncionamento());
+        cadastrarOuAlterarEndereco(restaurante);
+        cadastrarOuAlterarHorarioFuncionamento(restaurante);
         return restauranteRetorno;
     }
 
     public Restaurante alterar(final Restaurante restaurante) throws BusinessException {
-
-        if (restaurante.getEndereco() != null) {
-            enderecoService.alterar(restaurante.getCnpj(), restaurante.getEndereco());
-        }
-        if (restaurante.getHorarioFuncionamento() != null) {
-            horarioSuncionamentoService.alterar(restaurante.getCnpj(), restaurante.getHorarioFuncionamento());
-        }
+        cadastrarOuAlterarEndereco(restaurante);
+        cadastrarOuAlterarHorarioFuncionamento(restaurante);
         return new AlterarRestaurante(repository).executar(restaurante);
     }
 
-    public void excluir(final CnpjVo cnpj){
+    public void excluir(final CnpjVo cnpj) throws BusinessException{
         new ExcluirRestaurante(repository).executar(cnpj);
     }
 
@@ -60,5 +56,27 @@ public class RestauranteService {
 
     public Integer obterLocacaoMaxRestaurante(Restaurante restaurante) throws BusinessException{
         return new ObterLotacaoMaximaRestaurante(repository).executar(restaurante);
+    }
+
+    private void cadastrarOuAlterarEndereco(final Restaurante restaurante) throws BusinessException{
+        if (restaurante.getEndereco() != null) {
+            EnderecoVo enderecoVo = enderecoService.getObter(restaurante.getCnpj(),restaurante.getEndereco());
+            if(enderecoVo != null) {
+                enderecoService.alterar(restaurante.getCnpj(), restaurante.getEndereco());
+            } else {
+                enderecoService.cadastrar(restaurante.getCnpj(), restaurante.getEndereco());
+            }
+        }
+    }
+
+    private void cadastrarOuAlterarHorarioFuncionamento(final Restaurante restaurante) throws BusinessException{
+        if (restaurante.getHorarioFuncionamento() != null) {
+            HorarioFuncionamento horarioFuncionamento = horarioSuncionamentoService.getObter(restaurante.getCnpj(),restaurante.getHorarioFuncionamento());
+            if(horarioFuncionamento != null) {
+                horarioSuncionamentoService.alterar(restaurante.getCnpj(), restaurante.getHorarioFuncionamento());
+            } else {
+                horarioSuncionamentoService.cadastrar(restaurante.getCnpj(), restaurante.getHorarioFuncionamento());
+            }
+        }
     }
 }

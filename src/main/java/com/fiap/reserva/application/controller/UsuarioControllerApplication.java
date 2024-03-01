@@ -14,13 +14,13 @@ public class UsuarioControllerApplication {
 
     private UsuarioService service;
 
-    public UsuarioDto cadastrar(final UsuarioDto usuarioDto){
+    public UsuarioDto cadastrar(final UsuarioDto usuarioDto) throws BusinessException{
         return construirUsuarioDto( service.cadastrar(construirUsuario(usuarioDto)) );
     }
     public UsuarioDto alterar(final UsuarioDto usuarioDto) throws BusinessException {
         return construirUsuarioDto( service.alterar(construirUsuario(usuarioDto)) );
     }
-    public void excluir(final String email){
+    public void excluir(final String email) throws BusinessException {
         service.excluir(new EmailVo(email));
     }
     public UsuarioDto getBuscarPor(final UsuarioDto usuarioDto) throws BusinessException{

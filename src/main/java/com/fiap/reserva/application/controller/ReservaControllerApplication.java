@@ -19,31 +19,27 @@ public class ReservaControllerApplication {
     private UsuarioService usuarioService;
     private RestauranteService restauranteService;
     
-    public ReservaDto cadastrarReserva(ReservaDto reservaDto)throws BusinessException{
+    public ReservaDto cadastrar(ReservaDto reservaDto)throws BusinessException{
         final Reserva reserva = construirReserva(reservaDto);
-       
        return construirReservaDto(service.cadastrarReserva(reserva));
     }
 
-    public ReservaDto alterarReserva(final ReservaDto reservaDto) throws BusinessException{
+    public ReservaDto alterar(final ReservaDto reservaDto) throws BusinessException{
         final Reserva reserva = construirReserva(reservaDto);
-
         return construirReservaDto(service.alterarReserva(reserva));
     }
 
-    public ReservaDto cancelarReserva(final ReservaDto reservaDto) throws BusinessException{
+    public ReservaDto cancelar(final ReservaDto reservaDto) throws BusinessException{
         final Reserva reserva = construirReserva(reservaDto);
-
         return construirReservaDto(service.cancelarReserva(reserva));
     }
 
-    public ReservaDto baixarReserva(final ReservaDto reservaDto) throws BusinessException{
+    public ReservaDto baixar(final ReservaDto reservaDto) throws BusinessException{
         final Reserva reserva = construirReserva(reservaDto);
-
         return construirReservaDto(service.baixarReserva(reserva));
     }
 
-    public void excluirReserva(final ReservaDto reservaDto){
+    public void excluir(final ReservaDto reservaDto) throws BusinessException{
         final Reserva reserva = construirReserva(reservaDto);
         service.excluirReserva(reserva);
     }

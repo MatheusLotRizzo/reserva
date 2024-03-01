@@ -1,9 +1,7 @@
 package com.fiap.reserva.application.usecase.restaurante;
 
-import com.fiap.reserva.domain.entity.Reserva;
 import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.exception.BusinessException;
-import com.fiap.reserva.domain.repository.ReservaRepository;
 import com.fiap.reserva.domain.repository.RestauranteRepository;
 
 public class ObterLotacaoMaximaRestaurante {

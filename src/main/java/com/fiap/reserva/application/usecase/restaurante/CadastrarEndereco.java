@@ -1,9 +1,7 @@
 package com.fiap.reserva.application.usecase.restaurante;
 
-import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.EnderecoRepository;
-import com.fiap.reserva.domain.repository.RestauranteRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EnderecoVo;
 

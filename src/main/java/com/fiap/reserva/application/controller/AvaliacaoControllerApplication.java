@@ -19,7 +19,7 @@ public class AvaliacaoControllerApplication {
     private RestauranteService restauranteService;
     private UsuarioService usuarioService;
 
-    public AvaliacaoDto avaliar(final AvaliacaoDto avaliacaoDto){
+    public AvaliacaoDto avaliar(final AvaliacaoDto avaliacaoDto) throws BusinessException{
         return construirAvaliacaoDto(service.avaliar(construirAvaliacao(avaliacaoDto)));
     }
 

@@ -3,6 +3,7 @@ package com.fiap.reserva.infra.jdbc.restaurante;
 import com.fiap.reserva.domain.entity.HorarioFuncionamento;
 import com.fiap.reserva.domain.repository.HorarioFuncionamentoRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
+import com.fiap.reserva.domain.vo.EnderecoVo;
 import com.fiap.reserva.infra.adapter.PrepararQuery;
 import com.fiap.reserva.infra.adapter.TipoDados;
 import com.fiap.reserva.infra.exception.TechnicalException;
@@ -64,6 +65,29 @@ public class HorarioFuncionamentoRepositoryImpl implements HorarioFuncionamentoR
 
         try {
             queryExecutor.construir(connection,query,parametros).executeUpdate();
+        } catch (SQLException e) {
+            throw new TechnicalException(e);
+        }
+    }
+
+    @Override
+    public HorarioFuncionamento obter(CnpjVo cnpj, HorarioFuncionamento horarioFuncionamento) {
+        final StringBuilder query = new StringBuilder()
+                .append("SELECT * FROM tb_horario_funcionamento hf ")
+                .append("WHERE hf.cd_restaurante = ? ")
+                .append("AND hf.hr_inicial = ? ")
+                .append("AND hf.hr_final = ? ")
+                ;
+
+        queryExecutor = new PrepararQuery();
+        queryExecutor.adicionaItem(parametros, TipoDados.STRING, cnpj.getNumero());
+        queryExecutor.adicionaItem(parametros, TipoDados.DATE, horarioFuncionamento.getHorarioInicial());
+        queryExecutor.adicionaItem(parametros, TipoDados.DATE, horarioFuncionamento.getHorarioFinal());
+
+        try {
+            try (final ResultSet rs = queryExecutor.construir(connection,query,parametros).executeQuery()) {
+                return contruirHorarioFuncionamento(rs);
+            }
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }

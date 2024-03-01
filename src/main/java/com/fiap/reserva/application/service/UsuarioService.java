@@ -18,7 +18,7 @@ public class UsuarioService {
         this.repository = repository;
     }
 
-    public Usuario cadastrar(final Usuario usuario){
+    public Usuario cadastrar(final Usuario usuario) throws BusinessException{
         return new CadastrarUsuario(repository).executar(usuario);
     }
 
@@ -26,7 +26,7 @@ public class UsuarioService {
         return new AlterarUsuario(repository).executar(usuario);
     }
 
-    public void excluir(final EmailVo email){
+    public void excluir(final EmailVo email) throws BusinessException{
         new ExcluirUsuario(repository).executar(email);
     }
 

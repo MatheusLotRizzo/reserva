@@ -2,6 +2,7 @@ package com.fiap.reserva.application.service;
 
 import com.fiap.reserva.application.usecase.restaurante.AlterarHorarioFuncionamento;
 import com.fiap.reserva.application.usecase.restaurante.CadastrarHorarioFuncionamento;
+import com.fiap.reserva.application.usecase.restaurante.ObterHorarioFuncionamento;
 import com.fiap.reserva.domain.entity.HorarioFuncionamento;
 import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.exception.BusinessException;
@@ -17,10 +18,6 @@ public class HorarioSuncionamentoService {
     }
 
     public void cadastrar(final CnpjVo cnpj, final HorarioFuncionamento horarioFuncionamento) throws BusinessException  {
-        Restaurante restaurante = restauranteService.getBuscarPor(cnpj);
-        if (restaurante == null){
-            throw new BusinessException("Restaurante não existe");
-        }
         new CadastrarHorarioFuncionamento(repository).executar(cnpj,horarioFuncionamento);
     }
 
@@ -29,6 +26,11 @@ public class HorarioSuncionamentoService {
         if (restaurante == null){
             throw new BusinessException("Restaurante não existe");
         }
+
         new AlterarHorarioFuncionamento(repository).executar(cnpj,horarioFuncionamento);
+    }
+
+    public HorarioFuncionamento getObter(final CnpjVo cnpj, final HorarioFuncionamento horarioFuncionamento) throws BusinessException{
+        return new ObterHorarioFuncionamento(repository).getObter(cnpj,horarioFuncionamento);
     }
 }

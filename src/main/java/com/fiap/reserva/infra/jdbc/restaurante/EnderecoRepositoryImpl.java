@@ -83,6 +83,27 @@ public class EnderecoRepositoryImpl implements EnderecoRepository {
         }
     }
 
+    @Override
+    public EnderecoVo obter(CnpjVo cnpj, EnderecoVo enderecoVo) {
+        final StringBuilder query = new StringBuilder()
+                .append("SELECT * FROM tb_endereco e ")
+                .append("WHERE e.cd_restaurante = ? ")
+                .append("AND e.ds_cep = ? ")
+                ;
+
+        queryExecutor = new PrepararQuery();
+        queryExecutor.adicionaItem(parametros, TipoDados.STRING, cnpj.getNumero());
+        queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getCep());
+
+        try {
+            try (final ResultSet rs = queryExecutor.construir(connection,query,parametros).executeQuery()) {
+                return contruirEndereco(rs);
+            }
+        } catch (SQLException e) {
+            throw new TechnicalException(e);
+        }
+    }
+
     protected EnderecoVo contruirEndereco(ResultSet rs) throws SQLException {
         return new EnderecoVo(
             rs.getString("e.cep"),
