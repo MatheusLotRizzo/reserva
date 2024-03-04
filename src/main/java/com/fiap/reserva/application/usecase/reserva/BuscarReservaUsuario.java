@@ -9,16 +9,15 @@ import com.fiap.reserva.domain.repository.ReservaRepository;
 
 public class BuscarReservaUsuario {
 
-    private static final String USUARIO_E_OBRIGATORIO_PARA_REALIZAR_A_BUSCA = "Usuario é obrigatorio para realizar a busca!!";
     final ReservaRepository repository;
 
     public BuscarReservaUsuario(ReservaRepository repository) {
         this.repository = repository;
     }
 
-    public List<Reserva> todasReservasPor(Usuario usuario) throws BusinessException{
+    public List<Reserva> executar(Usuario usuario) throws BusinessException{
         if(usuario == null){
-            throw new BusinessException(USUARIO_E_OBRIGATORIO_PARA_REALIZAR_A_BUSCA);
+            throw new BusinessException("Usuario é obrigatorio para realizar a busca!!");
         }
         
         return repository.buscarTodasPor(usuario);

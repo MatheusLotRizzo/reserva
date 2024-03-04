@@ -13,9 +13,10 @@ public class ExcluirReservaRestaurante {
     }
 
     public void executar(final Reserva reserva) throws BusinessException{
-        if(new BuscarReserva(repository).getReserva(reserva) == null){
-            throw new BusinessException("Reserva não pode ser excluida, pois nao foi encontrada");
+    	if(reserva == null){
+            throw new BusinessException("Informe a reserva para ser excluida");
         }
+    	
         repository.excluir(reserva);
     }
 }

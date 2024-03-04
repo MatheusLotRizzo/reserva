@@ -34,7 +34,7 @@ public class BuscarReserva {
     }
 
     public Reserva getReserva(Reserva reserva) throws BusinessException {
-        return repository.buscar(reserva);
+        return repository.buscarPor(reserva);
     }
 
     public Reserva reservaPor(Reserva reserva) throws BusinessException {
@@ -42,7 +42,7 @@ public class BuscarReserva {
             throw new BusinessException(RESTAURANTE_USUARIO_E_OBRIGATORIO_PARA_REALIZAR_A_BUSCA);
         }
         
-        return repository.buscar(reserva);
+        return repository.buscarPor(reserva);
     }    
 
 }

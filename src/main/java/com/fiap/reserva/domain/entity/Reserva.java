@@ -1,6 +1,7 @@
 package com.fiap.reserva.domain.entity;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 import com.fiap.reserva.domain.exception.BusinessException;
@@ -94,4 +95,21 @@ public class Reserva {
     public UUID getNumeroReserva() {
         return numeroReserva;
     }
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(numeroReserva);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Reserva other = (Reserva) obj;
+		return Objects.equals(numeroReserva, other.numeroReserva);
+	}
 }

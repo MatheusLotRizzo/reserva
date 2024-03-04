@@ -8,7 +8,6 @@ import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.ReservaRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EmailVo;
-
 import java.util.List;
 
 public class ReservaService {
@@ -21,11 +20,11 @@ public class ReservaService {
     }
 
     public Reserva cadastrarReserva(final Reserva reserva) throws BusinessException{
-        Integer lotacaoReserva = new ObterLotacaoaReserva(repository).executar(reserva);
-        Integer lotacaoRestaurante = restauranteService.obterLocacaoMaxRestaurante(reserva.getRestaurante());
-        if (lotacaoReserva >= lotacaoRestaurante){
+        int lotacaoRestaurante = restauranteService.obterLocacaoMaxRestaurante(reserva.getRestaurante());
+        if ( lotacaoRestaurante > 0){
             throw new BusinessException("Não existe disponibilidade para este dia");
         }
+
         return new CadastrarReserva(repository).executar(reserva);
     }
 
@@ -33,14 +32,16 @@ public class ReservaService {
         return new AlterarReservaRestaurante(repository).executar(reserva);
     }
 
-    public Reserva cancelarReserva(Reserva reserva) throws BusinessException{
-        reserva.cancelar();
-        return new CancelarReservaRestaurante(repository).executar(reserva);
+    public Reserva cancelarReserva(final Reserva reserva) throws BusinessException{
+        Reserva reservaCancelada = reserva;
+        reservaCancelada.cancelar();
+        return new AlterarReservaRestaurante(repository).executar(reservaCancelada);
     }
 
-    public Reserva baixarReserva(Reserva reserva) throws BusinessException{
-        reserva.baixarReserva();
-        return new BaixarReservaRestaurante(repository).executar(reserva);
+    public Reserva baixarReserva(final Reserva reserva) throws BusinessException{
+        Reserva reservaCancelada = reserva;
+        reservaCancelada.baixarReserva();
+        return new AlterarReservaRestaurante(repository).executar(reservaCancelada);
     }
 
     public void excluirReserva(final Reserva reserva) throws BusinessException{
@@ -49,12 +50,12 @@ public class ReservaService {
 
     public List<Reserva> getBuscarTodasReservaDoUsuarioPeloEmail(final EmailVo email) throws BusinessException{
         final Usuario usuario = usuarioService.getBuscarPorEmail(email);
-        return new BuscarReservaUsuario(repository).todasReservasPor(usuario);
+        return new BuscarReservaUsuario(repository).executar(usuario);
     }
 
     public List<Reserva> getBuscarTodasRerservasRestaurantePeloCNPJ(final CnpjVo cnpj) throws BusinessException{
         final Restaurante restaurante = restauranteService.getBuscarPor(cnpj);
-        return new BuscarReservaRestaurante(repository).todasReservasPor(restaurante);
+        return new BuscarReservaRestaurante(repository).executar(restaurante);
     }
 
     public List<Reserva> getBuscarTodasRerservas(final Reserva reserva) throws BusinessException{

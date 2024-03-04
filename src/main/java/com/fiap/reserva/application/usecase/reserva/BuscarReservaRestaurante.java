@@ -9,16 +9,15 @@ import com.fiap.reserva.domain.repository.ReservaRepository;
 
 public class BuscarReservaRestaurante {
 
-    private static final String RESTAURANTE_E_OBRIGATORIO_PARA_REALIZAR_A_BUSCA = "Restaurante é obrigatorio para realizar a busca!!";
     final ReservaRepository repository;
 
     public BuscarReservaRestaurante(ReservaRepository repository) {
         this.repository = repository;
     }
 
-    public List<Reserva> todasReservasPor(Restaurante restaurante) throws BusinessException{
+    public List<Reserva> executar(Restaurante restaurante) throws BusinessException{
         if(restaurante == null){
-            throw new BusinessException(RESTAURANTE_E_OBRIGATORIO_PARA_REALIZAR_A_BUSCA);
+            throw new BusinessException("Restaurante é obrigatorio para realizar a busca!!");
         }
         
         return repository.buscarTodasPor(restaurante);
