@@ -8,8 +8,7 @@ import java.util.List;
 public interface UsuarioRepository {
 
     List<Usuario> buscarTodos(Usuario usuario);
-    Usuario buscar(Usuario usuario);
-    Usuario buscarPorEmail(EmailVo email);
+    Usuario buscarPor(Usuario usuario);
     Usuario cadastrar(Usuario usuario);
     Usuario alterar(Usuario usuario);
     void excluir(EmailVo email);

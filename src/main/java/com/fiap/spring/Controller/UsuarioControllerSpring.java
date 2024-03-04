@@ -91,24 +91,4 @@ public class UsuarioControllerSpring {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
-    @Operation(summary = "Busca usuario")
-    @ApiOperation("Obtém um usuario por email")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Sucesso",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDto.class, description = "Usuario")) }),
-            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class)) }),
-    })
-    @GetMapping("/{email}")
-    public ResponseEntity<?> buscarPorEmail(@PathVariable @ApiParam(value = "Email do usuario", example = "exemplo@dominio.com.br")
-                                                String email){
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(
-                    usuarioController.getBuscarPorEmail(email)
-            );
-        } catch (BusinessException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
 }
