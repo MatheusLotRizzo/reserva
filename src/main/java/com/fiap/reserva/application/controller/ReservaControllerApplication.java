@@ -4,11 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fiap.reserva.application.service.ReservaService;
-import com.fiap.reserva.application.service.RestauranteService;
-import com.fiap.reserva.application.service.UsuarioService;
 import com.fiap.reserva.domain.entity.Reserva;
-import com.fiap.reserva.domain.entity.Restaurante;
-import com.fiap.reserva.domain.entity.Usuario;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EmailVo;
@@ -16,77 +12,71 @@ import com.fiap.spring.Controller.Dto.ReservaDto;
 
 public class ReservaControllerApplication {
     private ReservaService service;
-    private UsuarioService usuarioService;
-    private RestauranteService restauranteService;
-    
-    public ReservaDto cadastrar(ReservaDto reservaDto)throws BusinessException{
-        final Reserva reserva = construirReserva(reservaDto);
-       return construirReservaDto(service.cadastrarReserva(reserva));
+
+    public ReservaDto cadastrarReserva(ReservaDto reservaDto)throws BusinessException{
+        final Reserva reservaEntity = service.cadastrarReserva(reservaDto.toEntity());
+        
+        return toReservaDTO(reservaEntity);
     }
 
-    public ReservaDto alterar(final ReservaDto reservaDto) throws BusinessException{
-        final Reserva reserva = construirReserva(reservaDto);
-        return construirReservaDto(service.alterarReserva(reserva));
+    public ReservaDto alterarReserva(final ReservaDto reservaDto) throws BusinessException{
+        final Reserva reservaEntity = service.alterarReserva(reservaDto.toEntity());
+        
+        return toReservaDTO(reservaEntity);
     }
 
-    public ReservaDto cancelar(final ReservaDto reservaDto) throws BusinessException{
-        final Reserva reserva = construirReserva(reservaDto);
-        return construirReservaDto(service.cancelarReserva(reserva));
+    public ReservaDto cancelarReserva(final ReservaDto reservaDto) throws BusinessException{
+        final Reserva reservaEntity = service.cancelarReserva(reservaDto.toEntity());
+
+        return toReservaDTO(reservaEntity);
     }
 
-    public ReservaDto baixar(final ReservaDto reservaDto) throws BusinessException{
-        final Reserva reserva = construirReserva(reservaDto);
-        return construirReservaDto(service.baixarReserva(reserva));
+    public ReservaDto baixarReserva(final ReservaDto reservaDto) throws BusinessException{
+        final Reserva reservaEntity = service.baixarReserva(reservaDto.toEntity());
+
+        return toReservaDTO(reservaEntity);
     }
 
-    public void excluir(final ReservaDto reservaDto) throws BusinessException{
-        final Reserva reserva = construirReserva(reservaDto);
-        service.excluirReserva(reserva);
+    //Acho que nao devemos excluir apenas cancelar importante para metricas que nunca iremos usar kkk
+    public void excluirReserva(final ReservaDto reservaDto) throws BusinessException{
+        service.excluirReserva(reservaDto.toEntity());
     }
 
     public List<ReservaDto> getBuscarTodasReservaDoUsuarioPeloEmail(final String email) throws BusinessException {
-        List<Reserva> reservas = service.getBuscarTodasReservaDoUsuarioPeloEmail(new EmailVo(email));
+        final List<Reserva> reservas = service.getBuscarTodasReservaDoUsuarioPeloEmail(new EmailVo(email));
 
         return reservas.stream()
-                .map(this::construirReservaDto)
+                .map(this::toReservaDTO)
                 .collect(Collectors.toList());
     }
 
     public List<ReservaDto> getBuscarTodasRerservasRestaurantePeloCNPJ(final String cnpj) throws BusinessException {
-        List<Reserva> reservas = service.getBuscarTodasRerservasRestaurantePeloCNPJ(new CnpjVo(cnpj));
+        final List<Reserva> reservas = service.getBuscarTodasRerservasRestaurantePeloCNPJ(new CnpjVo(cnpj));
 
         return reservas.stream()
-                .map(this::construirReservaDto)
+                .map(this::toReservaDTO)
                 .collect(Collectors.toList());
     }
 
     public List<ReservaDto> getBuscarTodas(final ReservaDto reservaDto) throws BusinessException {
-        List<Reserva> reservas = service.getBuscarTodasRerservas(construirReserva(reservaDto));
+        final List<Reserva> reservas = service.getBuscarTodasRerservas(reservaDto.toEntity());
 
         return reservas.stream()
-                .map(this::construirReservaDto)
+                .map(this::toReservaDTO)
                 .collect(Collectors.toList());
     }
 
     public ReservaDto getObter(final ReservaDto reservaDto) throws BusinessException {
-        return construirReservaDto(service.getObter(construirReserva(reservaDto)) );
+        return toReservaDTO(service.getObter(reservaDto.toEntity()));
     }
 
-     private Reserva construirReserva(final ReservaDto reservaDto) {
-        try {
-            final Usuario usuario = usuarioService.getBuscarPorEmail(new EmailVo(reservaDto.emailUsuario()));
-            final Restaurante restaurante = restauranteService.getBuscarPor(new CnpjVo(reservaDto.cnpjRestaurante()));
-            
-            return new Reserva(usuario, restaurante, reservaDto.dataHora(), reservaDto.quantidadeLugares());
-        } catch (BusinessException e) {
-            System.err.println("Erro de negócios: " + e.getMessage());
-
-            return null;
-        }
+    private ReservaDto toReservaDTO(final Reserva reservaEntity) {
+        return new ReservaDto(
+            reservaEntity.getNumeroReserva(),
+            reservaEntity.getUsuario().getEmailString(), 
+            reservaEntity.getRestaurante().getCnpjString(),
+            reservaEntity.getDataHora(), 
+            reservaEntity.getSituacao()
+        );
     }
-
-    private ReservaDto construirReservaDto(final Reserva reserva){
-        return reserva.toDto();
-    }
-  
 }
