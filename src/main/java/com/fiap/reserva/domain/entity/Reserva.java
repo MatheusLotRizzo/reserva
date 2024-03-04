@@ -1,60 +1,78 @@
 package com.fiap.reserva.domain.entity;
 
-import com.fiap.spring.Controller.Dto.AvaliacaoDto;
-import com.fiap.spring.Controller.Dto.ReservaDto;
-
 import java.time.LocalDateTime;
+import java.util.UUID;
+
+import com.fiap.reserva.domain.exception.BusinessException;
 
 public class Reserva {
+    private UUID numeroReserva;
     private Usuario usuario;
     private Restaurante restaurante;
     private LocalDateTime dataHora;
-    private int quantidadeLugares;
-    private StatusReserva status = StatusReserva.DISPONIVEL;
+    private SituacaoReserva situacao;
 
-    public Reserva(Usuario usuario, Restaurante restaurante, LocalDateTime dataHora, int quantidadeLugares) {
+    public Reserva(UUID numeroReserva, Usuario usuario, Restaurante restaurante, LocalDateTime dataHora, SituacaoReserva situacao) throws BusinessException {
+        if (numeroReserva == null){
+            throw new BusinessException("Número da reserva obrigatório");
+        }
+
         if (usuario == null){
-            throw new IllegalArgumentException("Usuario obrigatorio");
+            throw new BusinessException("Usuario obrigatório");
         }
 
         if (restaurante == null ){
-            throw new IllegalArgumentException("Restaurante obrigatorio");
+            throw new BusinessException("Restaurante obrigatório");
         }
 
-        if (dataHora.isBefore(LocalDateTime.now())){
-            throw new IllegalArgumentException("Data e hora da reserva deve ser superior a data e hora atual");
+        if (dataHora == null){
+            throw new BusinessException("Data e hora obrigatório");
         }
 
-        if ( quantidadeLugares < 1){
-            throw new IllegalArgumentException("É necessário ao menos 1 lugar para seguir com a reserva");
+        if(situacao == null){
+            throw new BusinessException("Situação da reserva é obrigatória");
         }
 
+        this.numeroReserva = numeroReserva;
         this.usuario = usuario;
         this.restaurante = restaurante;
         this.dataHora = dataHora;
-        this.quantidadeLugares = quantidadeLugares;
+        this.situacao = situacao;
     }
 
-    public Reserva(Usuario usuario, Restaurante restaurante, LocalDateTime dataHora, int quantidadeLugares, StatusReserva status) {
-        this(usuario, restaurante, dataHora, quantidadeLugares);
-        this.status = status;
+    public void reservar() throws BusinessException{
+        validarReservaEstaCancelada();
+        validarReservaJaReservada();
+        this.situacao = SituacaoReserva.RESERVADO;
     }
 
-    public void reservar(){
-        if (this.status == StatusReserva.CANCELADO) {
-            throw new IllegalArgumentException("Esta reserva ja esta cancelada");
+    private void validarReservaJaReservada() throws BusinessException {
+        if(this.situacao == SituacaoReserva.RESERVADO){
+            throw new BusinessException("Esta reserva ja esta reservada");
         }
-        this.status = StatusReserva.RESERVADO;
     }
 
-    public void cancelar(){
-        if (this.status == StatusReserva.RESERVADO) {
-            this.status = StatusReserva.CANCELADO;
+    public void cancelar() throws BusinessException{
+        validarReservaEstaCancelada();
+        validarReservaEstaDisponivel();
+        
+        this.situacao = SituacaoReserva.CANCELADO;
+    }
+
+    private void validarReservaEstaDisponivel() throws BusinessException {
+        if (this.situacao == SituacaoReserva.DISPONIVEL) {
+            throw new BusinessException("Não é possivel cancelar reserva uma disponivel");
+        }
+    }
+
+    private void validarReservaEstaCancelada() throws BusinessException {
+        if (this.situacao == SituacaoReserva.CANCELADO) {
+            throw new BusinessException("Esta reserva ja esta cancelada");
         }
     }
 
     public void baixarReserva(){
-        this.status = StatusReserva.DISPONIVEL;
+        this.situacao = SituacaoReserva.DISPONIVEL;
     }
 
     public Usuario getUsuario() {
@@ -69,21 +87,11 @@ public class Reserva {
         return dataHora;
     }
 
-    public int getQuantidadeLugares() {
-        return quantidadeLugares;
+    public SituacaoReserva getSituacao() {
+        return situacao;
     }
 
-    public StatusReserva getStatus() {
-        return status;
-    }
-
-    public ReservaDto toDto(){
-        return new ReservaDto(
-                this.usuario.getEmailString(),
-                this.restaurante.getCnpjString(),
-                this.dataHora,
-                this.quantidadeLugares,
-                this.status.toString()
-        );
+    public UUID getNumeroReserva() {
+        return numeroReserva;
     }
 }
