@@ -1,7 +1,8 @@
 package com.fiap.reserva.domain.entity;
 
+import java.util.Objects;
+
 import com.fiap.reserva.domain.vo.EmailVo;
-import com.fiap.spring.Controller.Dto.AvaliacaoDto;
 import com.fiap.spring.Controller.Dto.UsuarioDto;
 
 public class Usuario {
@@ -48,12 +49,29 @@ public class Usuario {
         return celular;
     }
 
-    public UsuarioDto toDto(){
+    @Override
+	public int hashCode() {
+		return Objects.hash(email);
+	}
+    
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Usuario other = (Usuario) obj;
+		return Objects.equals(email, other.email);
+	}
+	
+	public UsuarioDto toDto(){
         return new UsuarioDto(
                 this.nome,
                 this.getEmailString(),
                 this.celular
         );
     }
-
+    
 }

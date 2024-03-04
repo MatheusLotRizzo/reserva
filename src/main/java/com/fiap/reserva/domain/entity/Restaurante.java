@@ -1,21 +1,19 @@
 package com.fiap.reserva.domain.entity;
 
+import java.util.Objects;
+
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EnderecoVo;
 import com.fiap.spring.Controller.Dto.EnderecoDto;
 import com.fiap.spring.Controller.Dto.HorarioFuncionamentoDto;
 import com.fiap.spring.Controller.Dto.RestauranteDto;
-import com.fiap.spring.Controller.Dto.UsuarioDto;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class Restaurante {
     private CnpjVo cnpj;
     private String nome;
     private EnderecoVo endereco;
     private HorarioFuncionamento horarioFuncionamento ;
-    private int capacidade;
+    private int capacidadeMesas;
     private TipoCozinha tipoCozinha;
 
     public Restaurante(CnpjVo cnpj, String nome) {
@@ -28,21 +26,21 @@ public class Restaurante {
         this.nome = nome;
     }
 
-    public Restaurante(CnpjVo cnpj, String nome, EnderecoVo endereco, HorarioFuncionamento horarioFuncionamento, int capacidade, TipoCozinha tipoCozinha) {
+    public Restaurante(CnpjVo cnpj, String nome, EnderecoVo endereco, HorarioFuncionamento horarioFuncionamento, int capacidadeMesas, TipoCozinha tipoCozinha) {
         this.cnpj = cnpj;
         this.nome = nome;
         this.endereco = endereco;
         this.horarioFuncionamento = horarioFuncionamento;
-        this.capacidade = capacidade;
+        this.capacidadeMesas = capacidadeMesas;
         this.tipoCozinha = tipoCozinha;
     }
 
-    public Restaurante(String cnpj, String nome, EnderecoVo endereco, HorarioFuncionamento horarioFuncionamento, int capacidade, TipoCozinha tipoCozinha) {
+    public Restaurante(String cnpj, String nome, EnderecoVo endereco, HorarioFuncionamento horarioFuncionamento, int capacidadeMesas, TipoCozinha tipoCozinha) {
         this(cnpj);
         this.nome = nome;
         this.endereco = endereco;
         this.horarioFuncionamento = horarioFuncionamento;
-        this.capacidade = capacidade;
+        this.capacidadeMesas = capacidadeMesas;
         this.tipoCozinha = tipoCozinha;
     }
 
@@ -62,8 +60,8 @@ public class Restaurante {
         return nome;
     }
 
-    public int getCapacidade() {
-        return capacidade;
+    public int getCapacidadeMesas() {
+        return capacidadeMesas;
     }
 
     public TipoCozinha getTipoCozinha() {
@@ -77,15 +75,32 @@ public class Restaurante {
     public HorarioFuncionamento getHorarioFuncionamento() {
         return horarioFuncionamento;
     }
+    
+    @Override
+	public int hashCode() {
+		return Objects.hash(cnpj);
+	}
 
-    public RestauranteDto toDto(){
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Restaurante other = (Restaurante) obj;
+		return Objects.equals(cnpj, other.cnpj);
+	}
+
+	public RestauranteDto toDto(){
         final HorarioFuncionamentoDto horarioFuncionamentoDtos = this.horarioFuncionamento.toDto();
         final EnderecoDto enderecoDto = this.endereco.toDto();
 
         return new RestauranteDto(
                 this.getCnpjString(),
                 this.nome,
-                this.capacidade,
+                this.capacidadeMesas,
                 this.tipoCozinha.toString(),
                 horarioFuncionamentoDtos,
                 enderecoDto
