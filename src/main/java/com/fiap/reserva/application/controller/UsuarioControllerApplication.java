@@ -1,7 +1,6 @@
 package com.fiap.reserva.application.controller;
 
 import com.fiap.reserva.application.service.UsuarioService;
-import com.fiap.reserva.domain.entity.Reserva;
 import com.fiap.reserva.domain.entity.Usuario;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.vo.EmailVo;

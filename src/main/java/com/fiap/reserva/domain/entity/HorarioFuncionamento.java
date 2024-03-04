@@ -1,10 +1,7 @@
 package com.fiap.reserva.domain.entity;
 
 import com.fiap.spring.Controller.Dto.HorarioFuncionamentoDto;
-import com.fiap.spring.Controller.Dto.RestauranteDto;
-
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 public class HorarioFuncionamento {
     private LocalDateTime horarioInicial;

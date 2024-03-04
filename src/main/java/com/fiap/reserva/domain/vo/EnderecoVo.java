@@ -1,7 +1,6 @@
 package com.fiap.reserva.domain.vo;
 
 import com.fiap.spring.Controller.Dto.EnderecoDto;
-import com.fiap.spring.Controller.Dto.HorarioFuncionamentoDto;
 
 public class EnderecoVo {
     private String cep;

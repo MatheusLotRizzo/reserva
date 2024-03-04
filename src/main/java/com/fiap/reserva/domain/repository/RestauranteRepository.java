@@ -1,10 +1,8 @@
 package com.fiap.reserva.domain.repository;
 
-import com.fiap.reserva.domain.entity.Reserva;
 import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.entity.TipoCozinha;
 import com.fiap.reserva.domain.vo.CnpjVo;
-import com.fiap.reserva.domain.vo.EmailVo;
 import com.fiap.reserva.domain.vo.EnderecoVo;
 
 import java.util.List;

@@ -2,14 +2,11 @@ package com.fiap.reserva.infra.jdbc.avaliacao;
 
 import com.fiap.reserva.domain.entity.Avaliacao;
 import com.fiap.reserva.domain.entity.Restaurante;
-import com.fiap.reserva.domain.entity.TipoCozinha;
 import com.fiap.reserva.domain.entity.Usuario;
 import com.fiap.reserva.domain.repository.AvaliacaoRepository;
 import com.fiap.reserva.infra.adapter.PrepararQuery;
 import com.fiap.reserva.infra.adapter.TipoDados;
 import com.fiap.reserva.infra.exception.TechnicalException;
-import com.fiap.reserva.infra.jdbc.restaurante.RestauranteRepositoryImpl;
-import com.fiap.reserva.infra.jdbc.usuario.UsuarioRepositoryImpl;
 import javafx.util.Pair;
 
 import java.sql.Connection;
@@ -25,8 +22,6 @@ public class AvaliacaoRepositoryImpl implements AvaliacaoRepository {
     private PrepararQuery queryExecutor;
     private List<Pair<TipoDados, Object>> parametros;
 
-    private RestauranteRepositoryImpl restauranteRepository;
-    private UsuarioRepositoryImpl usuarioRepository;
     public AvaliacaoRepositoryImpl(Connection connection) {
         this.connection = connection;
         this.parametros = new ArrayList<>();

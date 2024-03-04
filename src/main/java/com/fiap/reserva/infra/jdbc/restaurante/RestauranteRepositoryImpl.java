@@ -1,6 +1,5 @@
 package com.fiap.reserva.infra.jdbc.restaurante;
 
-import com.fiap.reserva.domain.entity.Reserva;
 import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.entity.TipoCozinha;
 import com.fiap.reserva.domain.repository.RestauranteRepository;
@@ -184,7 +183,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
         queryExecutor = new PrepararQuery(Statement.RETURN_GENERATED_KEYS);
         queryExecutor.adicionaItem(parametros, TipoDados.STRING, restaurante.getCnpjString());
         queryExecutor.adicionaItem(parametros, TipoDados.STRING, restaurante.getNome());
-        queryExecutor.adicionaItem(parametros, TipoDados.NUMBER, restaurante.getCapacidade());
+        queryExecutor.adicionaItem(parametros, TipoDados.NUMBER, restaurante.getCapacidadeMesas());
         queryExecutor.adicionaItem(parametros, TipoDados.STRING, restaurante.getTipoCozinha());
 
         try {
@@ -208,7 +207,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
         queryExecutor = new PrepararQuery(Statement.RETURN_GENERATED_KEYS);
         queryExecutor.adicionaItem(parametros, TipoDados.STRING, restaurante.getCnpjString());
         queryExecutor.adicionaItem(parametros, TipoDados.STRING, restaurante.getNome());
-        queryExecutor.adicionaItem(parametros, TipoDados.NUMBER, restaurante.getCapacidade());
+        queryExecutor.adicionaItem(parametros, TipoDados.NUMBER, restaurante.getCapacidadeMesas());
         queryExecutor.adicionaItem(parametros, TipoDados.STRING, restaurante.getTipoCozinha());
 
         try {

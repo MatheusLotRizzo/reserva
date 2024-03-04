@@ -1,6 +1,5 @@
 package com.fiap.spring.Controller.Dto;
 
-import java.time.LocalDateTime;
 
 public record AvaliacaoDto(
         String emailUsuario,
