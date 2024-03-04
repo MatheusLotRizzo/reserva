@@ -26,74 +26,57 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
         this.connection = connection;
         this.parametros = new ArrayList<>();
     }
+
     @Override
     public List<Usuario> buscarTodos(Usuario usuario) {
         final List<Usuario> list = new ArrayList<>();
         final StringBuilder query = new StringBuilder()
-                .append("SELECT * FROM tb_usuario u ")
-                ;
+                .append("SELECT * FROM tb_usuario u ");
 
-        queryExecutor = new PrepararQuery();
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, usuario.getEmailString());
-
-        try {
-            try (final ResultSet rs = queryExecutor.construir(connection,query,parametros).executeQuery()) {
+        try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
+            try (final ResultSet rs = ps.executeQuery()) {
                 while(rs.next()){
                     list.add(contruirUsuario(rs));
                 }
             }
-        } catch (SQLException e) {
+        }catch (SQLException e) {
             throw new TechnicalException(e);
         }
-
         return list;
     }
 
     @Override
     public Usuario buscar(Usuario usuario) {
         final StringBuilder query = new StringBuilder()
-                .append("SELECT * FROM tb_usuario r ")
-                .append("WHERE u.email = ? ")
+                .append("SELECT * FROM tb_usuario u ")
+                .append("WHERE u.ic_email = ? ")
                 ;
-
-        queryExecutor = new PrepararQuery();
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, usuario.getEmailString());
 
         if (usuario.getNome() != null) {
-            query.append("AND u.nome = ? ");
-            queryExecutor.adicionaItem(parametros, TipoDados.STRING, usuario.getNome());
+            query.append("AND u.nm_usuario = ? ");
         }
         if (usuario.getCelular() != null) {
-            query.append("AND u.celular = ? ");
-            queryExecutor.adicionaItem(parametros, TipoDados.STRING, usuario.getCelular());
+            query.append("AND u.ic_telefone = ? ");
         }
 
-        try {
-            try (final ResultSet rs = queryExecutor.construir(connection,query,parametros).executeQuery()) {
-                return contruirUsuario(rs);
+        try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
+            int i = 1;
+            ps.setString(i++, usuario.getEmailString());
+            if (usuario.getNome() != null) {
+                ps.setString(i++, usuario.getNome());
             }
-        } catch (SQLException e) {
+            if (usuario.getCelular() != null) {
+                ps.setString(i++, usuario.getCelular());
+            }
+            try (final ResultSet rs = ps.executeQuery()) {
+                if (rs.next()){
+                    return contruirUsuario(rs);
+                }
+            }
+        }catch (SQLException e) {
             throw new TechnicalException(e);
         }
-    }
-
-    @Override
-    public Usuario buscarPorEmail(EmailVo email) {
-        final StringBuilder query = new StringBuilder()
-                .append("SELECT * FROM tb_usuario r ")
-                .append("WHERE u.email = ? ")
-                ;
-
-        queryExecutor = new PrepararQuery();
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, email.getEndereco());
-
-        try {
-            try (final ResultSet rs = queryExecutor.construir(connection,query,parametros).executeQuery()) {
-                return contruirUsuario(rs);
-            }
-        } catch (SQLException e) {
-            throw new TechnicalException(e);
-        }
+        return null;
     }
 
     @Override
@@ -158,9 +141,9 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
 
     private Usuario contruirUsuario(ResultSet rs) throws SQLException {
         return new Usuario(
-                rs.getString("u.nome"),
-                rs.getString("u.email"),
-                rs.getString("u.celular")
+                rs.getString("u.nm_usuario"),
+                rs.getString("u.ic_email"),
+                rs.getString("u.ic_telefone")
         );
     }
 }
