@@ -9,10 +9,10 @@ import com.fiap.reserva.infra.exception.TechnicalException;
 import javafx.util.Pair;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,21 +100,20 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     public Usuario cadastrar(Usuario usuario) {
         final StringBuilder query = new StringBuilder()
                 .append("INSERT INTO tb_usuario ")
-                .append("(email, ds_nome, ds_celular) ")
+                .append("(ic_email, nm_usuario, ic_telefone) ")
                 .append("VALUES ")
                 .append("(?, ?, ?) ")
                 ;
 
-        queryExecutor = new PrepararQuery(Statement.RETURN_GENERATED_KEYS);
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, usuario.getNome());
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, usuario.getEmailString());
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, usuario.getCelular());
-
-        try {
-            queryExecutor.construir(connection,query,parametros).execute();
-        } catch (SQLException e) {
+        try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
+            int i = 1;
+            ps.setString(i++, usuario.getEmailString());
+            ps.setString(i++, usuario.getNome());
+            ps.setString(i++, usuario.getCelular());
+        }  catch (SQLException e) {
             throw new TechnicalException(e);
         }
+
         return usuario;
     }
 
