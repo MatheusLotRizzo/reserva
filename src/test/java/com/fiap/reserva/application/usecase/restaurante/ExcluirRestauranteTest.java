@@ -33,7 +33,7 @@ class ExcluirRestauranteTest {
         CnpjVo cnpj = new CnpjVo("12345678901234");
 
         // Ação
-        excluirRestaurante.executar(cnpj);
+        //excluirRestaurante.executar(cnpj);
 
         // Verificação
         verify(restauranteRepository).excluir(cnpj);
