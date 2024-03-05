@@ -2,29 +2,40 @@ package com.fiap.reserva.domain.entity;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class UsuarioTest {
 
     @Test
-    void deveDarErroComEmailInvalido() {
-        assertThrows(IllegalArgumentException.class, () -> new Usuario("Matheus", null));
-        assertThrows(IllegalArgumentException.class, () -> new Usuario("Matheus", ""));
-        assertThrows(IllegalArgumentException.class, () -> new Usuario("Matheus", "matheus.com"));
-        assertThrows(IllegalArgumentException.class, () -> new Usuario("Matheus", "matheus.com.br"));
-        assertThrows(IllegalArgumentException.class, () -> new Usuario("Matheus", "111111@#@.com.br"));
-        assertThrows(IllegalArgumentException.class, () -> new Usuario("Matheus", "_________@.com.br"));
-        assertThrows(IllegalArgumentException.class, () -> new Usuario("Matheus", "---------@.com.br"));
-        assertThrows(IllegalArgumentException.class, () -> new Usuario("Matheus", "@.com.br"));
-        assertThrows(IllegalArgumentException.class, () -> new Usuario("Matheus", "@@@@.com.br"));
+    void naoDeveCriarUsuarioComEmailVazio() {
+        Throwable throwable = assertThrows(IllegalArgumentException.class, () -> new Usuario("Matheus", null));
+        assertEquals("E-mail inválido", throwable.getMessage());
+
+        throwable = assertThrows(IllegalArgumentException.class, () -> new Usuario("Matheus", ""));
+        assertEquals("E-mail inválido", throwable.getMessage());
+    }
+
+    @Test
+    void naoDeveCriarUsuarioComEmailTendoApenasComCaracteresEspeciais(){
+        Throwable throwable = assertThrows(IllegalArgumentException.class, () -> new Usuario("_________@.com.br"));
+        assertEquals("O e-mail deve conter letras", throwable.getMessage());
+
+        throwable = assertThrows(IllegalArgumentException.class, () -> new Usuario("---------@.com.br"));
+        assertEquals("O e-mail deve conter letras", throwable.getMessage());
+
+        throwable = assertThrows(IllegalArgumentException.class, () -> new Usuario("@.com.br"));
+        assertEquals("O e-mail deve conter letras", throwable.getMessage());
+
+        throwable = assertThrows(IllegalArgumentException.class, () -> new Usuario("@@@@.com.br"));
+        assertEquals("O e-mail deve conter letras", throwable.getMessage());
     }
 
     @Test
     void deveCriarUsuarioComEmailValido() {
-        assertNotNull(new Usuario("Matheus", "matheus@gmail.com"));
-        assertNotNull(new Usuario("Matheus", "matheus2024@gmail.com.br"));
-        assertNotNull(new Usuario("Matheus", "matheus_rizzo@gmail.com.br"));
-        assertNotNull(new Usuario("Matheus", "matheus.rizzo@gmail.com.br"));
+        Usuario usuario = new Usuario("matheus@gmail.com");
+        assertNotNull(usuario);
+
+        usuario = new Usuario("matheus_rizzo@gmail.com.br");
+        assertNotNull(usuario);
     }
 }

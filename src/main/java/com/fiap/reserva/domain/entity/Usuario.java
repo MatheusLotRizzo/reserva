@@ -11,6 +11,10 @@ public class Usuario {
     private final String celular;
 
     public Usuario(String nome, String email){
+        if (nome == null || nome.isEmpty()){
+            throw new IllegalArgumentException("O nome não pode ser vazio");
+        }
+
         this.nome = nome;
         this.email = new EmailVo(email);
         this.celular = null;

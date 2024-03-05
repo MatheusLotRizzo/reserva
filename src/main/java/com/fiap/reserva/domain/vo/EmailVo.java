@@ -6,7 +6,7 @@ public class EmailVo {
 
     public EmailVo(String endereco) {
         if(endereco == null || !endereco.matches(regex)){
-            throw new IllegalArgumentException("E-mail invalido");
+            throw new IllegalArgumentException("E-mail inválido");
         }
 
         if (endereco.split("@")[0].matches("^[^a-zA-Z0-9]*$")){
