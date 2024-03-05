@@ -25,9 +25,7 @@ public class UsuarioControllerApplication {
     public UsuarioDto getBuscarPor(final UsuarioDto usuarioDto) throws BusinessException{
         return construirUsuarioDto(service.getBuscarPor(construirUsuario(usuarioDto)));
     }
-    public UsuarioDto getBuscarPorEmail(final String email) throws BusinessException{
-        return construirUsuarioDto(service.getBuscarPorEmail(new EmailVo(email)));
-    }
+
     public List<UsuarioDto> getTodos(final UsuarioDto usuarioDto) throws BusinessException{
         List<Usuario> usuarios = service.getTodos(construirUsuario(usuarioDto));
 

@@ -49,7 +49,7 @@ public class ReservaService {
     }
 
     public List<Reserva> getBuscarTodasReservaDoUsuarioPeloEmail(final EmailVo email) throws BusinessException{
-        final Usuario usuario = usuarioService.getBuscarPorEmail(email);
+        final Usuario usuario = usuarioService.getBuscarPor(new Usuario(email.getEndereco()));
         return new BuscarReservaUsuario(repository).executar(usuario);
     }
 

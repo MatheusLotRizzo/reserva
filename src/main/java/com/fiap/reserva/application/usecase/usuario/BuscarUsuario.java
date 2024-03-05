@@ -18,10 +18,6 @@ public class BuscarUsuario {
         return repository.buscarPor(usuario);
     }
 
-    public Usuario getUsuarioPor(EmailVo email)throws BusinessException{
-        return repository.buscarPorEmail(email);
-    }
-
     public List<Usuario> getTodos(Usuario usuario)throws BusinessException{
         return repository.buscarTodos(usuario);
     }

@@ -33,7 +33,7 @@ public class AvaliacaoControllerApplication {
 
     private Avaliacao construirAvaliacao(final AvaliacaoDto avaliacaoDto) {
         try {
-            final Usuario usuario = usuarioService.getBuscarPorEmail(new EmailVo(avaliacaoDto.emailUsuario()));
+            final Usuario usuario = usuarioService.getBuscarPor(new Usuario(avaliacaoDto.emailUsuario()));
             final Restaurante restaurante = restauranteService.getBuscarPor(new CnpjVo(avaliacaoDto.cnpjRestaurante()));
             return new Avaliacao(usuario,restaurante,avaliacaoDto.pontuacao(),avaliacaoDto.comentario());
         } catch (BusinessException e) {

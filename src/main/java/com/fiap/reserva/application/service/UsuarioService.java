@@ -34,10 +34,6 @@ public class UsuarioService {
         return new BuscarUsuario(repository).getUsuario(usuario);
     }
 
-    public Usuario getBuscarPorEmail(final EmailVo email) throws BusinessException{
-        return new BuscarUsuario(repository).getUsuarioPor(email);
-    }
-
     public List<Usuario> getTodos(final Usuario usuario) throws BusinessException{
         return new BuscarUsuario(repository).getTodos(usuario);
     }
