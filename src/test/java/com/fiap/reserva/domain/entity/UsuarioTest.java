@@ -18,16 +18,16 @@ class UsuarioTest {
     @Test
     void naoDeveCriarUsuarioComEmailTendoApenasComCaracteresEspeciais(){
         Throwable throwable = assertThrows(IllegalArgumentException.class, () -> new Usuario("_________@.com.br"));
-        assertEquals("O e-mail deve conter letras", throwable.getMessage());
+        assertEquals("E-mail inválido", throwable.getMessage());
 
         throwable = assertThrows(IllegalArgumentException.class, () -> new Usuario("---------@.com.br"));
-        assertEquals("O e-mail deve conter letras", throwable.getMessage());
+        assertEquals("E-mail inválido", throwable.getMessage());
 
         throwable = assertThrows(IllegalArgumentException.class, () -> new Usuario("@.com.br"));
-        assertEquals("O e-mail deve conter letras", throwable.getMessage());
+        assertEquals("E-mail inválido", throwable.getMessage());
 
         throwable = assertThrows(IllegalArgumentException.class, () -> new Usuario("@@@@.com.br"));
-        assertEquals("O e-mail deve conter letras", throwable.getMessage());
+        assertEquals("E-mail inválido", throwable.getMessage());
     }
 
     @Test

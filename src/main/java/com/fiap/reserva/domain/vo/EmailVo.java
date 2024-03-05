@@ -5,12 +5,8 @@ public class EmailVo {
     private final String endereco;
 
     public EmailVo(String endereco) {
-        if(endereco == null || !endereco.matches(regex)){
+        if(endereco == null || !endereco.matches(regex) || endereco.split("@")[0].matches("^[^a-zA-Z0-9]*$")){
             throw new IllegalArgumentException("E-mail inválido");
-        }
-
-        if (endereco.split("@")[0].matches("^[^a-zA-Z0-9]*$")){
-            throw new IllegalArgumentException("O e-mail deve conter letras");
         }
         this.endereco = endereco;
     }
