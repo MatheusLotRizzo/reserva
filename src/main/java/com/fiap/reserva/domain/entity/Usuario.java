@@ -14,18 +14,23 @@ public class Usuario {
         if (nome == null || nome.isEmpty()){
             throw new IllegalArgumentException("O nome não pode ser vazio");
         }
-
         this.nome = nome;
         this.email = new EmailVo(email);
         this.celular = null;
     }
     public Usuario(String nome, EmailVo email, String celular) {
+        if (nome == null || nome.isEmpty()){
+            throw new IllegalArgumentException("O nome não pode ser vazio");
+        }
         this.nome = nome;
         this.email = email;
         this.celular = celular;
     }
 
     public Usuario(String nome, String email, String celular){
+        if (nome == null || nome.isEmpty()){
+            throw new IllegalArgumentException("O nome não pode ser vazio");
+        }
         this.nome = nome;
         this.email = new EmailVo(email);
         this.celular = celular;
