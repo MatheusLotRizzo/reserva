@@ -168,6 +168,4 @@ class UsuarioTest {
         Usuario usuario = new Usuario("Matheus", emailVo, "11999999999");
         assertEquals(hash, usuario.hashCode());
     }
-
-
 }
