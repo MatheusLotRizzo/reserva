@@ -1,6 +1,7 @@
 package com.fiap.reserva.application.usecase.restaurante;
 
 import com.fiap.reserva.domain.entity.Restaurante;
+import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.RestauranteRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +33,7 @@ class CadastrarRestauranteTest {
     }
 
     @Test
-    void deveCadastrarRestauranteComSucesso() {
+    void deveCadastrarRestauranteComSucesso() throws BusinessException {
         // Configura o mock para retornar o restaurante quando o método cadastrar for chamado
         when(restauranteRepository.cadastrar(any(Restaurante.class))).thenReturn(restaurante);
 

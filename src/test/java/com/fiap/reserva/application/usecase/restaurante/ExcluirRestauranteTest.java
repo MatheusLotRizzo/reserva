@@ -1,5 +1,6 @@
 package com.fiap.reserva.application.usecase.restaurante;
 
+import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.RestauranteRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,7 @@ class ExcluirRestauranteTest {
     }
 
     @Test
-    void deveChamarMetodoExcluirDoRepositorio() {
+    void deveChamarMetodoExcluirDoRepositorio() throws BusinessException {
         // Preparação
         CnpjVo cnpj = new CnpjVo("12345678901234");
 

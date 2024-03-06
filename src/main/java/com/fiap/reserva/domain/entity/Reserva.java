@@ -1,6 +1,7 @@
 package com.fiap.reserva.domain.entity;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 import com.fiap.reserva.domain.exception.BusinessException;

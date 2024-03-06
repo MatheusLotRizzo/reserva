@@ -12,8 +12,8 @@ public class CadastrarRestaurante {
     }
 
     public Restaurante executar(Restaurante restaurante) throws BusinessException{
-        if(new BuscarRestaurante(repository).getRestaurantePor(restaurante.getCnpj()) == null){
-            throw new BusinessException("Restaurante não pode ser cadastrado, pois já existe");
+        if(restaurante == null){
+            throw new BusinessException("Restaurante é obrigatório");
         }
         return this.repository.cadastrar(restaurante);
     }

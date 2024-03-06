@@ -82,15 +82,6 @@ public class ReservaControllerSpring {
         }
     }
 
-    @Operation(summary = "Deleta uma reserva")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Sucesso",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ReservaDto.class, description = "Reserva")) }),
-            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class)) }),
-    })
-    
-
     @Operation(summary = "Busca reserva")
     @ApiOperation("Busca reserva por email")
     @ApiResponses(value = {

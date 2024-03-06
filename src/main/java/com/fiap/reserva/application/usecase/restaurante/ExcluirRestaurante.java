@@ -12,8 +12,8 @@ public class ExcluirRestaurante {
     }
 
     public void executar(final CnpjVo cnpj) throws BusinessException {
-        if(new BuscarRestaurante(repository).getRestaurantePor(cnpj) == null){
-            throw new BusinessException("Restaurante não pode ser excluido, pois nao foi encontrada");
+        if(cnpj == null){
+            throw new BusinessException("Restaurante é obrigatório");
         }
         repository.excluir(cnpj);
     }
