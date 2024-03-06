@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class ReservaService {
-    private final ReservaRepository repository;
+    private static final int RESTAURANTE_SEM_RESERVAS_DISPONIVEIS = 0;
+	private final ReservaRepository repository;
     private final RestauranteService restauranteService;
     private final UsuarioService usuarioService;
 
@@ -26,6 +27,10 @@ public class ReservaService {
 	}
 
     public Reserva cadastrarReserva(final Reserva reserva) throws BusinessException{
+    	if(reserva == null) {
+    		throw new BusinessException("Informe uma reserva para ser cadastrada");
+    	}
+    	
     	final Stream<Reserva> reservasDoRestaurante = new BuscarReservaRestaurante(repository)
 			.executar(reserva.getRestaurante())
 			.stream()
@@ -34,7 +39,7 @@ public class ReservaService {
         final long totalReservasRestaurante = reservasDoRestaurante.count();
     	int lotacaoRestaurante = restauranteService.obterLocacaoMaxRestaurante(reserva.getRestaurante());
         
-        if ( (lotacaoRestaurante - totalReservasRestaurante) < 1){
+        if ( (lotacaoRestaurante - totalReservasRestaurante) < RESTAURANTE_SEM_RESERVAS_DISPONIVEIS){
             throw new BusinessException("Não existe disponibilidade para este dia");
         }
         return new CadastrarReserva(repository).executar(reserva);
