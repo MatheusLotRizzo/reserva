@@ -25,21 +25,12 @@ public class ReservaControllerApplication {
         return toReservaDTO(reservaEntity);
     }
 
-    public ReservaDto cancelarReserva(final ReservaDto reservaDto) throws BusinessException{
-        final Reserva reservaEntity = service.cancelarReserva(reservaDto.toEntity());
-
-        return toReservaDTO(reservaEntity);
+    public void cancelarReserva(final ReservaDto reservaDto) throws BusinessException{
+        service.cancelarReserva(reservaDto.toEntity());
     }
-
-    public ReservaDto baixarReserva(final ReservaDto reservaDto) throws BusinessException{
-        final Reserva reservaEntity = service.baixarReserva(reservaDto.toEntity());
-
-        return toReservaDTO(reservaEntity);
-    }
-
-    //Acho que nao devemos excluir apenas cancelar importante para metricas que nunca iremos usar kkk
-    public void excluirReserva(final ReservaDto reservaDto) throws BusinessException{
-        service.excluirReserva(reservaDto.toEntity());
+    
+    public void concluirReserva(final ReservaDto reservaDto) throws BusinessException{
+    	service.concluirReserva(reservaDto.toEntity());
     }
 
     public List<ReservaDto> getBuscarTodasReservaDoUsuarioPeloEmail(final String email) throws BusinessException {

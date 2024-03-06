@@ -65,27 +65,22 @@ public class ReservaControllerSpring {
     @PatchMapping("/cancelar")
     public ResponseEntity<?> cancelarReserva(@RequestBody ReservaDto reservaDto ){
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(reservaController.cancelarReserva(reservaDto));
+        	reservaController.cancelarReserva(reservaDto);
+            return ResponseEntity.noContent().build();
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
         }
     }
 
-//    @Operation(summary = "Baixa uma reserva")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "201", description = "Sucesso",
-//                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ReservaDto.class, description = "Reserva")) }),
-//            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
-//                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class)) }),
-//    })
-//    @PatchMapping("/baixar")
-//    public ResponseEntity<?> baixarReserva(@RequestBody ReservaDto reservaDto ){
-//        try {
-//            return ResponseEntity.status(HttpStatus.CREATED).body(reservaController.baixar(reservaDto));
-//        } catch (Exception ex) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
-//        }
-//    }
+    @PutMapping("/concluir")
+    public ResponseEntity<?> concluirReserva(@RequestBody ReservaDto reservaDto ){
+        try {
+        	reservaController.concluirReserva(reservaDto);
+            return ResponseEntity.noContent().build();
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        }
+    }
 
     @Operation(summary = "Deleta uma reserva")
     @ApiResponses(value = {
@@ -94,15 +89,7 @@ public class ReservaControllerSpring {
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class)) }),
     })
-    @DeleteMapping
-    public ResponseEntity<?> excluirReserva(@RequestBody ReservaDto reservaDto ){
-        try{
-            reservaController.excluirReserva(reservaDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Sucesso");
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
-        }
-    }
+    
 
     @Operation(summary = "Busca reserva")
     @ApiOperation("Busca reserva por email")

@@ -3,45 +3,53 @@ package com.fiap.reserva.application.service;
 import com.fiap.reserva.application.usecase.reserva.*;
 import com.fiap.reserva.domain.entity.Reserva;
 import com.fiap.reserva.domain.entity.Restaurante;
+import com.fiap.reserva.domain.entity.SituacaoReserva;
 import com.fiap.reserva.domain.entity.Usuario;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.ReservaRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EmailVo;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ReservaService {
     private final ReservaRepository repository;
-    private RestauranteService restauranteService;
-    private UsuarioService usuarioService;
+    private final RestauranteService restauranteService;
+    private final UsuarioService usuarioService;
 
-    public ReservaService(ReservaRepository repository) {
-        this.repository = repository;
-    }
+    public ReservaService(ReservaRepository repository, 
+    		RestauranteService restauranteService,
+			UsuarioService usuarioService) {
+		this.repository = repository;
+		this.restauranteService = restauranteService;
+		this.usuarioService = usuarioService;
+	}
 
     public Reserva cadastrarReserva(final Reserva reserva) throws BusinessException{
-        int lotacaoRestaurante = restauranteService.obterLocacaoMaxRestaurante(reserva.getRestaurante());
-        if ( lotacaoRestaurante > 0){
+    	final Stream<Reserva> reservasDoRestaurante = new BuscarReservaRestaurante(repository)
+			.executar(reserva.getRestaurante())
+			.stream()
+			.filter(r -> r.getSituacao() == SituacaoReserva.RESERVADO);
+    	
+        final long totalReservasRestaurante = reservasDoRestaurante.count();
+    	int lotacaoRestaurante = restauranteService.obterLocacaoMaxRestaurante(reserva.getRestaurante());
+        
+        if ( (lotacaoRestaurante - totalReservasRestaurante) < 1){
             throw new BusinessException("Não existe disponibilidade para este dia");
         }
-
         return new CadastrarReserva(repository).executar(reserva);
     }
 
-    public Reserva alterarReserva(final Reserva reserva) throws BusinessException{
+	public Reserva alterarReserva(final Reserva reserva) throws BusinessException{
         return new AlterarReservaRestaurante(repository).executar(reserva);
     }
 
-    public Reserva cancelarReserva(final Reserva reserva) throws BusinessException{
-        Reserva reservaCancelada = reserva;
-        reservaCancelada.cancelar();
-        return new AlterarReservaRestaurante(repository).executar(reservaCancelada);
+    public void cancelarReserva(final Reserva reserva) throws BusinessException{
+        new CancelarReservaRestaurante(repository).executar(reserva);
     }
-
-    public Reserva baixarReserva(final Reserva reserva) throws BusinessException{
-        Reserva reservaCancelada = reserva;
-        reservaCancelada.baixarReserva();
-        return new AlterarReservaRestaurante(repository).executar(reservaCancelada);
+    
+    public void concluirReserva(final Reserva reserva) throws BusinessException{
+        new ConcluirReservaRestaurante(repository).executar(reserva);
     }
 
     public void excluirReserva(final Reserva reserva) throws BusinessException{

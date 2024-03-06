@@ -1,7 +1,6 @@
 package com.fiap.reserva.domain.entity;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.UUID;
 
 import com.fiap.reserva.domain.exception.BusinessException;
@@ -44,20 +43,30 @@ public class Reserva {
     public void reservar() throws BusinessException{
         validarReservaEstaCancelada();
         validarReservaJaReservada();
+        validarReservaEstaConcluida();
         this.situacao = SituacaoReserva.RESERVADO;
+    }
+    
+    public void cancelar() throws BusinessException{
+        validarReservaEstaCancelada();
+        validarReservaEstaDisponivel();
+        validarReservaEstaConcluida();
+        
+        this.situacao = SituacaoReserva.CANCELADO;
+    }
+    
+    public void concluir() throws BusinessException{
+        validarReservaEstaCancelada();
+        validarReservaEstaDisponivel();
+        validarReservaEstaConcluida();
+        
+        this.situacao = SituacaoReserva.CONLUIDO;
     }
 
     private void validarReservaJaReservada() throws BusinessException {
         if(this.situacao == SituacaoReserva.RESERVADO){
             throw new BusinessException("Esta reserva ja esta reservada");
         }
-    }
-
-    public void cancelar() throws BusinessException{
-        validarReservaEstaCancelada();
-        validarReservaEstaDisponivel();
-        
-        this.situacao = SituacaoReserva.CANCELADO;
     }
 
     private void validarReservaEstaDisponivel() throws BusinessException {
@@ -71,9 +80,11 @@ public class Reserva {
             throw new BusinessException("Esta reserva ja esta cancelada");
         }
     }
-
-    public void baixarReserva(){
-        this.situacao = SituacaoReserva.DISPONIVEL;
+    
+    private void validarReservaEstaConcluida() throws BusinessException {
+        if (this.situacao == SituacaoReserva.CONLUIDO) {
+            throw new BusinessException("Esta reserva ja esta concluida");
+        }
     }
 
     public Usuario getUsuario() {

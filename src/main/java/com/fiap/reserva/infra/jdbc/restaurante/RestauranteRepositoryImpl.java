@@ -241,7 +241,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
                 rs.getString("re.ds_nome"),
                 enderecoRepository.contruirEndereco(rs),
                 horarioFuncionamentoRepository.contruirHorarioFuncionamento(rs),
-                Integer.parseInt(rs.getString("re.qt_capacidade")),
+                rs.getInt("re.qt_capacidade"),
                 TipoCozinha.valueOf(rs.getString("re.ds_tipocozinha"))
         );
     }
