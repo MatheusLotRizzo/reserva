@@ -14,7 +14,10 @@ public class BuscarUsuario {
         this.repository = repository;
     }
 
-    public Usuario getUsuario(Usuario usuario)throws BusinessException {
+    public Usuario getUsuario(Usuario usuario) throws BusinessException {
+        if (usuario == null) {
+            throw new BusinessException("Usuario é obrigatorio para realizar a busca!");
+        }
         return repository.buscarPor(usuario);
     }
 
