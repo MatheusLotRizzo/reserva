@@ -115,13 +115,9 @@ public class Reserva {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Reserva other = (Reserva) obj;
-		return Objects.equals(numeroReserva, other.numeroReserva);
+		if (obj != null) {
+			return this.hashCode() == obj.hashCode();
+		}
+		return false;
 	}
 }
