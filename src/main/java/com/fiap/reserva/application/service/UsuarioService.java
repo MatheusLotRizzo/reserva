@@ -19,14 +19,23 @@ public class UsuarioService {
     }
 
     public Usuario cadastrar(final Usuario usuario) throws BusinessException{
+        if(new BuscarUsuario(repository).getUsuario(usuario).equals(usuario)){
+            throw new BusinessException("Usuário não pode ser cadastrado, pois já existe");
+        }
         return new CadastrarUsuario(repository).executar(usuario);
     }
 
     public Usuario alterar(final Usuario usuario) throws BusinessException {
+        if(new BuscarUsuario(repository).getUsuario(usuario) == null){
+            throw new BusinessException("Usuário não pode ser alterado, pois nao foi encontrada");
+        }
         return new AlterarUsuario(repository).executar(usuario);
     }
 
     public void excluir(final EmailVo email) throws BusinessException{
+        if(new BuscarUsuario(repository).getUsuario(new Usuario(email.getEndereco())) == null){
+            throw new BusinessException("Usuário não pode ser excluido, pois nao foi encontrada");
+        }
         new ExcluirUsuario(repository).executar(email);
     }
 

@@ -12,8 +12,8 @@ public class CadastrarUsuario {
     }
 
     public Usuario executar(Usuario usuario) throws BusinessException {
-        if(new BuscarUsuario(repository).getUsuario(usuario) == null){
-            throw new BusinessException("Usuário não pode ser cadastrado, pois já existe");
+        if (usuario == null) {
+            throw new BusinessException("Usuario é obrigatório para realizar o cadastro!");
         }
         return this.repository.cadastrar(usuario);
     }

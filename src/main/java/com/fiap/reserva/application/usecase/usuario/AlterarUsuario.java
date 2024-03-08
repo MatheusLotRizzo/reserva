@@ -15,11 +15,6 @@ public class AlterarUsuario {
         if(usuario == null){
             throw new BusinessException("Usuario é obrigatorio");
         }
-
-        if(new BuscarUsuario(repository).getUsuario(usuario) == null){
-            throw new BusinessException("Usuário não pode ser alterado, pois nao foi encontrada");
-        }
-
         return repository.alterar(usuario);
     }
 }

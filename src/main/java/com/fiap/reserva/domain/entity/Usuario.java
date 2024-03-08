@@ -62,18 +62,14 @@ public class Usuario {
 	public int hashCode() {
 		return Objects.hash(email);
 	}
-    
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Usuario other = (Usuario) obj;
-		return Objects.equals(email, other.email);
-	}
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null) {
+            return this.hashCode() == obj.hashCode();
+        }
+        return false;
+    }
 	
 	public UsuarioDto toDto(){
         return new UsuarioDto(

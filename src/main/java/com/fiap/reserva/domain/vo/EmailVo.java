@@ -19,13 +19,10 @@ public class EmailVo {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null || getClass() != obj.getClass())
-            return false;
-
-        EmailVo emailVo = (EmailVo) obj;
-        return Objects.equals(endereco, emailVo.endereco);
+        if (obj != null) {
+            return this.hashCode() == obj.hashCode();
+        }
+        return false;
     }
 
     @Override
