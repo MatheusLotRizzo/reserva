@@ -11,10 +11,13 @@ import java.util.stream.Collectors;
 
 public class UsuarioControllerApplication {
 
-    private UsuarioService service;
+    private final UsuarioService service;
 
-    public UsuarioDto cadastrar(final UsuarioDto usuarioDto) throws BusinessException{
-        return construirUsuarioDto( service.cadastrar(construirUsuario(usuarioDto)) );
+    public UsuarioControllerApplication(UsuarioService service) {
+		this.service = service;
+	}
+	public UsuarioDto cadastrar(final UsuarioDto usuarioDto) throws BusinessException{
+        return construirUsuarioDto( service.cadastrar(construirUsuario(usuarioDto)));
     }
     public UsuarioDto alterar(final UsuarioDto usuarioDto) throws BusinessException {
         return construirUsuarioDto( service.alterar(construirUsuario(usuarioDto)) );

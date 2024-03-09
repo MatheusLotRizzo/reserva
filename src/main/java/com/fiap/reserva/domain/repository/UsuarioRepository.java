@@ -1,11 +1,11 @@
 package com.fiap.reserva.domain.repository;
 
+import java.util.List;
+
 import com.fiap.reserva.domain.entity.Usuario;
 import com.fiap.reserva.domain.vo.EmailVo;
 
-import java.util.List;
-
-public interface UsuarioRepository {
+public interface UsuarioRepository{
 
     List<Usuario> buscarTodos(Usuario usuario);
     Usuario buscarPor(Usuario usuario);

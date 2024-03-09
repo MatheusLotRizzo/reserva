@@ -1,16 +1,16 @@
 package com.fiap.reserva.infra.jdbc.usuario;
 
-import com.fiap.reserva.domain.entity.Usuario;
-import com.fiap.reserva.domain.repository.UsuarioRepository;
-import com.fiap.reserva.domain.vo.EmailVo;
-import com.fiap.reserva.infra.exception.TechnicalException;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fiap.reserva.domain.entity.Usuario;
+import com.fiap.reserva.domain.repository.UsuarioRepository;
+import com.fiap.reserva.domain.vo.EmailVo;
+import com.fiap.reserva.infra.exception.TechnicalException;
 
 public class UsuarioRepositoryImpl implements UsuarioRepository {
 
@@ -87,7 +87,7 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
             ps.setString(i, usuario.getCelular());
             ps.execute();
             return usuario;
-        }  catch (SQLException e) {
+        } catch(SQLException e) {
             throw new TechnicalException(e);
         }
     }
