@@ -3,50 +3,39 @@ package com.fiap.reserva.infra.jdbc.restaurante;
 import com.fiap.reserva.domain.repository.EnderecoRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EnderecoVo;
-import com.fiap.reserva.infra.adapter.PrepararQuery;
-import com.fiap.reserva.infra.adapter.TipoDados;
 import com.fiap.reserva.infra.exception.TechnicalException;
-import javafx.util.Pair;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.*;
 
 public class EnderecoRepositoryImpl implements EnderecoRepository {
 
     final Connection connection;
-    private PrepararQuery queryExecutor;
-    private List<Pair<TipoDados, Object>> parametros;
 
     public EnderecoRepositoryImpl(Connection connection) {
         this.connection = connection;
-        this.parametros = new ArrayList<>();
     }
 
     @Override
     public void cadastrar(CnpjVo cnpj, EnderecoVo enderecoVo) {
         final StringBuilder query = new StringBuilder()
-                .append("INSERT INTO tb_endereco ")
-                .append("(cd_restaurante, ds_cep, ds_logradouro, ds_numero, ds_complemento, ds_bairro, ds_cidade, ds_estado) ")
+                .append("INSERT INTO tb_restaurante_endereco ")
+                .append("(cd_restaurante, cd_cep, ds_logradouro, ds_numero, ds_complemento, nm_bairro, nm_cidade, uf_estado) ")
                 .append("VALUES ")
                 .append("(?, ?, ?, ?, ?, ?, ?, ? ) ")
                 ;
 
-        queryExecutor = new PrepararQuery(Statement.RETURN_GENERATED_KEYS);
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, cnpj.getNumero());
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getCep());
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getLogradouro());
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getNumero());
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getComplemento());
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getBairro());
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getCidade());
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getEstado());
+        try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
+            int i = 1;
+            ps.setString(i++, cnpj.getNumero());
+            ps.setString(i++, enderecoVo.getCep());
+            ps.setString(i++, enderecoVo.getLogradouro());
+            ps.setString(i++, enderecoVo.getNumero());
+            ps.setString(i++, enderecoVo.getComplemento());
+            ps.setString(i++, enderecoVo.getBairro());
+            ps.setString(i++, enderecoVo.getCidade());
+            ps.setString(i++, enderecoVo.getEstado());
+            ps.execute();
 
-        try {
-            queryExecutor.construir(connection,query,parametros).execute();
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
@@ -55,29 +44,32 @@ public class EnderecoRepositoryImpl implements EnderecoRepository {
     @Override
     public void alterar(CnpjVo cnpj, EnderecoVo enderecoVo) {
         final StringBuilder query = new StringBuilder()
-                .append("UPDATE tb_endereco ")
-                .append("SET ds_cep = ?, ")
-                .append("ds_logradouro = ? ")
-                .append("ds_numero = ? ")
-                .append("ds_complemento = ? ")
-                .append("ds_bairro = ? ")
-                .append("ds_cidade = ? ")
-                .append("ds_estado = ? ")
+                .append("UPDATE tb_restaurante_endereco ")
+                .append("SET cd_cep = ?, ")
+                .append("ds_logradouro = ?, ")
+                .append("ds_numero = ?, ")
+                .append("ds_complemento = ?, ")
+                .append("nm_bairro = ?, ")
+                .append("nm_cidade = ?, ")
+                .append("uf_estado = ? ")
                 .append("WHERE cd_restaurante = ? ")
                 ;
 
-        queryExecutor = new PrepararQuery();
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, cnpj.getNumero());
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getCep());
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getLogradouro());
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getNumero());
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getComplemento());
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getBairro());
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getCidade());
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getEstado());
+        try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
+            int i = 1;
+            ps.setString(i++, enderecoVo.getCep());
+            ps.setString(i++, enderecoVo.getLogradouro());
+            ps.setString(i++, enderecoVo.getNumero());
+            ps.setString(i++, enderecoVo.getComplemento());
+            ps.setString(i++, enderecoVo.getBairro());
+            ps.setString(i++, enderecoVo.getCidade());
+            ps.setString(i++, enderecoVo.getEstado());
 
-        try {
-            queryExecutor.construir(connection,query,parametros).executeUpdate();
+            //WHERE
+            ps.setString(i++, cnpj.getNumero());
+
+            ps.executeUpdate();
+
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
@@ -86,33 +78,34 @@ public class EnderecoRepositoryImpl implements EnderecoRepository {
     @Override
     public EnderecoVo obter(CnpjVo cnpj, EnderecoVo enderecoVo) {
         final StringBuilder query = new StringBuilder()
-                .append("SELECT * FROM tb_endereco e ")
+                .append("SELECT * FROM tb_restaurante_endereco e ")
                 .append("WHERE e.cd_restaurante = ? ")
-                .append("AND e.ds_cep = ? ")
+                .append("AND e.cd_cep = ? ")
                 ;
+        try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
+            ps.setString(1, cnpj.getNumero());
+            ps.setString(2, enderecoVo.getCep());
 
-        queryExecutor = new PrepararQuery();
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, cnpj.getNumero());
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, enderecoVo.getCep());
-
-        try {
-            try (final ResultSet rs = queryExecutor.construir(connection,query,parametros).executeQuery()) {
-                return contruirEndereco(rs);
+            try (final ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return construirEndereco(rs);
+                }
             }
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
+        return null;
     }
 
-    protected EnderecoVo contruirEndereco(ResultSet rs) throws SQLException {
+    protected EnderecoVo construirEndereco(ResultSet rs) throws SQLException {
         return new EnderecoVo(
-            rs.getString("e.cep"),
+            rs.getString("e.cd_cep"),
             rs.getString("e.ds_logradouro"),
             rs.getString("e.ds_numero"),
             rs.getString("e.ds_complemento"),
-            rs.getString("e.ds_bairro"),
-            rs.getString("e.ds_cidade"),
-            rs.getString("e.ds_estado")
+            rs.getString("e.nm_bairro"),
+            rs.getString("e.nm_cidade"),
+            rs.getString("e.uf_estado")
         );
     }
 }

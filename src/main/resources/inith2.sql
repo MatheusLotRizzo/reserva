@@ -26,14 +26,15 @@ create table tb_restaurante (
     rowid bigint auto_increment,
     cd_cnpj varchar primary key,
     nm_restaurante varchar,
-    ic_email varchar,
-    ds_tipo_cozinha varchar
+    ds_tipo_cozinha varchar,
+    qt_capacidade_mesas int
 );
 
 create table tb_restaurante_endereco(
     rowid bigint auto_increment primary key,
     cd_restaurante varchar not null,
     cd_cep varchar,
+    ds_logradouro varchar,
     ds_numero varchar,
     ds_complemento varchar,
     nm_bairro varchar,

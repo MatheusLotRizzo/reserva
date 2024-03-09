@@ -3,47 +3,36 @@ package com.fiap.reserva.infra.jdbc.restaurante;
 import com.fiap.reserva.domain.entity.HorarioFuncionamento;
 import com.fiap.reserva.domain.repository.HorarioFuncionamentoRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
-import com.fiap.reserva.domain.vo.EnderecoVo;
-import com.fiap.reserva.infra.adapter.PrepararQuery;
-import com.fiap.reserva.infra.adapter.TipoDados;
 import com.fiap.reserva.infra.exception.TechnicalException;
-import javafx.util.Pair;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 public class HorarioFuncionamentoRepositoryImpl implements HorarioFuncionamentoRepository {
 
     final Connection connection;
-    private PrepararQuery queryExecutor;
-    private List<Pair<TipoDados, Object>> parametros;
 
     public HorarioFuncionamentoRepositoryImpl(Connection connection) {
         this.connection = connection;
-        this.parametros = new ArrayList<>();
     }
 
     @Override
     public void cadastrar(CnpjVo cnpj, HorarioFuncionamento horarioFuncionamento) {
         final StringBuilder query = new StringBuilder()
-                .append("INSERT INTO tb_horario_funcionamento ")
-                .append("(cd_restaurante, hr_inicial, hr_final) ")
+                .append("INSERT INTO tb_restaurante_horarios ")
+                .append("(cd_restaurante, hr_abertura, hr_fechamento) ")
                 .append("VALUES ")
                 .append("(?, ?, ?) ")
                 ;
 
-        queryExecutor = new PrepararQuery(Statement.RETURN_GENERATED_KEYS);
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, cnpj.getNumero());
-        queryExecutor.adicionaItem(parametros, TipoDados.DATE, horarioFuncionamento.getHorarioInicial());
-        queryExecutor.adicionaItem(parametros, TipoDados.DATE, horarioFuncionamento.getHorarioFinal());
+        try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
+            int i = 1;
+            ps.setString(i++, cnpj.getNumero());
+            ps.setTimestamp(i++, Timestamp.valueOf(horarioFuncionamento.getHorarioInicial()));
+            ps.setTimestamp(i++, Timestamp.valueOf(horarioFuncionamento.getHorarioFinal()));
+            ps.execute();
 
-        try {
-            queryExecutor.construir(connection,query,parametros).execute();
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
@@ -52,19 +41,22 @@ public class HorarioFuncionamentoRepositoryImpl implements HorarioFuncionamentoR
     @Override
     public void alterar(CnpjVo cnpj, HorarioFuncionamento horarioFuncionamento) {
         final StringBuilder query = new StringBuilder()
-                .append("UPDATE tb_horario_funcionamento ")
-                .append("SET hr_inicial = ?, ")
-                .append("hr_final = ? ")
+                .append("UPDATE tb_restaurante_horarios ")
+                .append("SET hr_abertura = ?, ")
+                .append("hr_fechamento = ? ")
                 .append("WHERE cd_restaurante = ? ")
                 ;
 
-        queryExecutor = new PrepararQuery();
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, cnpj.getNumero());
-        queryExecutor.adicionaItem(parametros, TipoDados.DATE, horarioFuncionamento.getHorarioInicial());
-        queryExecutor.adicionaItem(parametros, TipoDados.DATE, horarioFuncionamento.getHorarioFinal());
+        try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
+            int i = 1;
+            ps.setTimestamp(i++, Timestamp.valueOf(horarioFuncionamento.getHorarioInicial()));
+            ps.setTimestamp(i++, Timestamp.valueOf(horarioFuncionamento.getHorarioFinal()));
 
-        try {
-            queryExecutor.construir(connection,query,parametros).executeUpdate();
+            //WHERE
+            ps.setString(i++, cnpj.getNumero());
+
+            ps.executeUpdate();
+
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
@@ -73,30 +65,33 @@ public class HorarioFuncionamentoRepositoryImpl implements HorarioFuncionamentoR
     @Override
     public HorarioFuncionamento obter(CnpjVo cnpj, HorarioFuncionamento horarioFuncionamento) {
         final StringBuilder query = new StringBuilder()
-                .append("SELECT * FROM tb_horario_funcionamento hf ")
+                .append("SELECT * FROM tb_restaurante_horarios hf ")
                 .append("WHERE hf.cd_restaurante = ? ")
-                .append("AND hf.hr_inicial = ? ")
-                .append("AND hf.hr_final = ? ")
+                .append("AND hf.hr_abertura = ? ")
+                .append("AND hf.hr_fechamento = ? ")
                 ;
 
-        queryExecutor = new PrepararQuery();
-        queryExecutor.adicionaItem(parametros, TipoDados.STRING, cnpj.getNumero());
-        queryExecutor.adicionaItem(parametros, TipoDados.DATE, horarioFuncionamento.getHorarioInicial());
-        queryExecutor.adicionaItem(parametros, TipoDados.DATE, horarioFuncionamento.getHorarioFinal());
+        try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
+            int i = 1;
+            ps.setString(i++, cnpj.getNumero());
+            ps.setTimestamp(i++, Timestamp.valueOf(horarioFuncionamento.getHorarioInicial()));
+            ps.setTimestamp(i++, Timestamp.valueOf(horarioFuncionamento.getHorarioFinal()));
 
-        try {
-            try (final ResultSet rs = queryExecutor.construir(connection,query,parametros).executeQuery()) {
-                return contruirHorarioFuncionamento(rs);
+            try (final ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return construirHorarioFuncionamento(rs);
+                }
             }
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
+        return null;
     }
 
-    protected HorarioFuncionamento contruirHorarioFuncionamento(ResultSet rs) throws SQLException {
+    protected HorarioFuncionamento construirHorarioFuncionamento(ResultSet rs) throws SQLException {
         return new HorarioFuncionamento(
-                LocalDateTime.parse(rs.getString("hf.hr_inicial")),
-                LocalDateTime.parse(rs.getString("hf.hr_final"))
+                LocalDateTime.parse(rs.getString("hf.hr_abertura")),
+                LocalDateTime.parse(rs.getString("hf.hr_fechamento"))
         );
     }
 }
