@@ -24,7 +24,7 @@ public class AvaliacaoService {
         return new DeixarAvaliacao(repository).executar(avaliacao);
     }
 
-    public List<Avaliacao> getBuscarTodasRerservasRestaurantePeloCNPJ(final CnpjVo cnpj) throws BusinessException {
+    public List<Avaliacao> getBuscarTodasAvaliacoesRestaurantePeloCNPJ(final CnpjVo cnpj) throws BusinessException {
         final Restaurante restaurante = restauranteService.getBuscarPor(cnpj);
         return new BuscarAvaliacaoPorRestaurante(repository).executar(restaurante);
     }

@@ -17,7 +17,7 @@ public class AvaliacaoControllerApplication {
     }
 
     public List<AvaliacaoDto> getBuscarTodasRerservasRestaurantePeloCNPJ(final String cnpj) throws BusinessException{
-        List<Avaliacao> avaliacoes = service.getBuscarTodasRerservasRestaurantePeloCNPJ(new CnpjVo(cnpj));
+        List<Avaliacao> avaliacoes = service.getBuscarTodasAvaliacoesRestaurantePeloCNPJ(new CnpjVo(cnpj));
 
         return avaliacoes.stream()
                         .map(this::toAvaliacaoDto)
