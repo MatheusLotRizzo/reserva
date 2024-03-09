@@ -11,22 +11,26 @@ import com.fiap.reserva.domain.vo.EnderecoVo;
 
 public class EnderecoService {
 
-    private EnderecoRepository repository;
-    private RestauranteService restauranteService;
+    private final EnderecoRepository repository;
+    //NAO DEVERIA ESTAR AQUI 
+   // private final RestauranteService restauranteService;
 
-    public EnderecoService(EnderecoRepository repository) throws BusinessException {
-        this.repository = repository;
-    }
 
-    public void cadastrar(final CnpjVo cnpj, final EnderecoVo enderecoVo) throws BusinessException  {
+    public EnderecoService(EnderecoRepository repository) {
+		this.repository = repository;
+		//this.restauranteService = restauranteService;
+	}
+
+	public void cadastrar(final CnpjVo cnpj, final EnderecoVo enderecoVo) throws BusinessException  {
         new CadastrarEndereco(repository).executar(cnpj,enderecoVo);
     }
 
     public void alterar(final CnpjVo cnpj, final EnderecoVo enderecoVo) throws BusinessException  {
-        Restaurante restaurante = restauranteService.getBuscarPor(cnpj);
-        if (restaurante == null){
-            throw new BusinessException("Restaurante não existe");
-        }
+        //NAO OBRIGAÇAO DESSA SERVICE VALIDAR RESTAURANTE
+    	//Restaurante restaurante = restauranteService.getBuscarPor(cnpj);
+        //if (restaurante == null){
+        //    throw new BusinessException("Restaurante não existe");
+        //}
         new AlterarEndereco(repository).executar(cnpj,enderecoVo);
     }
 

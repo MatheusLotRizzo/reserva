@@ -170,7 +170,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
     public Restaurante cadastrar(Restaurante restaurante) {
         final StringBuilder query = new StringBuilder()
                 .append("INSERT INTO tb_restaurante ")
-                .append("(cd_cnpj, nm_restaurante, qt_capacidade_mesas, ds_tipocozinha) ")
+                .append("(cd_cnpj, nm_restaurante, qt_capacidade_mesas, ds_tipo_cozinha) ")
                 .append("VALUES ")
                 .append("(?, ?, ?, ?) ")
                 ;
@@ -196,7 +196,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
                 .append("UPDATE tb_restaurante ")
                 .append("SET nm_restaurante = ?, ")
                 .append("qt_capacidade_mesas = ?, ")
-                .append("ds_tipocozinha = ? ")
+                .append("ds_tipo_cozinha = ? ")
                 .append("WHERE cd_cnpj = ? ")
                 ;
 
@@ -241,7 +241,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
                 enderecoRepository.construirEndereco(rs),
                 horarioFuncionamentoRepository.construirHorarioFuncionamento(rs),
                 rs.getInt("re.qt_capacidade_mesas"),
-                TipoCozinha.valueOf(rs.getString("re.ds_tipocozinha"))
+                TipoCozinha.valueOf(rs.getString("re.ds_tipo_cozinha"))
         );
     }
 }

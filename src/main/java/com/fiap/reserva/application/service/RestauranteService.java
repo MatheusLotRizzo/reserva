@@ -12,13 +12,18 @@ import com.fiap.reserva.domain.vo.EnderecoVo;
 import java.util.List;
 
 public class RestauranteService {
-    private RestauranteRepository repository;
-    private EnderecoService enderecoService;
-    private HorarioSuncionamentoService horarioSuncionamentoService;
+    private final RestauranteRepository repository;
+    private final EnderecoService enderecoService;
+    private final HorarioSuncionamentoService horarioSuncionamentoService;
 
-    public RestauranteService(RestauranteRepository repository) {
-        this.repository = repository;
-    }
+    public RestauranteService(
+    		RestauranteRepository repository, 
+    		EnderecoService enderecoService,
+			HorarioSuncionamentoService horarioSuncionamentoService) {
+		this.repository = repository;
+		this.enderecoService = enderecoService;
+		this.horarioSuncionamentoService = horarioSuncionamentoService;
+	}
 
     public Restaurante cadastrar(final Restaurante restaurante) throws BusinessException {
         Restaurante restauranteRetorno = new CadastrarRestaurante(repository).executar(restaurante);
@@ -33,7 +38,7 @@ public class RestauranteService {
         return new AlterarRestaurante(repository).executar(restaurante);
     }
 
-    public void excluir(final CnpjVo cnpj) throws BusinessException{
+	public void excluir(final CnpjVo cnpj) throws BusinessException{
         new ExcluirRestaurante(repository).executar(cnpj);
     }
 

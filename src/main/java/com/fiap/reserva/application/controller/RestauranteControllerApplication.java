@@ -14,9 +14,13 @@ import java.util.stream.Collectors;
 
 public class RestauranteControllerApplication {
 
-    private RestauranteService service;
+    private final RestauranteService service;
 
-    public RestauranteDto cadastrar(final RestauranteDto restauranteDto) throws BusinessException{
+    public RestauranteControllerApplication(RestauranteService service) {
+		this.service = service;
+	}
+
+	public RestauranteDto cadastrar(final RestauranteDto restauranteDto) throws BusinessException{
         return construirRestauranteDto(service.cadastrar(construirRestaurante(restauranteDto)));
     }
 
@@ -63,7 +67,7 @@ public class RestauranteControllerApplication {
                 enderecoVo,
                 horarioFuncionamento,
                 restauranteDto.capacidade(),
-                TipoCozinha.valueOf(restauranteDto.tipoCozinha()));
+                restauranteDto.tipoCozinha());
     }
 
     private RestauranteDto construirRestauranteDto(final Restaurante restaurante){

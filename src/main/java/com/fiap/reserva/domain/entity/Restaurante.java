@@ -101,7 +101,7 @@ public class Restaurante {
                 this.getCnpjString(),
                 this.nome,
                 this.capacidadeMesas,
-                this.tipoCozinha.toString(),
+                this.tipoCozinha,
                 horarioFuncionamentoDtos,
                 enderecoDto
         );
