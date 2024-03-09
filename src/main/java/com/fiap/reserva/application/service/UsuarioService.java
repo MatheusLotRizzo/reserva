@@ -19,8 +19,8 @@ public class UsuarioService {
     }
 
     public Usuario cadastrar(final Usuario usuario) throws BusinessException{
-        final Usuario usuarioBuscabanco = new BuscarUsuario(repository).getUsuario(usuario);
-		if(usuario.equals(usuarioBuscabanco)){
+        final Usuario usuarioBuscaBanco = new BuscarUsuario(repository).getUsuario(usuario);
+		if(usuario.equals(usuarioBuscaBanco)){
             throw new BusinessException("Usuário não pode ser cadastrado, pois já existe");
         }
         return new CadastrarUsuario(repository).executar(usuario);
