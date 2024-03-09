@@ -66,7 +66,8 @@ class AvaliacaoServiceTest {
         ) ;
 
         when(restauranteService.getBuscarPor(cnpj)).thenReturn(restaurante);
-        when(service.getBuscarTodasAvaliacoesRestaurantePeloCNPJ(cnpj)).thenReturn(Arrays.asList(avaliacao1,avaliacao2));
+        when(repository.buscarTodasPor(any(Restaurante.class)))
+                .thenReturn(Arrays.asList(avaliacao1,avaliacao2));
 
         // Act
         final List<Avaliacao> avaliacoesArmazenadas = service.getBuscarTodasAvaliacoesRestaurantePeloCNPJ(cnpj);
@@ -85,7 +86,7 @@ class AvaliacaoServiceTest {
         final CnpjVo cnpj = new CnpjVo("94690811000105");
         final Restaurante restauranteMock = mock(Restaurante.class);
         when(restauranteService.getBuscarPor(cnpj)).thenReturn(restauranteMock);
-        when(service.getBuscarTodasAvaliacoesRestaurantePeloCNPJ(cnpj)).thenReturn(null);
+        when(repository.buscarTodasPor(any(Restaurante.class))).thenReturn(null);
 
         // Act
         final List<Avaliacao> avaliacoesArmazenadas = service.getBuscarTodasAvaliacoesRestaurantePeloCNPJ(cnpj);
@@ -103,7 +104,7 @@ class AvaliacaoServiceTest {
                 "sujinho restaurante melhor experiencia em são paulo"
         ) ;
 
-        when(service.avaliar(avaliacao)).thenReturn(avaliacao);
+        when(repository.avaliar(avaliacao)).thenReturn(avaliacao);
         //Act
         final Avaliacao avaliacaoArmazenada = service.avaliar(avaliacao);
 
