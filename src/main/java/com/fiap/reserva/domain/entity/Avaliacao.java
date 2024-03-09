@@ -1,6 +1,6 @@
 package com.fiap.reserva.domain.entity;
 
-import com.fiap.spring.Controller.Dto.AvaliacaoDto;
+import com.fiap.reserva.domain.exception.BusinessException;
 
 public class Avaliacao {
     private Usuario usuario;
@@ -9,7 +9,24 @@ public class Avaliacao {
 
     private String comentario;
 
-    public Avaliacao(Usuario usuario, Restaurante restaurante, int pontuacao, String comentario) {
+    public Avaliacao(Usuario usuario, Restaurante restaurante, int pontuacao, String comentario) throws BusinessException {
+
+        if (usuario == null){
+            throw new BusinessException("Usuario obrigatório");
+        }
+
+        if (restaurante == null ){
+            throw new BusinessException("Restaurante obrigatório");
+        }
+
+        if (comentario == null || comentario.isEmpty()){
+            throw new BusinessException("Comentário é obrigatório");
+        }
+
+        if (!(pontuacao >= 0 && pontuacao <= 5)){
+            throw new BusinessException("Valor inválido para a pontuação. É considerado valor válido os valores entre 0 e 5");
+        }
+
         this.usuario = usuario;
         this.restaurante = restaurante;
         this.pontuacao = pontuacao;
@@ -32,12 +49,4 @@ public class Avaliacao {
         return comentario;
     }
 
-    public AvaliacaoDto toDto(){
-        return new AvaliacaoDto(
-                usuario.getEmailString(),
-                restaurante.getCnpjString(),
-                pontuacao,
-                comentario
-        );
-    }
 }

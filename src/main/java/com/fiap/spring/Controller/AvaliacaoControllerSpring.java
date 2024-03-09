@@ -51,7 +51,7 @@ public class AvaliacaoControllerSpring {
                                                     String cnpj) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(
-                    avaliacaoController.getBuscarTodos(cnpj)
+                    avaliacaoController.getBuscarTodasRerservasRestaurantePeloCNPJ(cnpj)
             );
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

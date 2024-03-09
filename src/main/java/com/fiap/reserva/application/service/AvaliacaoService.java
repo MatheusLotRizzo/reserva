@@ -13,18 +13,19 @@ import java.util.List;
 public class AvaliacaoService {
 
     private final AvaliacaoRepository repository;
-    private RestauranteService restauranteService;
+    private final RestauranteService restauranteService;
 
-    public AvaliacaoService(AvaliacaoRepository avaliacaoRepository) {
+    public AvaliacaoService(AvaliacaoRepository avaliacaoRepository, RestauranteService restauranteService) {
         this.repository = avaliacaoRepository;
+        this.restauranteService = restauranteService;
     }
 
     public Avaliacao avaliar(final Avaliacao avaliacao) throws BusinessException{
         return new DeixarAvaliacao(repository).executar(avaliacao);
     }
 
-    public List<Avaliacao> getBuscarTodos(final CnpjVo cnpj) throws BusinessException {
+    public List<Avaliacao> getBuscarTodasRerservasRestaurantePeloCNPJ(final CnpjVo cnpj) throws BusinessException {
         final Restaurante restaurante = restauranteService.getBuscarPor(cnpj);
-        return new BuscarAvaliacaoPorRestaurante(repository).todasAvaliacoes(restaurante);
+        return new BuscarAvaliacaoPorRestaurante(repository).executar(restaurante);
     }
 }

@@ -15,7 +15,6 @@ public class DeixarAvaliacao {
         if(avaliacao == null){
             throw new BusinessException("Avaliacao é obrigatorio");
         }
-
         return repository.avaliar(avaliacao);
     }
 }
