@@ -11,10 +11,14 @@ import com.fiap.reserva.domain.vo.EmailVo;
 import com.fiap.spring.Controller.Dto.ReservaDto;
 
 public class ReservaControllerApplication {
-    private ReservaService service;
+    private final ReservaService service;
 
-    public ReservaDto cadastrarReserva(ReservaDto reservaDto)throws BusinessException{
-        final Reserva reservaEntity = service.cadastrarReserva(reservaDto.toEntity());
+    public ReservaControllerApplication(ReservaService service) {
+		this.service = service;
+	}
+
+	public ReservaDto criarReserva(ReservaDto reservaDto)throws BusinessException{
+        final Reserva reservaEntity = service.criarReserva(reservaDto.toEntity());
         
         return toReservaDTO(reservaEntity);
     }
@@ -55,10 +59,6 @@ public class ReservaControllerApplication {
         return reservas.stream()
                 .map(this::toReservaDTO)
                 .collect(Collectors.toList());
-    }
-
-    public ReservaDto getObter(final ReservaDto reservaDto) throws BusinessException {
-        return toReservaDTO(service.getObter(reservaDto.toEntity()));
     }
 
     private ReservaDto toReservaDTO(final Reserva reservaEntity) {
