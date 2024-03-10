@@ -1,15 +1,18 @@
 package com.fiap.reserva.infra.jdbc.restaurante;
 
-import com.fiap.reserva.domain.entity.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fiap.reserva.domain.entity.Restaurante;
+import com.fiap.reserva.domain.entity.TipoCozinha;
 import com.fiap.reserva.domain.repository.RestauranteRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EnderecoVo;
 import com.fiap.reserva.infra.exception.TechnicalException;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 public class RestauranteRepositoryImpl implements RestauranteRepository {
 

@@ -1,11 +1,10 @@
 package com.fiap.reserva.application.usecase.usuario;
 
+import java.util.List;
+
 import com.fiap.reserva.domain.entity.Usuario;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.UsuarioRepository;
-import com.fiap.reserva.domain.vo.EmailVo;
-
-import java.util.List;
 
 public class BuscarUsuario {
     private final UsuarioRepository repository;

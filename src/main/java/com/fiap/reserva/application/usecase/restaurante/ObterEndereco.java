@@ -5,8 +5,6 @@ import com.fiap.reserva.domain.repository.EnderecoRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EnderecoVo;
 
-import java.util.List;
-
 public class ObterEndereco {
 
     private final EnderecoRepository repository;

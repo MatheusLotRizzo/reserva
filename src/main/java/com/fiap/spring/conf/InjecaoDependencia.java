@@ -19,7 +19,6 @@ import com.fiap.reserva.domain.repository.EnderecoRepository;
 import com.fiap.reserva.domain.repository.HorarioFuncionamentoRepository;
 import com.fiap.reserva.domain.repository.RestauranteRepository;
 import com.fiap.reserva.domain.repository.UsuarioRepository;
-import com.fiap.reserva.infra.exception.TechnicalException;
 import com.fiap.reserva.infra.jdbc.restaurante.EnderecoRepositoryImpl;
 import com.fiap.reserva.infra.jdbc.restaurante.HorarioFuncionamentoRepositoryImpl;
 import com.fiap.reserva.infra.jdbc.restaurante.RestauranteRepositoryImpl;

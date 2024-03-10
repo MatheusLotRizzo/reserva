@@ -4,7 +4,6 @@ import com.fiap.reserva.application.usecase.restaurante.AlterarHorarioFuncioname
 import com.fiap.reserva.application.usecase.restaurante.CadastrarHorarioFuncionamento;
 import com.fiap.reserva.application.usecase.restaurante.ObterHorarioFuncionamento;
 import com.fiap.reserva.domain.entity.HorarioFuncionamento;
-import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.HorarioFuncionamentoRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
