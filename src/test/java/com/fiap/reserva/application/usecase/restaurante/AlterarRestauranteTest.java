@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,7 +34,7 @@ class AlterarRestauranteTest {
     void setUp() {
         CnpjVo cnpj = new CnpjVo("12345678901234");
         EnderecoVo endereco = new EnderecoVo("05020-000", "Rua Exemplo", "123", "Apto 1", "Bairro", "Cidade", "Estado");
-        HorarioFuncionamento horarioFuncionamento = new HorarioFuncionamento(LocalDateTime.now(), LocalDateTime.now().plusHours(8));
+        HorarioFuncionamento horarioFuncionamento = new HorarioFuncionamento(DayOfWeek.MONDAY,LocalDateTime.now(), LocalDateTime.now().plusHours(8));
         restauranteValido = new Restaurante(cnpj, "Restaurante Teste", endereco, horarioFuncionamento, 100, TipoCozinha.ITALIANA);
 
         // Marque esta simulação como leniente se for necessária apenas em alguns testes

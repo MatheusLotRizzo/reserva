@@ -3,7 +3,6 @@ package com.fiap.reserva.application.service;
 import com.fiap.reserva.application.usecase.restaurante.AlterarEndereco;
 import com.fiap.reserva.application.usecase.restaurante.CadastrarEndereco;
 import com.fiap.reserva.application.usecase.restaurante.ObterEndereco;
-import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.EnderecoRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;

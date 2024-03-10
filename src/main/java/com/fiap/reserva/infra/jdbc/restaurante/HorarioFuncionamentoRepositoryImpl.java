@@ -1,13 +1,17 @@
 package com.fiap.reserva.infra.jdbc.restaurante;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+
 import com.fiap.reserva.domain.entity.HorarioFuncionamento;
 import com.fiap.reserva.domain.repository.HorarioFuncionamentoRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.infra.exception.TechnicalException;
-
-import java.sql.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 public class HorarioFuncionamentoRepositoryImpl implements HorarioFuncionamentoRepository {
 
@@ -90,8 +94,9 @@ public class HorarioFuncionamentoRepositoryImpl implements HorarioFuncionamentoR
 
     protected HorarioFuncionamento construirHorarioFuncionamento(ResultSet rs) throws SQLException {
         return new HorarioFuncionamento(
-                LocalDateTime.parse(rs.getString("hf.hr_abertura")),
-                LocalDateTime.parse(rs.getString("hf.hr_fechamento"))
+    		DayOfWeek.valueOf(rs.getString("hf.nm_dia_semana")),
+            LocalDateTime.parse(rs.getString("hf.hr_abertura")),
+            LocalDateTime.parse(rs.getString("hf.hr_fechamento"))
         );
     }
 }

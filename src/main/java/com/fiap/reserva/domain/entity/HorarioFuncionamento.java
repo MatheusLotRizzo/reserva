@@ -1,29 +1,38 @@
 package com.fiap.reserva.domain.entity;
 
 import com.fiap.spring.Controller.Dto.HorarioFuncionamentoDto;
+
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
 public class HorarioFuncionamento {
-    private LocalDateTime horarioInicial;
-    private LocalDateTime horarioFinal;
+	private final DayOfWeek diaDaSemana;
+    private final LocalDateTime horarioInicial;
+    private final LocalDateTime horarioFinal;
 
-    public HorarioFuncionamento(LocalDateTime horarioInicial, LocalDateTime horarioFinal) {
-        this.horarioInicial = horarioInicial;
-        this.horarioFinal = horarioFinal;
-    }
+    public HorarioFuncionamento(DayOfWeek diaDaSemana, LocalDateTime horarioInicial, LocalDateTime horarioFinal) {
+		this.diaDaSemana = diaDaSemana;
+		this.horarioInicial = horarioInicial;
+		this.horarioFinal = horarioFinal;
+	}
 
-    public LocalDateTime getHorarioInicial() {
+	public LocalDateTime getHorarioInicial() {
         return horarioInicial;
     }
 
     public LocalDateTime getHorarioFinal() {
         return horarioFinal;
     }
+    
+    public DayOfWeek getDiaDaSemana() {
+		return diaDaSemana;
+	}
 
-    public HorarioFuncionamentoDto toDto(){
+	public HorarioFuncionamentoDto toDto(){
         return new HorarioFuncionamentoDto(
-                this.horarioInicial,
-                this.horarioFinal
+    		this.diaDaSemana,
+            this.horarioInicial,
+            this.horarioFinal
         );
     }
 }

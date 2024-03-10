@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -33,7 +34,7 @@ class CadastrarHorarioFuncionamentoTest {
     @Test
     void executarSucesso() throws BusinessException {
         CnpjVo cnpj = new CnpjVo("12345678901234");
-        HorarioFuncionamento horarioFuncionamento = new HorarioFuncionamento(LocalDateTime.now(), LocalDateTime.now().plusHours(8));
+        HorarioFuncionamento horarioFuncionamento = new HorarioFuncionamento(DayOfWeek.MONDAY, LocalDateTime.now(), LocalDateTime.now().plusHours(8));
 
         doNothing().when(horarioFuncionamentoRepository).cadastrar(any(CnpjVo.class), any(HorarioFuncionamento.class));
 

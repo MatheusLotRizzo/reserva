@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.*;
@@ -34,7 +35,7 @@ class AlterarHorarioFuncionamentoTest {
         // Exemplo de horários inicial e final para testar
         LocalDateTime horarioInicial = LocalDateTime.of(2023, 10, 1, 9, 0);
         LocalDateTime horarioFinal = LocalDateTime.of(2023, 10, 1, 18, 0);
-        horarioFuncionamentoValido = new HorarioFuncionamento(horarioInicial, horarioFinal);
+        horarioFuncionamentoValido = new HorarioFuncionamento(DayOfWeek.MONDAY,horarioInicial, horarioFinal);
     }
 
     @Test

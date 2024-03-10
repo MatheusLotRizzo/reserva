@@ -60,7 +60,11 @@ public class RestauranteControllerApplication {
 
     private Restaurante construirRestaurante(final RestauranteDto restauranteDto) {
         EnderecoVo enderecoVo = new EnderecoVo(restauranteDto.endereco().cep(), restauranteDto.endereco().logradouro(), restauranteDto.endereco().numero(), restauranteDto.endereco().complemento(), restauranteDto.endereco().bairro(), restauranteDto.endereco().cidade(), restauranteDto.endereco().estado());
-        HorarioFuncionamento horarioFuncionamento = new HorarioFuncionamento(restauranteDto.horarioFuncionamento().horarioInicial(), restauranteDto.horarioFuncionamento().horarioFinal());
+        HorarioFuncionamento horarioFuncionamento = new HorarioFuncionamento(
+    		restauranteDto.horarioFuncionamento().diaDaSemana(), 
+    		restauranteDto.horarioFuncionamento().horarioInicial(), 
+    		restauranteDto.horarioFuncionamento().horarioFinal()
+		);
 
         return new Restaurante(new CnpjVo(restauranteDto.cnpj()),
                 restauranteDto.nome(),
