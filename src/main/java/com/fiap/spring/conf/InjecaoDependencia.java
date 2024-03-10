@@ -1,6 +1,5 @@
 package com.fiap.spring.conf;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
@@ -9,16 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.fiap.reserva.application.controller.ReservaControllerApplication;
 import com.fiap.reserva.application.controller.RestauranteControllerApplication;
 import com.fiap.reserva.application.controller.UsuarioControllerApplication;
 import com.fiap.reserva.application.service.EnderecoService;
 import com.fiap.reserva.application.service.HorarioSuncionamentoService;
+import com.fiap.reserva.application.service.ReservaService;
 import com.fiap.reserva.application.service.RestauranteService;
 import com.fiap.reserva.application.service.UsuarioService;
 import com.fiap.reserva.domain.repository.EnderecoRepository;
 import com.fiap.reserva.domain.repository.HorarioFuncionamentoRepository;
+import com.fiap.reserva.domain.repository.ReservaRepository;
 import com.fiap.reserva.domain.repository.RestauranteRepository;
 import com.fiap.reserva.domain.repository.UsuarioRepository;
+import com.fiap.reserva.infra.jdbc.reserva.ReservaRepositoryImpl;
 import com.fiap.reserva.infra.jdbc.restaurante.EnderecoRepositoryImpl;
 import com.fiap.reserva.infra.jdbc.restaurante.HorarioFuncionamentoRepositoryImpl;
 import com.fiap.reserva.infra.jdbc.restaurante.RestauranteRepositoryImpl;
@@ -27,15 +30,10 @@ import com.fiap.reserva.infra.jdbc.usuario.UsuarioRepositoryImpl;
 @Configuration
 public class InjecaoDependencia {
 	
-	@Bean
-	public Connection getConnection(@Autowired DataSource dataSource) throws SQLException {
-		return dataSource.getConnection();
-	}
-	
 	//USUARIO
 	@Bean
-	public UsuarioRepository getUsuarioRepository(@Autowired Connection connection){
-		return new UsuarioRepositoryImpl(connection);
+	public UsuarioRepository getUsuarioRepository(@Autowired DataSource dataSource) throws SQLException{
+		return new UsuarioRepositoryImpl(dataSource.getConnection());
 	}
 	
 	@Bean
@@ -50,8 +48,8 @@ public class InjecaoDependencia {
 	
 	//RESTAURANTE
 	@Bean
-	public RestauranteRepository getRestauranteRepository(@Autowired Connection connection) {
-		return new RestauranteRepositoryImpl(connection);
+	public RestauranteRepository getRestauranteRepository(@Autowired DataSource dataSource) throws SQLException {
+		return new RestauranteRepositoryImpl(dataSource.getConnection());
 	}
 	
 	@Bean
@@ -70,8 +68,8 @@ public class InjecaoDependencia {
 	
 	//ENDERECO
 	@Bean
-	public EnderecoRepository getEnderecoRepository(@Autowired Connection connection) {
-		return new EnderecoRepositoryImpl(connection);
+	public EnderecoRepository getEnderecoRepository(@Autowired DataSource dataSource) throws SQLException {
+		return new EnderecoRepositoryImpl(dataSource.getConnection());
 	}
 	
 	@Bean
@@ -80,13 +78,33 @@ public class InjecaoDependencia {
 	}
 	
 	@Bean
-	public HorarioFuncionamentoRepository getHorarioFuncionamentoRepository(@Autowired Connection connection) {
-		return new HorarioFuncionamentoRepositoryImpl(connection);
+	public HorarioFuncionamentoRepository getHorarioFuncionamentoRepository(@Autowired DataSource dataSource) throws SQLException {
+		return new HorarioFuncionamentoRepositoryImpl(dataSource.getConnection());
 	}
 	
 	@Bean
 	public HorarioSuncionamentoService getHorarioSuncionamentoService(@Autowired HorarioFuncionamentoRepository repository) {
 		return new HorarioSuncionamentoService(repository);
+	}
+	
+	//RESERVA
+	@Bean
+	public ReservaRepository getReservaRepository(@Autowired DataSource dataSource) throws SQLException {
+		return new ReservaRepositoryImpl(dataSource.getConnection());
+	}
+	
+	@Bean
+	public ReservaService getReservaService(
+		@Autowired ReservaRepository repository, 
+		@Autowired RestauranteService restauranteService, 
+		@Autowired UsuarioService usuarioService
+	) {
+		return new ReservaService(repository, restauranteService, usuarioService);
+	}
+	
+	@Bean
+	public ReservaControllerApplication getReservaControllerApplication(@Autowired ReservaService service) {
+		return new ReservaControllerApplication(service);
 	}
 	
 }
