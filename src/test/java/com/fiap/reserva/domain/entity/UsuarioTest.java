@@ -1,42 +1,45 @@
 package com.fiap.reserva.domain.entity;
 
-import com.fiap.reserva.domain.exception.BusinessException;
-import com.fiap.reserva.domain.vo.EmailVo;
-import com.fiap.spring.Controller.Dto.UsuarioDto;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+import com.fiap.reserva.domain.exception.BusinessException;
+import com.fiap.reserva.domain.vo.EmailVo;
+import com.fiap.spring.Controller.Dto.UsuarioDto;
 
 class UsuarioTest {
 
     @Test
     void naoDeveCriarUsuarioComEmailVazio() {
-        Throwable throwable = assertThrows(IllegalArgumentException.class, () -> new Usuario(null));
+        Throwable throwable = assertThrows(BusinessException.class, () -> new Usuario(null));
         assertEquals("E-mail inválido", throwable.getMessage());
 
-        throwable = assertThrows(IllegalArgumentException.class, () -> new Usuario(""));
+        throwable = assertThrows(BusinessException.class, () -> new Usuario(""));
         assertEquals("E-mail inválido", throwable.getMessage());
     }
 
     @Test
     void naoDeveCriarUsuarioComEmailTendoApenasComCaracteresEspeciais(){
-        Throwable throwable = assertThrows(IllegalArgumentException.class, () -> new Usuario("_________@.com.br"));
+        Throwable throwable = assertThrows(BusinessException.class, () -> new Usuario("_________@.com.br"));
         assertEquals("E-mail inválido", throwable.getMessage());
 
-        throwable = assertThrows(IllegalArgumentException.class, () -> new Usuario("---------@.com.br"));
+        throwable = assertThrows(BusinessException.class, () -> new Usuario("---------@.com.br"));
         assertEquals("E-mail inválido", throwable.getMessage());
 
-        throwable = assertThrows(IllegalArgumentException.class, () -> new Usuario("@.com.br"));
+        throwable = assertThrows(BusinessException.class, () -> new Usuario("@.com.br"));
         assertEquals("E-mail inválido", throwable.getMessage());
 
-        throwable = assertThrows(IllegalArgumentException.class, () -> new Usuario("@@@@.com.br"));
+        throwable = assertThrows(BusinessException.class, () -> new Usuario("@@@@.com.br"));
         assertEquals("E-mail inválido", throwable.getMessage());
     }
 
     @Test
-    void deveCriarUsuarioComEmailValido() {
+    void deveCriarUsuarioComEmailValido() throws BusinessException {
         Usuario usuario = new Usuario("matheus@gmail.com");
         assertNotNull(usuario);
 
@@ -124,7 +127,7 @@ class UsuarioTest {
 
     @Test
     void naoDeveRetornarUsuarioDtoDevidoFaltaDeEmail(){
-        Throwable throwable = assertThrows(IllegalArgumentException.class, () -> new Usuario("Matheus", "", "11999999999").toDto());
+        Throwable throwable = assertThrows(BusinessException.class, () -> new Usuario("Matheus", "", "11999999999").toDto());
         assertEquals("E-mail inválido", throwable.getMessage());
     }
 
@@ -135,14 +138,14 @@ class UsuarioTest {
     }
 
     @Test
-    void deveRetornarEmailStringCorretamente(){
+    void deveRetornarEmailStringCorretamente() throws BusinessException{
         String email = "matheus@teste.com";
         Usuario usuario = new Usuario(email);
         assertEquals(email, usuario.getEmailString());
     }
 
     @Test
-    void deveRetornarEmailVoCorretamente(){
+    void deveRetornarEmailVoCorretamente() throws BusinessException{
         EmailVo emailVo = new EmailVo("matheus@teste.com");
         Usuario usuario = new Usuario(emailVo.getEndereco());
         assertEquals(true, emailVo.equals(usuario.getEmail()));

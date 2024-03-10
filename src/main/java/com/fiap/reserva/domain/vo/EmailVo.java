@@ -2,13 +2,15 @@ package com.fiap.reserva.domain.vo;
 
 import java.util.Objects;
 
+import com.fiap.reserva.domain.exception.BusinessException;
+
 public class EmailVo {
     private final String regex = "^[\\w.]+@[\\w.]+\\.[a-zA-Z]+(\\.[a-zA-Z])?+$";
     private final String endereco;
 
-    public EmailVo(String endereco) {
+    public EmailVo(String endereco) throws BusinessException {
         if(endereco == null || !endereco.matches(regex) || endereco.split("@")[0].matches("^[^a-zA-Z0-9]*$")){
-            throw new IllegalArgumentException("E-mail inválido");
+            throw new BusinessException("E-mail inválido");
         }
         this.endereco = endereco;
     }

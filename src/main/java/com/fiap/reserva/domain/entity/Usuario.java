@@ -28,7 +28,7 @@ public class Usuario {
         this(nome, new EmailVo(email), celular);
     }
 
-    public Usuario(String email){
+    public Usuario(String email) throws BusinessException{
         this.nome = null;
         this.email = new EmailVo(email);
         this.celular = null;
