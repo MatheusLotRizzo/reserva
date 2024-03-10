@@ -48,7 +48,7 @@ class ReservaServiceTest {
 	
 	@Test
 	void naoDeveCadastrarReservaSeNaoInformada() throws BusinessException {
-		final Throwable throwable = assertThrows(BusinessException.class, () -> service.cadastrarReserva(null));
+		final Throwable throwable = assertThrows(BusinessException.class, () -> service.criarReserva(null));
 		assertEquals("Informe uma reserva para ser cadastrada", throwable.getMessage());
 	}
 	
@@ -60,7 +60,7 @@ class ReservaServiceTest {
 			when(repository.buscarTodasPor(any(Restaurante.class))).thenReturn(reservas);
 			when(restauranteService.obterLocacaoMaxRestaurante(any(Restaurante.class))).thenReturn(0);
 				
-			service.cadastrarReserva(rDisponivel);
+			service.criarReserva(rDisponivel);
 			
 		});
 		
@@ -73,9 +73,9 @@ class ReservaServiceTest {
 		final Reserva rDisponivel  = reservas.stream().filter(r -> r.getSituacao() == SituacaoReserva.DISPONIVEL).findFirst().get();
 		when(repository.buscarTodasPor(any(Restaurante.class))).thenReturn(reservas);
 		when(repository.criar(rDisponivel)).thenReturn(rDisponivel);
-		when(restauranteService.obterLocacaoMaxRestaurante(any(Restaurante.class))).thenReturn(1);
+		when(restauranteService.obterLocacaoMaxRestaurante(any(Restaurante.class))).thenReturn(2);
 			
-		final Reserva retorno = service.cadastrarReserva(rDisponivel);
+		final Reserva retorno = service.criarReserva(rDisponivel);
 		
 		verify(repository).buscarTodasPor(any(Restaurante.class));
 		verify(repository).criar(rDisponivel);

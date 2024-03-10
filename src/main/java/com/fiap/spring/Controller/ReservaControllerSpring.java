@@ -1,5 +1,6 @@
 package com.fiap.spring.Controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,10 +29,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/reserva")
 public class ReservaControllerSpring {
-
+	
+	@Autowired
     private ReservaControllerApplication reservaController;
 
-    @Operation(summary = "Cria uma reserva")
+	@Operation(summary = "Cria uma reserva")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Sucesso",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ReservaDto.class, description = "Reserva")) }),
@@ -41,9 +43,14 @@ public class ReservaControllerSpring {
     @PostMapping
     public ResponseEntity<?> criarReserva(@RequestBody ReservaDto reservaDto){
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(reservaController.cadastrarReserva(reservaDto));
+            return ResponseEntity.status(HttpStatus.CREATED)
+            		.body(reservaController.criarReserva(reservaDto));
+        } catch(BusinessException ex) {
+        	return  ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        				.body(MessageErrorHandler.create(ex.getMessage()));
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+    				.body(MessageErrorHandler.create(ex.getMessage()));
         }
     }
 

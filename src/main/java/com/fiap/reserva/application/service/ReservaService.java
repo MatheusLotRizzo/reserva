@@ -26,24 +26,29 @@ public class ReservaService {
 		this.usuarioService = usuarioService;
 	}
 
-    public Reserva cadastrarReserva(final Reserva reserva) throws BusinessException{
+    public Reserva criarReserva(final Reserva reserva) throws BusinessException{
     	if(reserva == null) {
     		throw new BusinessException("Informe uma reserva para ser cadastrada");
     	}
     	
-    	final Stream<Reserva> reservasDoRestaurante = new BuscarReservaRestaurante(repository)
+    	validarSeRestaurantePossuiMesasDisponiveis(reserva);
+        
+    	return new CadastrarReserva(repository).executar(reserva);
+    }
+
+	private void validarSeRestaurantePossuiMesasDisponiveis(final Reserva reserva) throws BusinessException {
+		final Stream<Reserva> reservasDoRestaurante = new BuscarReservaRestaurante(repository)
 			.executar(reserva.getRestaurante())
 			.stream()
 			.filter(r -> r.getSituacao() == SituacaoReserva.RESERVADO);
     	
         final long totalReservasRestaurante = reservasDoRestaurante.count();
-    	int lotacaoRestaurante = restauranteService.obterLocacaoMaxRestaurante(reserva.getRestaurante());
+    	final int lotacaoRestaurante = restauranteService.obterLocacaoMaxRestaurante(reserva.getRestaurante());
         
-        if ( (lotacaoRestaurante - totalReservasRestaurante) < RESTAURANTE_SEM_RESERVAS_DISPONIVEIS){
+        if (lotacaoRestaurante == 0 ||((lotacaoRestaurante - totalReservasRestaurante) <= RESTAURANTE_SEM_RESERVAS_DISPONIVEIS)){
             throw new BusinessException("Não existe disponibilidade para este dia");
         }
-        return new CadastrarReserva(repository).executar(reserva);
-    }
+	}
 
 	public Reserva alterarReserva(final Reserva reserva) throws BusinessException{
         return new AlterarReservaRestaurante(repository).executar(reserva);
@@ -55,10 +60,6 @@ public class ReservaService {
     
     public void concluirReserva(final Reserva reserva) throws BusinessException{
         new ConcluirReservaRestaurante(repository).executar(reserva);
-    }
-
-    public void excluirReserva(final Reserva reserva) throws BusinessException{
-        new ExcluirReservaRestaurante(repository).executar(reserva);
     }
 
     public List<Reserva> getBuscarTodasReservaDoUsuarioPeloEmail(final EmailVo email) throws BusinessException{
@@ -74,9 +75,4 @@ public class ReservaService {
     public List<Reserva> getBuscarTodasRerservas(final Reserva reserva) throws BusinessException{
         return new BuscarReserva(repository).getTodasReserva(reserva);
     }
-
-    public Reserva getObter(final Reserva reserva) throws BusinessException{
-        return new BuscarReserva(repository).getReserva(reserva);
-    }
-
 }
