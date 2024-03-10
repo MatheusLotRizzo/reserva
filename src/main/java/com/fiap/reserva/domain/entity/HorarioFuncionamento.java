@@ -1,7 +1,5 @@
 package com.fiap.reserva.domain.entity;
 
-import com.fiap.spring.Controller.Dto.HorarioFuncionamentoDto;
-
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
@@ -27,12 +25,4 @@ public class HorarioFuncionamento {
     public DayOfWeek getDiaDaSemana() {
 		return diaDaSemana;
 	}
-
-	public HorarioFuncionamentoDto toDto(){
-        return new HorarioFuncionamentoDto(
-    		this.diaDaSemana,
-            this.horarioInicial,
-            this.horarioFinal
-        );
-    }
 }

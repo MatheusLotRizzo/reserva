@@ -1,32 +1,29 @@
 package com.fiap.reserva.domain.entity;
 
+import java.util.List;
 import java.util.Objects;
 
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EnderecoVo;
-import com.fiap.spring.Controller.Dto.EnderecoDto;
-import com.fiap.spring.Controller.Dto.HorarioFuncionamentoDto;
-import com.fiap.spring.Controller.Dto.RestauranteDto;
 
 public class Restaurante {
-    private CnpjVo cnpj;
-    private String nome;
-    private EnderecoVo endereco;
-    private HorarioFuncionamento horarioFuncionamento ;
-    private int capacidadeMesas;
-    private TipoCozinha tipoCozinha;
+    private final CnpjVo cnpj;
+    private final String nome;
+    private final EnderecoVo endereco;
+    private final List<HorarioFuncionamento> horarioFuncionamento ;
+    private final int capacidadeMesas;
+    private final TipoCozinha tipoCozinha;
 
     public Restaurante(CnpjVo cnpj, String nome) {
-        this.cnpj = cnpj;
-        this.nome = nome;
+    	 this.cnpj = cnpj;
+         this.nome = nome;
+         this.endereco = null;
+         this.horarioFuncionamento = null;
+         this.capacidadeMesas = 0;
+         this.tipoCozinha = null;
     }
 
-    public Restaurante(String cnpj, String nome) {
-        this.cnpj = new CnpjVo(cnpj);
-        this.nome = nome;
-    }
-
-    public Restaurante(CnpjVo cnpj, String nome, EnderecoVo endereco, HorarioFuncionamento horarioFuncionamento, int capacidadeMesas, TipoCozinha tipoCozinha) {
+    public Restaurante(CnpjVo cnpj, String nome, EnderecoVo endereco, List<HorarioFuncionamento> horarioFuncionamento, int capacidadeMesas, TipoCozinha tipoCozinha) {
         this.cnpj = cnpj;
         this.nome = nome;
         this.endereco = endereco;
@@ -35,17 +32,12 @@ public class Restaurante {
         this.tipoCozinha = tipoCozinha;
     }
 
-    public Restaurante(String cnpj, String nome, EnderecoVo endereco, HorarioFuncionamento horarioFuncionamento, int capacidadeMesas, TipoCozinha tipoCozinha) {
-        this(cnpj);
-        this.nome = nome;
-        this.endereco = endereco;
-        this.horarioFuncionamento = horarioFuncionamento;
-        this.capacidadeMesas = capacidadeMesas;
-        this.tipoCozinha = tipoCozinha;
+    public Restaurante(String cnpj, String nome, EnderecoVo endereco, List<HorarioFuncionamento> horarioFuncionamento, int capacidadeMesas, TipoCozinha tipoCozinha) {
+        this(new CnpjVo(cnpj), nome, endereco, horarioFuncionamento, capacidadeMesas, tipoCozinha);
     }
 
     public Restaurante(String cnpj) {
-        this.cnpj = new CnpjVo(cnpj);
+        this(new CnpjVo(cnpj), null);
     }
 
     public String getCnpjString() {
@@ -72,7 +64,7 @@ public class Restaurante {
         return endereco;
     }
 
-    public HorarioFuncionamento getHorarioFuncionamento() {
+    public List<HorarioFuncionamento> getHorarioFuncionamento() {
         return horarioFuncionamento;
     }
     
@@ -93,18 +85,6 @@ public class Restaurante {
 		return Objects.equals(cnpj, other.cnpj);
 	}
 
-	public RestauranteDto toDto(){
-        final HorarioFuncionamentoDto horarioFuncionamentoDtos = this.horarioFuncionamento.toDto();
-        final EnderecoDto enderecoDto = this.endereco.toDto();
 
-        return new RestauranteDto(
-                this.getCnpjString(),
-                this.nome,
-                this.capacidadeMesas,
-                this.tipoCozinha,
-                horarioFuncionamentoDtos,
-                enderecoDto
-        );
-    }
 
 }

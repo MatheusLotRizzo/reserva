@@ -1,7 +1,5 @@
 package com.fiap.reserva.domain.vo;
 
-import com.fiap.spring.Controller.Dto.EnderecoDto;
-
 public class EnderecoVo {
     private String cep;
     private String logradouro;
@@ -48,16 +46,5 @@ public class EnderecoVo {
     public String getEstado() {
         return estado;
     }
-
-    public EnderecoDto toDto(){
-        return new EnderecoDto(
-                this.cep,
-                this.logradouro,
-                this.numero,
-                this.complemento,
-                this.bairro,
-                this.cidade,
-                this.estado
-        );
-    }
+   
 }

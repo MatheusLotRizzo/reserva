@@ -1,5 +1,8 @@
 package com.fiap.reserva.application.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.fiap.reserva.application.service.RestauranteService;
 import com.fiap.reserva.domain.entity.HorarioFuncionamento;
 import com.fiap.reserva.domain.entity.Restaurante;
@@ -7,10 +10,9 @@ import com.fiap.reserva.domain.entity.TipoCozinha;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EnderecoVo;
+import com.fiap.spring.Controller.Dto.EnderecoDto;
+import com.fiap.spring.Controller.Dto.HorarioFuncionamentoDto;
 import com.fiap.spring.Controller.Dto.RestauranteDto;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class RestauranteControllerApplication {
 
@@ -21,11 +23,11 @@ public class RestauranteControllerApplication {
 	}
 
 	public RestauranteDto cadastrar(final RestauranteDto restauranteDto) throws BusinessException{
-        return construirRestauranteDto(service.cadastrar(construirRestaurante(restauranteDto)));
+        return toDto(service.cadastrar(restauranteDto.toEntity()));
     }
 
     public RestauranteDto alterar(final RestauranteDto restauranteDto) throws BusinessException {
-        return construirRestauranteDto(service.alterar(construirRestaurante(restauranteDto)));
+        return toDto(service.alterar(restauranteDto.toEntity()));
     }
 
     public void excluir(final String cnpj) throws BusinessException{
@@ -33,11 +35,11 @@ public class RestauranteControllerApplication {
     }
 
     public RestauranteDto getBuscarPor(final String cnpj) throws BusinessException{
-        return construirRestauranteDto(service.getBuscarPor(new CnpjVo(cnpj)));
+        return toDto(service.getBuscarPor(new CnpjVo(cnpj)));
     }
 
     public RestauranteDto getBuscarPorNome(final String nome) throws BusinessException{
-        return construirRestauranteDto(service.getBuscarPorNome(nome));
+        return toDto(service.getBuscarPorNome(nome));
     }
 
     public List<RestauranteDto> getBuscarPorTipoCozinha(final String tipoCozinha) throws BusinessException{
@@ -45,36 +47,51 @@ public class RestauranteControllerApplication {
         List<Restaurante> restaurantes = service.getBuscarPorTipoCozinha(TipoCozinha.valueOf(tipoCozinha));
 
         return restaurantes.stream()
-                .map(this::construirRestauranteDto)
+                .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     public List<RestauranteDto> getBuscarPorLocalizacao(final RestauranteDto restauranteDto) throws BusinessException{
-
-        List<Restaurante> restaurantes = service.getBuscarPorLocalizacao(construirRestaurante(restauranteDto).getEndereco());
+        final List<Restaurante> restaurantes = service.getBuscarPorLocalizacao(restauranteDto.toEntity().getEndereco());
 
         return restaurantes.stream()
-                .map(this::construirRestauranteDto)
+                .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
-    private Restaurante construirRestaurante(final RestauranteDto restauranteDto) {
-        EnderecoVo enderecoVo = new EnderecoVo(restauranteDto.endereco().cep(), restauranteDto.endereco().logradouro(), restauranteDto.endereco().numero(), restauranteDto.endereco().complemento(), restauranteDto.endereco().bairro(), restauranteDto.endereco().cidade(), restauranteDto.endereco().estado());
-        HorarioFuncionamento horarioFuncionamento = new HorarioFuncionamento(
-    		restauranteDto.horarioFuncionamento().diaDaSemana(), 
-    		restauranteDto.horarioFuncionamento().horarioInicial(), 
-    		restauranteDto.horarioFuncionamento().horarioFinal()
-		);
-
-        return new Restaurante(new CnpjVo(restauranteDto.cnpj()),
-                restauranteDto.nome(),
-                enderecoVo,
-                horarioFuncionamento,
-                restauranteDto.capacidade(),
-                restauranteDto.tipoCozinha());
+    
+	public RestauranteDto toDto(Restaurante restaurante){
+	  final List<HorarioFuncionamentoDto> horarioFuncionamentoDtos = restaurante.getHorarioFuncionamento()
+	  		.stream().map(this::toDto)
+	  		.collect(Collectors.toList());
+	
+	  return new RestauranteDto(
+		  restaurante.getCnpjString(),
+		  restaurante.getNome(),
+		  restaurante.getCapacidadeMesas(),
+		  restaurante.getTipoCozinha(),
+          horarioFuncionamentoDtos,
+          toDto(restaurante.getEndereco())
+	  );
+	}
+	
+	public  HorarioFuncionamentoDto toDto(final HorarioFuncionamento horarioFuncionamento){
+        return new HorarioFuncionamentoDto(
+    		horarioFuncionamento.getDiaDaSemana(),
+    		horarioFuncionamento.getHorarioInicial(),
+    		horarioFuncionamento.getHorarioFinal()
+        );
     }
-
-    private RestauranteDto construirRestauranteDto(final Restaurante restaurante){
-        return restaurante.toDto();
+	
+	 public EnderecoDto toDto(final EnderecoVo enderecoVo){
+        return new EnderecoDto(
+    		enderecoVo.getCep(),
+    		enderecoVo.getLogradouro(),
+    		enderecoVo.getNumero(),
+    		enderecoVo.getComplemento(),
+    		enderecoVo.getBairro(),
+    		enderecoVo.getCidade(),
+    		enderecoVo.getEstado()
+        );
     }
 }

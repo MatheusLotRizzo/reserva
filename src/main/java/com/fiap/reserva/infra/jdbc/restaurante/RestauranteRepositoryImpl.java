@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.fiap.reserva.domain.entity.Restaurante;
@@ -242,7 +243,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
                 rs.getString("re.cd_cnpj"),
                 rs.getString("re.nm_restaurante"),
                 enderecoRepository.construirEndereco(rs),
-                horarioFuncionamentoRepository.construirHorarioFuncionamento(rs),
+                Collections.emptyList(), // horarioFuncionamentoRepository.construirHorarioFuncionamento(rs), <- ta errado tem de ser uma lista
                 rs.getInt("re.qt_capacidade_mesas"),
                 TipoCozinha.valueOf(rs.getString("re.ds_tipo_cozinha"))
         );
