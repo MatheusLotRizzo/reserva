@@ -2,6 +2,7 @@ package com.fiap.reserva.domain.entity;
 
 import java.util.Objects;
 
+import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.vo.EmailVo;
 import com.fiap.spring.Controller.Dto.UsuarioDto;
 
@@ -9,31 +10,22 @@ public class Usuario {
     private final String nome;
     private final EmailVo email;
     private final String celular;
-
-    public Usuario(String nome, String email){
+    
+    public Usuario(String nome, EmailVo email, String celular) throws BusinessException {
         if (nome == null || nome.isEmpty()){
-            throw new IllegalArgumentException("O nome não pode ser vazio");
-        }
-        this.nome = nome;
-        this.email = new EmailVo(email);
-        this.celular = null;
-    }
-    public Usuario(String nome, EmailVo email, String celular) {
-        if (nome == null || nome.isEmpty()){
-            throw new IllegalArgumentException("O nome não pode ser vazio");
+            throw new BusinessException("O nome não pode ser vazio");
         }
         this.nome = nome;
         this.email = email;
         this.celular = celular;
     }
+    
+    public Usuario(String nome, String email) throws BusinessException{
+    	this(nome, new EmailVo(email), null);
+    }
 
-    public Usuario(String nome, String email, String celular){
-        if (nome == null || nome.isEmpty()){
-            throw new IllegalArgumentException("O nome não pode ser vazio");
-        }
-        this.nome = nome;
-        this.email = new EmailVo(email);
-        this.celular = celular;
+    public Usuario(String nome, String email, String celular) throws BusinessException{
+        this(nome, new EmailVo(email), celular);
     }
 
     public Usuario(String email){

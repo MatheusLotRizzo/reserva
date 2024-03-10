@@ -36,7 +36,7 @@ public class UsuarioControllerApplication {
                 .map(this::construirUsuarioDto)
                 .collect(Collectors.toList());
     }
-    private Usuario construirUsuario(final UsuarioDto usuarioDto) {
+    private Usuario construirUsuario(final UsuarioDto usuarioDto) throws BusinessException {
         return new Usuario(usuarioDto.nome(), usuarioDto.email(), usuarioDto.celular());
     }
 

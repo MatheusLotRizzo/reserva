@@ -39,7 +39,7 @@ class UsuarioServiceTest {
     }
 
     @Test
-    void naoDeveCadastrarUsuarioExistente() {
+    void naoDeveCadastrarUsuarioExistente() throws BusinessException {
         Usuario usuario = new Usuario("Matheus", "teste@teste.com");
         when(repository.buscarPor(usuario)).thenReturn(usuario);
 
@@ -60,7 +60,7 @@ class UsuarioServiceTest {
     }
 
     @Test
-    void naoDeveAlterarUsuarioInexistente() {
+    void naoDeveAlterarUsuarioInexistente() throws BusinessException {
         Usuario usuario = new Usuario("Matheus", "teste@teste.com");
         when(repository.buscarPor(usuario)).thenReturn(null);
 
@@ -82,7 +82,7 @@ class UsuarioServiceTest {
     }
 
     @Test
-    void naoDeveExcluirUsuarioInexistente() {
+    void naoDeveExcluirUsuarioInexistente() throws BusinessException {
         Usuario usuario = new Usuario("Matheus", "teste@teste.com");
         when(repository.buscarPor(usuario)).thenReturn(null);
 

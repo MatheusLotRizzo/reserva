@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fiap.reserva.domain.entity.Usuario;
+import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.UsuarioRepository;
 import com.fiap.reserva.domain.vo.EmailVo;
 import com.fiap.reserva.infra.exception.TechnicalException;
@@ -21,7 +22,7 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     }
 
     @Override
-    public List<Usuario> buscarTodos(Usuario usuario) {
+    public List<Usuario> buscarTodos(Usuario usuario) throws BusinessException {
         final List<Usuario> list = new ArrayList<>();
         final StringBuilder query = new StringBuilder()
                 .append("SELECT * FROM tb_usuario u ");
@@ -39,7 +40,7 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     }
 
     @Override
-    public Usuario buscarPor(Usuario usuario) {
+    public Usuario buscarPor(Usuario usuario) throws BusinessException {
         final StringBuilder query = new StringBuilder()
                 .append("SELECT * FROM tb_usuario u ")
                 .append("WHERE u.ic_email = ? ")
@@ -128,7 +129,7 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
         }
     }
 
-    private Usuario contruirUsuario(ResultSet rs) throws SQLException {
+    private Usuario contruirUsuario(ResultSet rs) throws SQLException, BusinessException {
         return new Usuario(
                 rs.getString("u.nm_usuario"),
                 rs.getString("u.ic_email"),
