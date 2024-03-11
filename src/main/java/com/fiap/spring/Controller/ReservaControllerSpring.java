@@ -1,5 +1,8 @@
 package com.fiap.spring.Controller;
 
+import java.time.LocalDate;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -82,19 +85,27 @@ public class ReservaControllerSpring {
         try {
         	reservaController.cancelarReserva(reservaDto);
             return ResponseEntity.noContent().build();
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
-        }
+        }catch(BusinessException ex) {
+        	return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    				.body(MessageErrorHandler.create(ex.getMessage()));
+	    } catch (Exception ex) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(MessageErrorHandler.create(ex.getMessage()));
+	    }
     }
 
-    @PutMapping("/concluir")
+    @PatchMapping("/concluir")
     public ResponseEntity<?> concluirReserva(@RequestBody ReservaDto reservaDto ){
         try {
         	reservaController.concluirReserva(reservaDto);
             return ResponseEntity.noContent().build();
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
-        }
+        } catch(BusinessException ex) {
+        	return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    				.body(MessageErrorHandler.create(ex.getMessage()));
+	    } catch (Exception ex) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(MessageErrorHandler.create(ex.getMessage()));
+	    }
     }
 
     @Operation(summary = "Busca reserva")
@@ -105,16 +116,38 @@ public class ReservaControllerSpring {
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class)) }),
     })
-    @GetMapping("/{email}")
-    public ResponseEntity<?> buscarTodasReservaDoUsuarioPeloEmail(@PathVariable @ApiParam(value = "Email do usuario", example = "exemplo@dominio.com.br")
-                                                                      String email) {
+    @GetMapping("/usuario/{email}")
+    public ResponseEntity<?> buscarReservasDoUsuarioPeloEmail(
+		@PathVariable 
+		@ApiParam(value = "Email do usuario", example = "exemplo@dominio.com.br")
+        String email
+    ) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(
-                    reservaController.getBuscarTodasReservaDoUsuarioPeloEmail(email)
+            return ResponseEntity.status(HttpStatus.OK).body(
+                reservaController.getBuscarReservasDoUsuarioPeloEmail(email)
             );
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        } catch(BusinessException ex) {
+        	return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    				.body(MessageErrorHandler.create(ex.getMessage()));
+	    } catch (Exception ex) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(MessageErrorHandler.create(ex.getMessage()));
+	    }
+    }
+    
+    @GetMapping("/usuario/situacao")
+    public ResponseEntity<?> buscarReservasDoUsuarioPelaSituacao(@RequestBody ReservaDto reservaDto) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                reservaController.getBuscarReservasDoUsuarioPelaSituacao(reservaDto)
+            );
+        } catch(BusinessException ex) {
+        	return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    				.body(MessageErrorHandler.create(ex.getMessage()));
+	    } catch (Exception ex) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(MessageErrorHandler.create(ex.getMessage()));
+	    }
     }
 
     @Operation(summary = "Busca reserva")
@@ -125,35 +158,68 @@ public class ReservaControllerSpring {
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class)) }),
     })
-    @GetMapping("/{cnpj}")
-    public ResponseEntity<?> buscarTodasReservaDoUsuarioPeloCnpj(@PathVariable @ApiParam(value = "Cnpj", example = "11 caracteres alfanumericos")
-                                                                     String cnpj){
+    @GetMapping("/restaurante/{cnpj}")
+    public ResponseEntity<?> buscarReservasDoRestaurantePeloCnpj(
+		@PathVariable("cnpj") 
+		@ApiParam(value = "cnpj", example = "11 caracteres alfanumericos")
+		String cnpj
+	){
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(
-                    reservaController.getBuscarTodasRerservasRestaurantePeloCNPJ(cnpj)
+            return ResponseEntity.status(HttpStatus.OK).body(
+                reservaController.getBuscarTodasRerservasRestaurantePeloCNPJ(cnpj)
             );
-        } catch (BusinessException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        }catch(BusinessException ex) {
+        	return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    				.body(MessageErrorHandler.create(ex.getMessage()));
+	    } catch (Exception ex) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(MessageErrorHandler.create(ex.getMessage()));
+	    }
     }
-
-    @Operation(summary = "Busca reserva")
-    @ApiOperation("Busca reserva")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Sucesso",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ReservaDto.class, description = "Reserva")) }),
-            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class)) }),
-    })
-    @GetMapping
-    public ResponseEntity<?> buscarTodasReservas(@RequestBody ReservaDto reservaDto){
+    
+    @GetMapping("/restaurante/situacao")
+    public ResponseEntity<?> buscarReservasDoRestaurantePorSituacao(@RequestBody ReservaDto reservaDto){
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(
-                    reservaController.getBuscarTodas(reservaDto)
+            return ResponseEntity.status(HttpStatus.OK).body(
+                reservaController.getBuscarReservasDoRestaurantePorSituacao(reservaDto)
             );
-        } catch (BusinessException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        }catch(BusinessException ex) {
+        	return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    				.body(MessageErrorHandler.create(ex.getMessage()));
+	    } catch (Exception ex) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(MessageErrorHandler.create(ex.getMessage()));
+	    }
+    }
+    
+    @GetMapping("/{numeroReserva}")
+    public ResponseEntity<?> buscarReservaDoRestaurantePeloNumeroReserva(@PathVariable UUID numeroReserva){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                reservaController.getBuscarReservaPeloNumeroReserva(numeroReserva)
+            );
+        }catch(BusinessException ex) {
+        	return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    				.body(MessageErrorHandler.create(ex.getMessage()));
+	    } catch (Exception ex) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(MessageErrorHandler.create(ex.getMessage()));
+	    }
+    }
+    
+    @GetMapping("/restaurante/{cnpj}/{data}")
+    public ResponseEntity<?> buscarReservaDoRestaurantePelaData(@PathVariable("cnpj") String cnpjVo,@PathVariable LocalDate data){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                reservaController.getBuscarReservaDoRestaurantePeloData(cnpjVo, data)
+            );
+        }catch(BusinessException ex) {
+        	return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    				.body(MessageErrorHandler.create(ex.getMessage()));
+	    } catch (Exception ex) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(MessageErrorHandler.create(ex.getMessage()));
+	    }
     }
 
 }

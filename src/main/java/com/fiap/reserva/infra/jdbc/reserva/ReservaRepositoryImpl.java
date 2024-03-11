@@ -83,39 +83,6 @@ public class ReservaRepositoryImpl implements ReservaRepository{
     }
 
     @Override
-    public List<Reserva> buscarTodasPor(Reserva reserva) throws BusinessException {
-        final List<Reserva> list = new ArrayList<>();
-        final StringBuilder query = new StringBuilder()
-            .append("SELECT * FROM tb_reserva r ")
-            .append("WHERE r.cd_usuario = ? ")
-            .append("AND r.cd_restaurante = ? ")
-            .append("AND r.dt_hr_reserva = ? ")
-            ;
-
-        try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
-            ps.setString(1, reserva.getUsuario().getEmailString());
-            ps.setString(2, reserva.getRestaurante().getCnpjString());
-            ps.setTimestamp(3, Timestamp.valueOf(reserva.getDataHora()));
-            
-            try (final ResultSet rs = ps.executeQuery()) {
-                while(rs.next()){
-                    list.add(new Reserva(
-                        UUID.fromString(rs.getString("r.cd_numero_reserva")),
-                        new Usuario(rs.getString("r.cd_usuario")), 
-                        new Restaurante(rs.getString("r.cd_restaurante")), 
-                        rs.getTimestamp("r.dt_hr_reserva").toLocalDateTime(), 
-                        SituacaoReserva.valueOf(rs.getString("r.ds_status"))
-                    ));
-                }
-            } 
-        } catch (SQLException e) {
-            throw new TechnicalException(e);
-        }
-
-        return list;
-    }
-
-    @Override
     public Reserva buscarPor(Reserva reserva) throws BusinessException {
         final StringBuilder query = new StringBuilder()
                 .append("SELECT * FROM tb_reserva r ")
@@ -213,5 +180,33 @@ public class ReservaRepositoryImpl implements ReservaRepository{
             throw new TechnicalException(e);
         }
     }
+
+	@Override
+	public Reserva buscarPor(UUID uuid) throws BusinessException {
+		final StringBuilder query = new StringBuilder()
+                .append("SELECT * FROM tb_reserva r ")
+                .append("WHERE r.cd_numero_reserva = ? ")
+                ;
+
+        try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
+            int i=1;
+            ps.setString(i++, uuid.toString());
+            
+            try (final ResultSet rs = ps.executeQuery()) {
+                if(rs.next()){
+                    return new Reserva(
+                        UUID.fromString(rs.getString("r.cd_numero_reserva")),
+                        new Usuario(rs.getString("r.cd_usuario")), 
+                        new Restaurante(rs.getString("r.cd_restaurante")), 
+                        rs.getTimestamp("r.dt_hr_reserva").toLocalDateTime(), 
+                        SituacaoReserva.valueOf(rs.getString("r.ds_status"))
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            throw new TechnicalException(e);
+        }
+        return null;
+	}
    
 }

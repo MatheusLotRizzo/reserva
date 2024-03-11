@@ -17,8 +17,10 @@ public record ReservaDto(
     SituacaoReserva statusReserva       
 ) {
     public Reserva toEntity() throws BusinessException{
+        final UUID uuid = numeroReserva == null && statusReserva == SituacaoReserva.DISPONIVEL ? UUID.randomUUID() : numeroReserva;
+		
         return new Reserva(
-            numeroReserva,
+            uuid,
             new Usuario(emailUsuario), 
             new Restaurante(cnpjRestaurante), 
             dataHora, 
