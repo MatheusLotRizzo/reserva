@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.fiap.reserva.domain.entity.HorarioFuncionamento;
 import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.entity.TipoCozinha;
+import com.fiap.reserva.domain.vo.EnderecoVo;
 
 public record RestauranteDto(
         String cnpj,
@@ -20,6 +21,7 @@ public record RestauranteDto(
 			.map(HorarioFuncionamentoDto::toEntity)
 			.collect(Collectors.toList());
 		
-		return new Restaurante(cnpj, nome, endereco.toEntity(), hrf, capacidade, tipoCozinha);
+		final EnderecoVo enderecoEntity = endereco == null ? null: endereco.toEntity();
+		return new Restaurante(cnpj, nome, enderecoEntity, hrf, capacidade, tipoCozinha);
 	}
 }
