@@ -1,62 +1,63 @@
 package com.fiap.reserva.application.usecase.restaurante;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
 import com.fiap.reserva.domain.entity.HorarioFuncionamento;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.HorarioFuncionamentoRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-@ExtendWith(MockitoExtension.class)
 class AlterarHorarioFuncionamentoTest {
 
     @Mock
-    private HorarioFuncionamentoRepository horarioFuncionamentoRepository;
+    private HorarioFuncionamentoRepository repository;
 
     @InjectMocks
     private AlterarHorarioFuncionamento alterarHorarioFuncionamento;
-
-    private CnpjVo cnpjValido;
-    private HorarioFuncionamento horarioFuncionamentoValido;
+    private AutoCloseable autoCloseable;
 
     @BeforeEach
     void setUp() {
-        cnpjValido = new CnpjVo("12345678901234");
-        // Exemplo de horários inicial e final para testar
-        LocalDateTime horarioInicial = LocalDateTime.of(2023, 10, 1, 9, 0);
-        LocalDateTime horarioFinal = LocalDateTime.of(2023, 10, 1, 18, 0);
-        horarioFuncionamentoValido = new HorarioFuncionamento(DayOfWeek.MONDAY,horarioInicial, horarioFinal);
+        autoCloseable = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        autoCloseable.close();
+    }
+
+    @Test
+    void deveLancarExcecaoQuandoHorarioFuncionamentoEhNulo() {
+        CnpjVo cnpj = new CnpjVo("12345678901234");
+
+        final Throwable throwable = assertThrows(
+                BusinessException.class,
+                () -> alterarHorarioFuncionamento.executar(cnpj, null)
+        );
+
+        assertEquals("Horario Funcionamento é obrigatorio", throwable.getMessage());
+        verifyNoInteractions(repository);
     }
 
     @Test
     void deveAlterarHorarioFuncionamentoComSucesso() throws BusinessException {
-        // Ação
-        alterarHorarioFuncionamento.executar(cnpjValido, horarioFuncionamentoValido);
+        CnpjVo cnpj = new CnpjVo("12345678901234");
+        HorarioFuncionamento horarioFuncionamento = new HorarioFuncionamento(DayOfWeek.MONDAY, LocalDateTime.now(), LocalDateTime.now().plusHours(8));
 
-        // Verificação
-        verify(horarioFuncionamentoRepository).alterar(eq(cnpjValido), eq(horarioFuncionamentoValido));
-    }
+        alterarHorarioFuncionamento.executar(cnpj, horarioFuncionamento);
 
-    @Test
-    void deveLancarExceptionQuandoHorarioFuncionamentoForNulo() {
-        // Expectativa
-        BusinessException thrown = assertThrows(BusinessException.class, () -> {
-            // Ação
-            alterarHorarioFuncionamento.executar(cnpjValido, null);
-        });
-
-        // Verificação
-        assertEquals("Horario Funcionamento é obrigatorio", thrown.getMessage());
-        verifyNoInteractions(horarioFuncionamentoRepository);
+        verify(repository).alterar(cnpj, horarioFuncionamento);
+        verifyNoMoreInteractions(repository);
     }
 }

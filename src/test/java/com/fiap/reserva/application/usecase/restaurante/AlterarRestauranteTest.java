@@ -1,73 +1,72 @@
 package com.fiap.reserva.application.usecase.restaurante;
 
-import com.fiap.reserva.domain.entity.HorarioFuncionamento;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
 import com.fiap.reserva.domain.entity.Restaurante;
-import com.fiap.reserva.domain.entity.TipoCozinha;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.RestauranteRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
-import com.fiap.reserva.domain.vo.EnderecoVo;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-@ExtendWith(MockitoExtension.class)
 class AlterarRestauranteTest {
 
     @Mock
-    private RestauranteRepository restauranteRepository;
+    private RestauranteRepository repository;
 
     @InjectMocks
     private AlterarRestaurante alterarRestaurante;
-
-    private Restaurante restauranteValido;
+    private AutoCloseable autoCloseable;
 
     @BeforeEach
     void setUp() {
-        CnpjVo cnpj = new CnpjVo("12345678901234");
-        EnderecoVo endereco = new EnderecoVo("05020-000", "Rua Exemplo", "123", "Apto 1", "Bairro", "Cidade", "Estado");
-        HorarioFuncionamento horarioFuncionamento = new HorarioFuncionamento(DayOfWeek.MONDAY,LocalDateTime.now(), LocalDateTime.now().plusHours(8));
-        restauranteValido = new Restaurante(cnpj, "Restaurante Teste", endereco, horarioFuncionamento, 100, TipoCozinha.ITALIANA);
-
-        // Marque esta simulação como leniente se for necessária apenas em alguns testes
-        lenient().when(restauranteRepository.buscarPorCnpj(cnpj)).thenReturn(restauranteValido);
+        autoCloseable = MockitoAnnotations.openMocks(this);
     }
 
+    @AfterEach
+    void tearDown() throws Exception {
+        autoCloseable.close();
+    }
 
+    @Test
+    void naoDeveAlterarRestauranteEnviandoNull() {
+        final Throwable throwable = assertThrows(BusinessException.class, () -> alterarRestaurante.executar(null));
+        assertEquals("Restaurante é obrigatorio", throwable.getMessage());
+        verifyNoInteractions(repository);
+    }
+
+    @Test
+    void naoDeveAlterarRestauranteSeNaoEncontrado() {
+        CnpjVo cnpj = new CnpjVo("12345678901234");
+        Restaurante restaurante = new Restaurante(cnpj, "Restaurante Teste");
+
+        when(repository.buscarPorCnpj(cnpj)).thenReturn(null);
+
+        final Throwable throwable = assertThrows(BusinessException.class, () -> alterarRestaurante.executar(restaurante));
+        assertEquals("Restaurante não pode ser alterado, pois nao foi encontrada", throwable.getMessage());
+
+        verify(repository).buscarPorCnpj(cnpj); // Verifica se a busca foi realmente feita
+        verifyNoMoreInteractions(repository);
+    }
 
     @Test
     void deveAlterarRestauranteComSucesso() throws BusinessException {
-        when(restauranteRepository.alterar(any(Restaurante.class))).thenReturn(restauranteValido);
+        CnpjVo cnpj = new CnpjVo("12345678901234");
+        Restaurante restaurante = new Restaurante(cnpj, "Restaurante Teste");
 
-        Restaurante resultado = alterarRestaurante.executar(restauranteValido);
+        when(repository.buscarPorCnpj(cnpj)).thenReturn(restaurante);
+        when(repository.alterar(restaurante)).thenReturn(restaurante);
 
-        assertEquals(restauranteValido, resultado);
-        verify(restauranteRepository).alterar(restauranteValido);
-    }
+        Restaurante resultado = alterarRestaurante.executar(restaurante);
 
-    @Test
-    void deveLancarExceptionQuandoRestauranteForNulo() {
-        assertThrows(BusinessException.class, () -> alterarRestaurante.executar(null));
-    }
-
-    @Test
-    void deveLancarExceptionQuandoRestauranteNaoForEncontrado() {
-        CnpjVo cnpjNaoEncontrado = new CnpjVo("99999999999999");
-        Restaurante restauranteNaoEncontrado = new Restaurante(cnpjNaoEncontrado, "Restaurante Fantasma");
-
-        // Ajuste para usar buscarPorCnpj e simular que não encontrou o restaurante (retorna null)
-        when(restauranteRepository.buscarPorCnpj(cnpjNaoEncontrado)).thenReturn(null);
-
-        BusinessException thrown = assertThrows(BusinessException.class, () -> alterarRestaurante.executar(restauranteNaoEncontrado));
-
-        assertEquals("Restaurante não pode ser alterado, pois nao foi encontrada", thrown.getMessage());
+        assertEquals(restaurante, resultado);
+        verify(repository).buscarPorCnpj(cnpj);
+        verify(repository).alterar(restaurante);
     }
 }
