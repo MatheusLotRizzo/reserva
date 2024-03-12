@@ -73,14 +73,28 @@ public class RestauranteService {
         }
     }
 
-    private void cadastrarOuAlterarHorarioFuncionamento(final Restaurante restaurante) throws BusinessException{
-        if (restaurante.getHorarioFuncionamento() != null) {
-            HorarioFuncionamento horarioFuncionamento = horarioSuncionamentoService.getObter(restaurante.getCnpj(),restaurante.getHorarioFuncionamento());
-            if(horarioFuncionamento != null) {
-                horarioSuncionamentoService.alterar(restaurante.getCnpj(), restaurante.getHorarioFuncionamento());
-            } else {
-                horarioSuncionamentoService.cadastrar(restaurante.getCnpj(), restaurante.getHorarioFuncionamento());
+    private void cadastrarOuAlterarHorarioFuncionamento(final Restaurante restaurante) throws BusinessException {
+        if (restaurante.getHorarioFuncionamento() != null && !restaurante.getHorarioFuncionamento().isEmpty()) {
+            for (HorarioFuncionamento horario : restaurante.getHorarioFuncionamento()) {
+                HorarioFuncionamento horarioExistente = horarioSuncionamentoService.getObter(restaurante.getCnpj(), horario);
+                if (horarioExistente != null) {
+                    horarioSuncionamentoService.alterar(restaurante.getCnpj(), horario);
+                } else {
+                    horarioSuncionamentoService.cadastrar(restaurante.getCnpj(), horario);
+                }
             }
         }
     }
+
+
+//    private void cadastrarOuAlterarHorarioFuncionamento(final Restaurante restaurante) throws BusinessException{
+//        if (restaurante.getHorarioFuncionamento() != null) {
+//            HorarioFuncionamento horarioFuncionamento = horarioSuncionamentoService.getObter(restaurante.getCnpj(),restaurante.getHorarioFuncionamento());
+//            if(horarioFuncionamento != null) {
+//                horarioSuncionamentoService.alterar(restaurante.getCnpj(), restaurante.getHorarioFuncionamento());
+//            } else {
+//                horarioSuncionamentoService.cadastrar(restaurante.getCnpj(), restaurante.getHorarioFuncionamento());
+//            }
+//        }
+//    }
 }
