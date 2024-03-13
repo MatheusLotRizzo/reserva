@@ -24,7 +24,7 @@ public class AvaliacaoService {
     }
 
     public Avaliacao avaliar(final Avaliacao avaliacao) throws BusinessException{
-        final Usuario usuario = usuarioService.getBuscarPor(avaliacao.getUsuario());
+        final Usuario usuario = usuarioService.getBuscarPor(avaliacao.getUsuario().getEmail());
         final Restaurante restaurante = restauranteService.getBuscarPor(avaliacao.getRestaurante().getCnpj());
         Avaliacao avaliacaoValidada = new Avaliacao(usuario,restaurante,avaliacao.getPontuacao(),avaliacao.getComentario());
         return new DeixarAvaliacao(repository).executar(avaliacaoValidada);
