@@ -6,69 +6,114 @@ import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.RestauranteRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EnderecoVo;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
 class BuscarRestauranteTest {
 
     @Mock
-    private RestauranteRepository restauranteRepository;
+    private RestauranteRepository repository;
 
     @InjectMocks
     private BuscarRestaurante buscarRestaurante;
 
+    private AutoCloseable autoCloseable;
+
     @BeforeEach
     void setUp() {
+        autoCloseable = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        autoCloseable.close();
+    }
+
+    @Test
+    void naoDeveRetornarRestauranteQuandoCnpjInvalido() {
+        final String cnpjInvalido = "123"; // CNPJ inválido
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new CnpjVo(cnpjInvalido));
+        assertEquals("Número de CNPJ inválido", exception.getMessage());
+    }
+
+    @Test
+    void naoDeveRetornarRestauranteQuandoCnpjNaoEncontrado() throws BusinessException {
+        CnpjVo cnpjNaoEncontrado = new CnpjVo("12345678901234");
+        when(repository.buscarPorCnpj(cnpjNaoEncontrado)).thenReturn(null);
+
+        final Throwable throwable = assertThrows(BusinessException.class, () -> buscarRestaurante.getRestaurantePor(cnpjNaoEncontrado));
+
+        assertEquals("Restaurante não encontrado", throwable.getMessage());
+        verify(repository).buscarPorCnpj(cnpjNaoEncontrado);
     }
 
     @Test
     void deveRetornarRestaurantePorCnpj() throws BusinessException {
         CnpjVo cnpj = new CnpjVo("12345678901234");
         Restaurante esperado = new Restaurante(cnpj, "Restaurante Teste");
-        when(restauranteRepository.buscarPorCnpj(cnpj)).thenReturn(esperado);
+        when(repository.buscarPorCnpj(cnpj)).thenReturn(esperado);
 
         Restaurante resultado = buscarRestaurante.getRestaurantePor(cnpj);
+
+        assertNotNull(resultado);
         assertEquals(esperado, resultado);
+        verify(repository).buscarPorCnpj(cnpj);
+    }
+
+    @Test
+    void deveLancarExcecaoQuandoNomeNaoEncontrado() {
+        String nomeInexistente = "Nome Não Existe";
+        when(repository.buscarPorNome(nomeInexistente)).thenReturn(null);
+
+        final Throwable throwable = assertThrows(BusinessException.class, () -> buscarRestaurante.getRestaurantePorNome(nomeInexistente));
+        assertEquals("Restaurante não encontrado para o nome: " + nomeInexistente, throwable.getMessage());
+        verify(repository).buscarPorNome(nomeInexistente);
     }
 
     @Test
     void deveRetornarRestaurantePorNome() throws BusinessException {
         String nome = "Restaurante Teste";
         Restaurante esperado = new Restaurante(new CnpjVo("12345678901234"), nome);
-        when(restauranteRepository.buscarPorNome(nome)).thenReturn(esperado);
+        when(repository.buscarPorNome(nome)).thenReturn(esperado);
 
         Restaurante resultado = buscarRestaurante.getRestaurantePorNome(nome);
+
+        assertNotNull(resultado);
         assertEquals(esperado, resultado);
+        verify(repository).buscarPorNome(nome);
     }
 
     @Test
-    void deveRetornarRestaurantesPorTipoCozinha() {
+    void deveRetornarRestaurantesPorTipoCozinha() throws BusinessException {
         TipoCozinha tipoCozinha = TipoCozinha.ITALIANA;
-        List<Restaurante> esperados = Arrays.asList(new Restaurante(new CnpjVo("12345678901234"), "Restaurante Italiano"));
-        when(restauranteRepository.buscarPorTipoCozinha(tipoCozinha)).thenReturn(esperados);
+        Restaurante restauranteEsperado = new Restaurante(new CnpjVo("12345678901234"), "Restaurante Italiano");
+        List<Restaurante> esperados = List.of(restauranteEsperado);
+        when(repository.buscarPorTipoCozinha(tipoCozinha)).thenReturn(esperados);
 
         List<Restaurante> resultados = buscarRestaurante.getRestaurantePorTipoCozinha(tipoCozinha);
+
         assertEquals(esperados, resultados);
+        verify(repository).buscarPorTipoCozinha(tipoCozinha);
     }
 
     @Test
-    void deveRetornarRestaurantesPorLocalizacao() {
+    void deveRetornarRestaurantesPorLocalizacao() throws BusinessException {
         EnderecoVo enderecoVo = new EnderecoVo("05020-000", "Rua Exemplo", "123", "Apto 1", "Bairro", "Cidade", "Estado");
-        List<Restaurante> esperados = Arrays.asList(new Restaurante(new CnpjVo("12345678901234"), "Restaurante Exemplo"));
-        when(restauranteRepository.buscarPorLocalizacao(enderecoVo)).thenReturn(esperados);
+        List<Restaurante> esperados = List.of(new Restaurante(new CnpjVo("12345678901234"), "Restaurante Local"));
+        when(repository.buscarPorLocalizacao(enderecoVo)).thenReturn(esperados);
 
         List<Restaurante> resultados = buscarRestaurante.getRestaurantePorLocalizacao(enderecoVo);
+
         assertEquals(esperados, resultados);
+        verify(repository).buscarPorLocalizacao(enderecoVo);
     }
 }

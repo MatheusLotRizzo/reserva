@@ -4,46 +4,53 @@ import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.EnderecoRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EnderecoVo;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
 class CadastrarEnderecoTest {
 
     @Mock
-    private EnderecoRepository enderecoRepository;
+    private EnderecoRepository repository;
 
     @InjectMocks
     private CadastrarEndereco cadastrarEndereco;
 
+    private AutoCloseable autoCloseable;
+
     @BeforeEach
     void setUp() {
+        autoCloseable = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        autoCloseable.close();
     }
 
     @Test
-    void executarSucesso() throws BusinessException {
+    void naoDeveCadastrarEnderecoQuandoEnderecoEhNulo() {
         CnpjVo cnpj = new CnpjVo("12345678901234");
-        EnderecoVo enderecoVo = new EnderecoVo("20231-000", "Rua Exemplo", "123", "Apto 1", "Perdizes", "São Paulo", "SP");
 
-        doNothing().when(enderecoRepository).cadastrar(any(CnpjVo.class), any(EnderecoVo.class));
+        final Throwable throwable = assertThrows(BusinessException.class, () -> cadastrarEndereco.executar(cnpj, null));
 
-        assertDoesNotThrow(() -> cadastrarEndereco.executar(cnpj, enderecoVo));
-        verify(enderecoRepository).cadastrar(cnpj, enderecoVo);
+        assertEquals("Endereco é obrigatorio", throwable.getMessage());
+        verifyNoInteractions(repository);
     }
-
     @Test
-    void executarFalhaEnderecoNulo() {
+    void deveCadastrarEnderecoComSucesso() throws BusinessException {
         CnpjVo cnpj = new CnpjVo("12345678901234");
+        EnderecoVo enderecoVo = new EnderecoVo("05020-000", "Rua Exemplo", "123", "Apto 1", "Bairro", "Cidade", "Estado");
 
-        BusinessException exception = assertThrows(BusinessException.class, () -> cadastrarEndereco.executar(cnpj, null));
-        assertEquals("Endereco é obrigatorio", exception.getMessage());
+        cadastrarEndereco.executar(cnpj, enderecoVo);
+
+        verify(repository).cadastrar(cnpj, enderecoVo);
+        verifyNoMoreInteractions(repository);
     }
 }
