@@ -42,14 +42,14 @@ class AlterarRestauranteTest {
     }
 
     @Test
-    void naoDeveAlterarRestauranteSeNaoEncontrado() {
+    void naoDeveAlterarRestauranteSeNaoEncontrado() throws BusinessException {
         CnpjVo cnpj = new CnpjVo("12345678901234");
         Restaurante restaurante = new Restaurante(cnpj, "Restaurante Teste");
 
         when(repository.buscarPorCnpj(cnpj)).thenReturn(null);
 
         final Throwable throwable = assertThrows(BusinessException.class, () -> alterarRestaurante.executar(restaurante));
-        assertEquals("Restaurante não pode ser alterado, pois nao foi encontrada", throwable.getMessage());
+        assertEquals("Restaurante não encontrado", throwable.getMessage());
 
         verify(repository).buscarPorCnpj(cnpj); // Verifica se a busca foi realmente feita
         verifyNoMoreInteractions(repository);

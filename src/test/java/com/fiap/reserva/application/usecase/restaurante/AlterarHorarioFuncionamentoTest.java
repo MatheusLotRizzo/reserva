@@ -38,7 +38,7 @@ class AlterarHorarioFuncionamentoTest {
     }
 
     @Test
-    void deveLancarExcecaoQuandoHorarioFuncionamentoEhNulo() {
+    void deveLancarExcecaoQuandoHorarioFuncionamentoEhNulo() throws BusinessException {
         CnpjVo cnpj = new CnpjVo("12345678901234");
 
         final Throwable throwable = assertThrows(
