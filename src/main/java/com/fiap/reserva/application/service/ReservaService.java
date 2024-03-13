@@ -71,7 +71,7 @@ public class ReservaService {
     }
 
     public List<Reserva> getBuscarTodasReservaDoUsuarioPeloEmail(final EmailVo email) throws BusinessException{
-        final Usuario usuario = usuarioService.getBuscarPor(new Usuario(email.getEndereco()));
+        final Usuario usuario = usuarioService.getBuscarPor(email);
         
         if(usuario == null) {
         	throw new EntidadeNaoEncontrada("Usuario não encontrado");

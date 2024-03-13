@@ -7,7 +7,6 @@ import com.fiap.reserva.domain.vo.EmailVo;
 import com.fiap.spring.Controller.Dto.UsuarioDto;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UsuarioControllerApplication {
 
@@ -25,16 +24,16 @@ public class UsuarioControllerApplication {
     public void excluir(final String email) throws BusinessException {
         service.excluir(new EmailVo(email));
     }
-    public UsuarioDto getBuscarPor(final UsuarioDto usuarioDto) throws BusinessException{
-        return construirUsuarioDto(service.getBuscarPor(construirUsuario(usuarioDto)));
+    public UsuarioDto getBuscarPor(final String email) throws BusinessException{
+        return construirUsuarioDto(service.getBuscarPor(new EmailVo(email)));
     }
 
-    public List<UsuarioDto> getTodos(final UsuarioDto usuarioDto) throws BusinessException{
-        List<Usuario> usuarios = service.getTodos(construirUsuario(usuarioDto));
+    public List<UsuarioDto> getTodos() throws BusinessException{
+        List<Usuario> usuarios = service.getTodos();
 
         return usuarios.stream()
                 .map(this::construirUsuarioDto)
-                .collect(Collectors.toList());
+                .toList();
     }
     private Usuario construirUsuario(final UsuarioDto usuarioDto) throws BusinessException {
         return new Usuario(usuarioDto.nome(), usuarioDto.email(), usuarioDto.celular());

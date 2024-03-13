@@ -19,32 +19,31 @@ public class UsuarioService {
     }
 
     public Usuario cadastrar(final Usuario usuario) throws BusinessException{
-        final Usuario usuarioBuscaBanco = new BuscarUsuario(repository).getUsuario(usuario);
-		if(usuario.equals(usuarioBuscaBanco)){
+		if(usuario.equals(new BuscarUsuario(repository).getUsuario(usuario.getEmail()))){
             throw new BusinessException("Usuário não pode ser cadastrado, pois já existe");
         }
         return new CadastrarUsuario(repository).executar(usuario);
     }
 
     public Usuario alterar(final Usuario usuario) throws BusinessException {
-        if(new BuscarUsuario(repository).getUsuario(usuario) == null){
+        if(new BuscarUsuario(repository).getUsuario(usuario.getEmail()) == null){
             throw new BusinessException("Usuário não pode ser alterado, pois nao foi encontrada");
         }
         return new AlterarUsuario(repository).executar(usuario);
     }
 
     public void excluir(final EmailVo email) throws BusinessException{
-        if(new BuscarUsuario(repository).getUsuario(new Usuario(email.getEndereco())) == null){
+        if(new BuscarUsuario(repository).getUsuario(email) == null){
             throw new BusinessException("Usuário não pode ser excluido, pois nao foi encontrada");
         }
         new ExcluirUsuario(repository).executar(email);
     }
 
-    public Usuario getBuscarPor(final Usuario usuario) throws BusinessException{
-        return new BuscarUsuario(repository).getUsuario(usuario);
+    public Usuario getBuscarPor(final EmailVo emailVo) throws BusinessException{
+        return new BuscarUsuario(repository).getUsuario(emailVo);
     }
 
-    public List<Usuario> getTodos(final Usuario usuario) throws BusinessException{
-        return new BuscarUsuario(repository).getTodos(usuario);
+    public List<Usuario> getTodos() throws BusinessException{
+        return new BuscarUsuario(repository).getTodos();
     }
 }

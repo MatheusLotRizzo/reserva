@@ -41,7 +41,7 @@ class UsuarioServiceTest {
     @Test
     void naoDeveCadastrarUsuarioExistente() throws BusinessException {
         Usuario usuario = new Usuario("Matheus", "teste@teste.com");
-        when(repository.buscarPor(usuario)).thenReturn(usuario);
+        when(repository.buscarPor(usuario.getEmail())).thenReturn(usuario);
 
         final Throwable throwable = assertThrows(BusinessException.class, () -> service.cadastrar(usuario));
         assertEquals("Usuário não pode ser cadastrado, pois já existe", throwable.getMessage());
@@ -50,7 +50,7 @@ class UsuarioServiceTest {
     @Test
     void deveCadastrarUsuarioInexistente() throws BusinessException {
         Usuario usuario = new Usuario("Matheus", "teste@teste.com");
-        when(repository.buscarPor(usuario)).thenReturn(null);
+        when(repository.buscarPor(usuario.getEmail())).thenReturn(null);
         when(repository.cadastrar(usuario)).thenReturn(usuario);
 
         final Usuario usuarioCadastrado = service.cadastrar(usuario);
@@ -62,7 +62,7 @@ class UsuarioServiceTest {
     @Test
     void naoDeveAlterarUsuarioInexistente() throws BusinessException {
         Usuario usuario = new Usuario("Matheus", "teste@teste.com");
-        when(repository.buscarPor(usuario)).thenReturn(null);
+        when(repository.buscarPor(usuario.getEmail())).thenReturn(null);
 
         final Throwable throwable = assertThrows(BusinessException.class, () -> service.alterar(usuario));
         assertEquals("Usuário não pode ser alterado, pois nao foi encontrada", throwable.getMessage());
@@ -72,7 +72,7 @@ class UsuarioServiceTest {
     void deveAlterarUsuarioExistente() throws BusinessException {
         Usuario usuario = new Usuario("Matheus", "teste@teste.com");
         Usuario usuarioComAlteracao = new Usuario("Matheus 2", "teste@teste.com");
-        when(repository.buscarPor(usuarioComAlteracao)).thenReturn(usuario);
+        when(repository.buscarPor(usuarioComAlteracao.getEmail())).thenReturn(usuario);
         when(repository.alterar(usuarioComAlteracao)).thenReturn(usuarioComAlteracao);
 
         final Usuario usuarioAlterado = service.alterar(usuarioComAlteracao);
@@ -84,7 +84,7 @@ class UsuarioServiceTest {
     @Test
     void naoDeveExcluirUsuarioInexistente() throws BusinessException {
         Usuario usuario = new Usuario("Matheus", "teste@teste.com");
-        when(repository.buscarPor(usuario)).thenReturn(null);
+        when(repository.buscarPor(usuario.getEmail())).thenReturn(null);
 
         final Throwable throwable = assertThrows(BusinessException.class, () -> service.excluir(usuario.getEmail()));
         assertEquals("Usuário não pode ser excluido, pois nao foi encontrada", throwable.getMessage());
@@ -93,54 +93,50 @@ class UsuarioServiceTest {
     @Test
     void deveExcluirUsuarioExistente() throws BusinessException {
         Usuario usuario = new Usuario("Matheus", "teste@teste.com");
-        when(repository.buscarPor(usuario)).thenReturn(usuario);
+        when(repository.buscarPor(usuario.getEmail())).thenReturn(usuario);
         service.excluir(usuario.getEmail());
         verify(repository).excluir(usuario.getEmail());
     }
 
     @Test
-    void deveBuscarTodosUsuariosPassandoNull() throws BusinessException {
+    void deveBuscarTodosUsuarios() throws BusinessException {
         Usuario usuario1 = new Usuario("Matheus", "teste@teste.com");
         Usuario usuario2 = new Usuario("Matheus 2", "teste2@teste.com");
-        when(repository.buscarTodos(null)).thenReturn(Arrays.asList(usuario1, usuario2));
+        when(repository.buscarTodos()).thenReturn(Arrays.asList(usuario1, usuario2));
 
-        List<Usuario> usuarios = service.getTodos(null);
+        List<Usuario> usuarios = service.getTodos();
         assertNotNull(usuarios);
         assertThatCollection(usuarios).hasSize(2);
         assertThatCollection(usuarios).filteredOnAssertions(u -> u.equals(usuario1));
         assertThatCollection(usuarios).filteredOnAssertions(u -> u.equals(usuario2));
-        verify(repository).buscarTodos(null);
+        verify(repository).buscarTodos();
     }
 
-    @Test
-    void deveBuscarTodosUsuariosPassandoUsuario() throws BusinessException {
-        Usuario usuario1 = new Usuario("Matheus", "teste@teste.com");
-        Usuario usuario2 = new Usuario("Matheus 2", "teste2@teste.com");
-        when(repository.buscarTodos(usuario1)).thenReturn(Arrays.asList(usuario1, usuario2));
 
-        List<Usuario> usuarios = service.getTodos(usuario1);
-        assertNotNull(usuarios);
-        assertThatCollection(usuarios).hasSize(2);
-        assertThatCollection(usuarios).filteredOnAssertions(u -> u.equals(usuario1));
-        assertThatCollection(usuarios).filteredOnAssertions(u -> u.equals(usuario2));
-        verify(repository).buscarTodos(usuario1);
+    @Test
+    void deveRetornarNullSeNaoTiverUsuariosNaBase() throws BusinessException {
+        when(repository.buscarTodos()).thenReturn(null);
+
+        List<Usuario> usuarios = service.getTodos();
+        assertNull(usuarios);
+        verify(repository).buscarTodos();
     }
 
     @Test
     void naoDeveBuscarUsuarioPassandoNull() {
         final Throwable throwable = assertThrows(BusinessException.class, () -> service.getBuscarPor(null));
-        assertEquals("Usuario é obrigatorio para realizar a busca!", throwable.getMessage());
+        assertEquals("Email é obrigatorio para realizar a busca!", throwable.getMessage());
         verifyNoInteractions(repository);
     }
 
     @Test
-    void deveBuscarUsuarioPassandoUsuario() throws BusinessException {
+    void deveBuscarUsuarioPassandoEmail() throws BusinessException {
         Usuario usuario = new Usuario("Matheus", "teste@teste.com");
-        when(repository.buscarPor(usuario)).thenReturn(usuario);
+        when(repository.buscarPor(usuario.getEmail())).thenReturn(usuario);
 
-        Usuario usuarioEsperado = service.getBuscarPor(usuario);
+        Usuario usuarioEsperado = service.getBuscarPor(usuario.getEmail());
         assertNotNull(usuarioEsperado);
         assertEquals(usuario, usuarioEsperado);
-        verify(repository).buscarPor(usuario);
+        verify(repository).buscarPor(usuario.getEmail());
     }
 }

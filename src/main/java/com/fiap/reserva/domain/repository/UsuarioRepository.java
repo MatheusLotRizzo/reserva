@@ -8,8 +8,8 @@ import com.fiap.reserva.domain.vo.EmailVo;
 
 public interface UsuarioRepository{
 
-    List<Usuario> buscarTodos(Usuario usuario) throws BusinessException;
-    Usuario buscarPor(Usuario usuario)throws BusinessException;
+    List<Usuario> buscarTodos() throws BusinessException;
+    Usuario buscarPor(EmailVo email)throws BusinessException;
     Usuario cadastrar(Usuario usuario)throws BusinessException;
     Usuario alterar(Usuario usuario)throws BusinessException;
     void excluir(EmailVo email)throws BusinessException;

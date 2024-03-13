@@ -22,10 +22,10 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     }
 
     @Override
-    public List<Usuario> buscarTodos(Usuario usuario) throws BusinessException {
+    public List<Usuario> buscarTodos() throws BusinessException {
         final List<Usuario> list = new ArrayList<>();
         final StringBuilder query = new StringBuilder()
-                .append("SELECT * FROM tb_usuario u ");
+                .append("SELECT u.ic_email, u.nm_usuario, u.ic_telefone FROM tb_usuario u");
 
         try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
             try (final ResultSet rs = ps.executeQuery()) {
@@ -40,28 +40,15 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     }
 
     @Override
-    public Usuario buscarPor(Usuario usuario) throws BusinessException {
+    public Usuario buscarPor(EmailVo emailVo) throws BusinessException {
         final StringBuilder query = new StringBuilder()
-                .append("SELECT * FROM tb_usuario u ")
-                .append("WHERE u.ic_email = ? ")
-                ;
-
-        if (usuario.getNome() != null) {
-            query.append("AND u.nm_usuario = ? ");
-        }
-        if (usuario.getCelular() != null) {
-            query.append("AND u.ic_telefone = ? ");
-        }
+                .append("SELECT u.ic_email, u.nm_usuario, u.ic_telefone FROM tb_usuario u ")
+                .append("WHERE u.ic_email = ? ");
 
         try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
             int i = 1;
-            ps.setString(i++, usuario.getEmailString());
-            if (usuario.getNome() != null) {
-                ps.setString(i++, usuario.getNome());
-            }
-            if (usuario.getCelular() != null) {
-                ps.setString(i, usuario.getCelular());
-            }
+            ps.setString(i++, emailVo.getEndereco());
+
             try (final ResultSet rs = ps.executeQuery()) {
                 if (rs.next()){
                     return contruirUsuario(rs);
@@ -117,8 +104,7 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     public void excluir(EmailVo email) {
         final StringBuilder query = new StringBuilder()
                 .append("DELETE FROM tb_usuario ")
-                .append("WHERE ic_email = ? ")
-                ;
+                .append("WHERE ic_email = ? ");
 
         try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
             int i = 1;
@@ -131,9 +117,9 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
 
     private Usuario contruirUsuario(ResultSet rs) throws SQLException, BusinessException {
         return new Usuario(
-                rs.getString("u.nm_usuario"),
-                rs.getString("u.ic_email"),
-                rs.getString("u.ic_telefone")
+                rs.getString("nm_usuario"),
+                rs.getString("ic_email"),
+                rs.getString("ic_telefone")
         );
     }
 }

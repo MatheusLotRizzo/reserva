@@ -84,17 +84,15 @@ public class UsuarioControllerSpring {
 
     @Operation(summary = "Busca usuario")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Sucesso",
+            @ApiResponse(responseCode = "200", description = "Sucesso",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDto.class, description = "Usuario")) }),
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class)) }),
     })
-    @GetMapping
-    public ResponseEntity<?> buscarPorUsuario( @PathVariable UsuarioDto usuarioDto) {
+    @GetMapping("/{email}")
+    public ResponseEntity<?> buscarPorUsuario(@PathVariable @ApiParam(value = "Email", example = "exemplo@dominio.com.br") String email){
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(
-                    usuarioController.getBuscarPor(usuarioDto)
-            );
+            return ResponseEntity.status(HttpStatus.OK).body(usuarioController.getBuscarPor(email));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

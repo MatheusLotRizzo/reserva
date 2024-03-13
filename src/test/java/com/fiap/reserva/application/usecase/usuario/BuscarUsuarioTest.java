@@ -37,57 +37,54 @@ class BuscarUsuarioTest {
     }
 
     @Test
-    void deveRetornarUsuarioBuscandoPorUsuario() throws BusinessException {
+    void deveRetornarUsuarioBuscandoPorEmail() throws BusinessException {
         Usuario usuario = new Usuario("Matheus", "teste@teste.com");
-        when(repository.buscarPor(usuario)).thenReturn(usuario);
+        when(repository.buscarPor(usuario.getEmail())).thenReturn(usuario);
 
-        final Usuario usuarioEsperado = buscarUsuario.getUsuario(usuario);
+        final Usuario usuarioEsperado = buscarUsuario.getUsuario(usuario.getEmail());
         assertNotNull(usuarioEsperado);
         assertEquals(usuario, usuarioEsperado);
-        verify(repository).buscarPor(usuario);
+        verify(repository).buscarPor(usuario.getEmail());
     }
 
     @Test
     void naoDeveRetornarUsuarioBuscandoPorNull() {
         final Throwable throwable = assertThrows(BusinessException.class, () -> buscarUsuario.getUsuario(null));
-        assertEquals("Usuario é obrigatorio para realizar a busca!", throwable.getMessage());
+        assertEquals("Email é obrigatorio para realizar a busca!", throwable.getMessage());
         verifyNoInteractions(repository);
     }
 
     @Test
     void deveRetornarNullBuscandoPorUsuarioInexistente() throws BusinessException {
         Usuario usuario = new Usuario("Matheus", "teste@teste.com");
-        when(repository.buscarPor(usuario)).thenReturn(usuario);
+        when(repository.buscarPor(usuario.getEmail())).thenReturn(usuario);
 
         Usuario usuarioInexistente = new Usuario("Matheus2", "teste2@teste.com");
 
-        final Usuario usuarioEsperado = buscarUsuario.getUsuario(usuarioInexistente);
+        final Usuario usuarioEsperado = buscarUsuario.getUsuario(usuarioInexistente.getEmail());
         assertNull(usuarioEsperado);
-        verify(repository).buscarPor(usuarioInexistente);
+        verify(repository).buscarPor(usuarioInexistente.getEmail());
     }
 
     @Test
-    void deveRetornarTodosUsuariosPassandoUsuario() throws BusinessException {
+    void deveRetornarTodosUsuarios() throws BusinessException {
         Usuario usuario = new Usuario("Matheus", "teste@teste.com");
         Usuario usuario2 = new Usuario("Matheus2", "teste2@teste.com");
-        when(repository.buscarTodos(usuario)).thenReturn(Arrays.asList(usuario, usuario2));
+        when(repository.buscarTodos()).thenReturn(Arrays.asList(usuario, usuario2));
 
-        final List<Usuario> esperado = buscarUsuario.getTodos(usuario);
+        final List<Usuario> esperado = buscarUsuario.getTodos();
         assertNotNull(esperado);
         assertThatCollection(esperado).hasSize(2);
         assertThatCollection(esperado).filteredOnAssertions(u -> u.equals(usuario));
-        verify(repository).buscarTodos(usuario);
+        verify(repository).buscarTodos();
     }
 
     @Test
-    void deveRetornarTodosUsuariosPassandoNull() throws BusinessException {
-        Usuario usuario = new Usuario("Matheus", "teste@teste.com");
-        Usuario usuario2 = new Usuario("Matheus2", "teste2@teste.com");
-        when(repository.buscarTodos(null)).thenReturn(Arrays.asList(usuario, usuario2));
+    void deveRetornarNullSeNaoTiverUsuariosNaBase() throws BusinessException {
+        when(repository.buscarTodos()).thenReturn(null);
 
-        final List<Usuario> esperado = buscarUsuario.getTodos(null);
-        assertNotNull(esperado);
-        assertThatCollection(esperado).hasSize(2);
-        verify(repository).buscarTodos(null);
+        final List<Usuario> esperado = buscarUsuario.getTodos();
+        assertNull(esperado);
+        verify(repository).buscarTodos();
     }
 }

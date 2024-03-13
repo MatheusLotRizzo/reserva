@@ -683,7 +683,7 @@ class ReservaControllerSpringTest {
 			
 			
 			when(repository.buscarTodasPor(usuario)).thenReturn(reservas);
-			when(usuarioService.getBuscarPor(usuario)).thenReturn(usuario);
+			when(usuarioService.getBuscarPor(usuario.getEmail())).thenReturn(usuario);
 			
 			mockMvc.perform(MockMvcRequestBuilders
 				.get("/reserva/usuario/{email}", emailUsuario)
@@ -693,7 +693,7 @@ class ReservaControllerSpringTest {
 			//.andDo(MockMvcResultHandlers.print());
 			;
 			
-			verify(usuarioService).getBuscarPor(usuario);
+			verify(usuarioService).getBuscarPor(usuario.getEmail());
 			verify(repository).buscarTodasPor(usuario);
 		}
 				
@@ -713,7 +713,7 @@ class ReservaControllerSpringTest {
 			final ReservaDto parametrosBusca = new ReservaDto(null, emailUsuario, null, null, SituacaoReserva.DISPONIVEL);
 			
 			when(repository.buscarTodasPor(usuario)).thenReturn(reservas);
-			when(usuarioService.getBuscarPor(usuario)).thenReturn(usuario);
+			when(usuarioService.getBuscarPor(usuario.getEmail())).thenReturn(usuario);
 			
 			mockMvc.perform(MockMvcRequestBuilders
 				.get("/reserva/usuario/situacao", emailUsuario)
@@ -725,7 +725,7 @@ class ReservaControllerSpringTest {
 			//.andDo(MockMvcResultHandlers.print());
 			;
 			
-			verify(usuarioService).getBuscarPor(usuario);
+			verify(usuarioService).getBuscarPor(usuario.getEmail());
 			verify(repository).buscarTodasPor(usuario);
 		}
 		
@@ -745,7 +745,7 @@ class ReservaControllerSpringTest {
 			final ReservaDto parametrosBusca = new ReservaDto(null, emailUsuario, null, null, SituacaoReserva.CANCELADO);
 			
 			when(repository.buscarTodasPor(usuario)).thenReturn(reservas);
-			when(usuarioService.getBuscarPor(usuario)).thenReturn(usuario);
+			when(usuarioService.getBuscarPor(usuario.getEmail())).thenReturn(usuario);
 			
 			mockMvc.perform(MockMvcRequestBuilders
 				.get("/reserva/usuario/situacao", emailUsuario)
@@ -757,7 +757,7 @@ class ReservaControllerSpringTest {
 			//.andDo(MockMvcResultHandlers.print());
 			;
 			
-			verify(usuarioService).getBuscarPor(usuario);
+			verify(usuarioService).getBuscarPor(usuario.getEmail());
 			verify(repository).buscarTodasPor(usuario);
 		}
 		
@@ -777,7 +777,7 @@ class ReservaControllerSpringTest {
 			final ReservaDto parametrosBusca = new ReservaDto(null, emailUsuario, null, null, SituacaoReserva.CONLUIDO);
 			
 			when(repository.buscarTodasPor(usuario)).thenReturn(reservas);
-			when(usuarioService.getBuscarPor(usuario)).thenReturn(usuario);
+			when(usuarioService.getBuscarPor(usuario.getEmail())).thenReturn(usuario);
 			
 			mockMvc.perform(MockMvcRequestBuilders
 				.get("/reserva/usuario/situacao", emailUsuario)
@@ -789,7 +789,7 @@ class ReservaControllerSpringTest {
 			//.andDo(MockMvcResultHandlers.print());
 			;
 			
-			verify(usuarioService).getBuscarPor(usuario);
+			verify(usuarioService).getBuscarPor(usuario.getEmail());
 			verify(repository).buscarTodasPor(usuario);
 		}
 		
@@ -809,7 +809,7 @@ class ReservaControllerSpringTest {
 			final ReservaDto parametrosBusca = new ReservaDto(null, emailUsuario, null, null, SituacaoReserva.RESERVADO);
 			
 			when(repository.buscarTodasPor(usuario)).thenReturn(reservas);
-			when(usuarioService.getBuscarPor(usuario)).thenReturn(usuario);
+			when(usuarioService.getBuscarPor(usuario.getEmail())).thenReturn(usuario);
 			
 			mockMvc.perform(MockMvcRequestBuilders
 				.get("/reserva/usuario/situacao", emailUsuario)
@@ -821,7 +821,7 @@ class ReservaControllerSpringTest {
 			//.andDo(MockMvcResultHandlers.print());
 			;
 			
-			verify(usuarioService).getBuscarPor(usuario);
+			verify(usuarioService).getBuscarPor(usuario.getEmail());
 			verify(repository).buscarTodasPor(usuario);
 		}
 		
@@ -957,5 +957,4 @@ class ReservaControllerSpringTest {
 			);
 		}
 	}
-
 }
