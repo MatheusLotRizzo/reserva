@@ -16,12 +16,20 @@ public class BuscarRestaurante {
         this.repository =  restauranteRepository;
     }
 
-    public Restaurante getRestaurantePor(CnpjVo cnpjRestaurante) throws BusinessException  {
-        return repository.buscarPorCnpj(cnpjRestaurante);
+    public Restaurante getRestaurantePor(CnpjVo cnpjRestaurante) throws BusinessException {
+        Restaurante restaurante = repository.buscarPorCnpj(cnpjRestaurante);
+        if (restaurante == null) {
+            throw new BusinessException("Restaurante não encontrado");
+        }
+        return restaurante;
     }
 
     public Restaurante getRestaurantePorNome(String nome) throws BusinessException {
-        return repository.buscarPorNome(nome);
+        Restaurante restaurante = repository.buscarPorNome(nome);
+        if (restaurante == null) {
+            throw new BusinessException("Restaurante não encontrado para o nome: " + nome);
+        }
+        return restaurante;
     }
 
     public List<Restaurante> getRestaurantePorTipoCozinha(TipoCozinha tipoCozinha) {
