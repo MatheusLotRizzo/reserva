@@ -1,9 +1,19 @@
 package com.fiap.spring.conf;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
+import com.fiap.reserva.application.controller.AvaliacaoControllerApplication;
+import com.fiap.reserva.application.service.*;
+import com.fiap.reserva.domain.entity.Avaliacao;
+import com.fiap.reserva.domain.exception.BusinessException;
+import com.fiap.reserva.domain.repository.*;
+import com.fiap.reserva.domain.vo.CnpjVo;
+import com.fiap.reserva.infra.jdbc.avaliacao.AvaliacaoRepositoryImpl;
+import com.fiap.spring.Controller.Dto.AvaliacaoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,21 +21,13 @@ import org.springframework.context.annotation.Configuration;
 import com.fiap.reserva.application.controller.ReservaControllerApplication;
 import com.fiap.reserva.application.controller.RestauranteControllerApplication;
 import com.fiap.reserva.application.controller.UsuarioControllerApplication;
-import com.fiap.reserva.application.service.EnderecoService;
-import com.fiap.reserva.application.service.HorarioSuncionamentoService;
-import com.fiap.reserva.application.service.ReservaService;
-import com.fiap.reserva.application.service.RestauranteService;
-import com.fiap.reserva.application.service.UsuarioService;
-import com.fiap.reserva.domain.repository.EnderecoRepository;
-import com.fiap.reserva.domain.repository.HorarioFuncionamentoRepository;
-import com.fiap.reserva.domain.repository.ReservaRepository;
-import com.fiap.reserva.domain.repository.RestauranteRepository;
-import com.fiap.reserva.domain.repository.UsuarioRepository;
 import com.fiap.reserva.infra.jdbc.reserva.ReservaRepositoryImpl;
 import com.fiap.reserva.infra.jdbc.restaurante.EnderecoRepositoryImpl;
 import com.fiap.reserva.infra.jdbc.restaurante.HorarioFuncionamentoRepositoryImpl;
 import com.fiap.reserva.infra.jdbc.restaurante.RestauranteRepositoryImpl;
 import com.fiap.reserva.infra.jdbc.usuario.UsuarioRepositoryImpl;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Configuration
 public class InjecaoDependencia {
@@ -106,5 +108,23 @@ public class InjecaoDependencia {
 	public ReservaControllerApplication getReservaControllerApplication(@Autowired ReservaService service) {
 		return new ReservaControllerApplication(service);
 	}
-	
+
+	//AVALIACAO
+	@Bean
+	public AvaliacaoRepository getAvaliacaoRepository(@Autowired DataSource dataSource) throws SQLException{
+		return new AvaliacaoRepositoryImpl(dataSource.getConnection());
+	}
+
+	@Bean
+	public AvaliacaoControllerApplication getAvaliacaoControllerApplication(@Autowired AvaliacaoService service) {
+		return new AvaliacaoControllerApplication(service);
+	}
+
+	@Bean
+	public AvaliacaoService getAvaliacaoService(@Autowired AvaliacaoRepository repository,
+												@Autowired RestauranteService restauranteService,
+												@Autowired UsuarioService usuarioService) {
+		return new AvaliacaoService(repository,restauranteService,usuarioService);
+	}
+
 }

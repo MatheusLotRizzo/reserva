@@ -12,11 +12,15 @@ import com.fiap.spring.Controller.Dto.AvaliacaoDto;
 public class AvaliacaoControllerApplication {
     private AvaliacaoService service;
 
+    public AvaliacaoControllerApplication(AvaliacaoService avaliacaoService){
+        this.service = avaliacaoService;
+    }
+
     public AvaliacaoDto avaliar(final AvaliacaoDto avaliacaoDto) throws BusinessException{
         return toAvaliacaoDto(service.avaliar(avaliacaoDto.toEntity()));
     }
 
-    public List<AvaliacaoDto> getBuscarTodasRerservasRestaurantePeloCNPJ(final String cnpj) throws BusinessException{
+    public List<AvaliacaoDto> getBuscarTodasAvaliacoesRestaurantePeloCNPJ(final String cnpj) throws BusinessException{
         List<Avaliacao> avaliacoes = service.getBuscarTodasAvaliacoesRestaurantePeloCNPJ(new CnpjVo(cnpj));
 
         return avaliacoes.stream()

@@ -1,5 +1,6 @@
 package com.fiap.reserva.application.usecase.avaliacao;
 
+import com.fiap.reserva.application.service.UsuarioService;
 import com.fiap.reserva.domain.entity.Avaliacao;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.AvaliacaoRepository;

@@ -15,7 +15,7 @@ public class BuscarAvaliacaoPorRestaurante {
 
     public List<Avaliacao> executar(Restaurante restaurante) throws BusinessException {
         if(restaurante == null){
-            throw new BusinessException("Restaurante é obrigatorio para realizar a busca!");
+            throw new BusinessException("Restaurante não foi encontrado!");
         }
         return repository.buscarTodasPor(restaurante);
     }

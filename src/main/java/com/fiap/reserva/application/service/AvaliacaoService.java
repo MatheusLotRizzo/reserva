@@ -4,6 +4,7 @@ import com.fiap.reserva.application.usecase.avaliacao.BuscarAvaliacaoPorRestaura
 import com.fiap.reserva.application.usecase.avaliacao.DeixarAvaliacao;
 import com.fiap.reserva.domain.entity.Avaliacao;
 import com.fiap.reserva.domain.entity.Restaurante;
+import com.fiap.reserva.domain.entity.Usuario;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.AvaliacaoRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
@@ -14,14 +15,19 @@ public class AvaliacaoService {
 
     private final AvaliacaoRepository repository;
     private final RestauranteService restauranteService;
+    private final UsuarioService usuarioService;
 
-    public AvaliacaoService(AvaliacaoRepository avaliacaoRepository, RestauranteService restauranteService) {
+    public AvaliacaoService(AvaliacaoRepository avaliacaoRepository, RestauranteService restauranteService,UsuarioService usuarioService) {
         this.repository = avaliacaoRepository;
         this.restauranteService = restauranteService;
+        this.usuarioService = usuarioService;
     }
 
     public Avaliacao avaliar(final Avaliacao avaliacao) throws BusinessException{
-        return new DeixarAvaliacao(repository).executar(avaliacao);
+        final Usuario usuario = usuarioService.getBuscarPor(avaliacao.getUsuario());
+        final Restaurante restaurante = restauranteService.getBuscarPor(avaliacao.getRestaurante().getCnpj());
+        Avaliacao avaliacaoValidada = new Avaliacao(usuario,restaurante,avaliacao.getPontuacao(),avaliacao.getComentario());
+        return new DeixarAvaliacao(repository).executar(avaliacaoValidada);
     }
 
     public List<Avaliacao> getBuscarTodasAvaliacoesRestaurantePeloCNPJ(final CnpjVo cnpj) throws BusinessException {

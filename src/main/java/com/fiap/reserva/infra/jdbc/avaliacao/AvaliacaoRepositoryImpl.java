@@ -32,7 +32,7 @@ public class AvaliacaoRepositoryImpl implements AvaliacaoRepository {
                     list.add(new Avaliacao (
                             new Usuario(rs.getString("a.cd_usuario")),
                             new Restaurante(rs.getString("a.cd_restaurante")),
-                            rs.getInt("r.pontuacao"),
+                            rs.getInt("r.qt_pontos"),
                             rs.getString("r.comentario")
                     ));
                 }
@@ -48,7 +48,7 @@ public class AvaliacaoRepositoryImpl implements AvaliacaoRepository {
     public Avaliacao avaliar(Avaliacao avaliacao) throws BusinessException {
         final StringBuilder query = new StringBuilder()
                 .append("INSERT INTO tb_avaliacao ")
-                .append("(cd_usuario, cd_restaurante, qt_pontuacao, ds_comentario) ")
+                .append("(cd_usuario, cd_restaurante, qt_pontos, ds_comentario) ")
                 .append("VALUES ")
                 .append("(?, ?, ?, ?) ");
 

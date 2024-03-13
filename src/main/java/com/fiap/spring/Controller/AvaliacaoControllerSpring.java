@@ -1,5 +1,7 @@
 package com.fiap.spring.Controller;
 
+import com.fiap.reserva.domain.exception.BusinessException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +28,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping("/avaliacao")
 public class AvaliacaoControllerSpring {
 
+    @Autowired
     private AvaliacaoControllerApplication avaliacaoController;
 
     @Operation(summary = "Realiza avaliação")
@@ -38,7 +41,11 @@ public class AvaliacaoControllerSpring {
     @PostMapping
     public ResponseEntity<?> avaliar(@RequestBody AvaliacaoDto avaliacaoDto){
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(avaliacaoController.avaliar(avaliacaoDto));
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(avaliacaoController.avaliar(avaliacaoDto));
+        } catch(BusinessException ex) {
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(MessageErrorHandler.create(ex.getMessage()));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
         }
@@ -57,8 +64,11 @@ public class AvaliacaoControllerSpring {
                                                     String cnpj) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(
-                    avaliacaoController.getBuscarTodasRerservasRestaurantePeloCNPJ(cnpj)
+                    avaliacaoController.getBuscarTodasAvaliacoesRestaurantePeloCNPJ(cnpj)
             );
+        } catch(BusinessException ex) {
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(MessageErrorHandler.create(ex.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
