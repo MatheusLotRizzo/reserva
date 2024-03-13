@@ -1,5 +1,7 @@
 package com.fiap.spring.Controller;
 
+import com.fiap.reserva.domain.exception.BusinessException;
+import com.fiap.reserva.domain.exception.EntidadeNaoEncontrada;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,15 +37,19 @@ public class UsuarioControllerSpring {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Sucesso",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDto.class, description = "Usuario")) }),
+            @ApiResponse(responseCode = "400", description = "Foi gerada uma exceção",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageErrorHandler.class)) }),
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class)) }),
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageErrorHandler.class)) }),
     })
     @PostMapping
     public ResponseEntity<?> criarUsuario(@RequestBody UsuarioDto usuarioDto){
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(usuarioController.cadastrar(usuarioDto));
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        } catch (BusinessException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageErrorHandler.create(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(MessageErrorHandler.create(e.getMessage()));
         }
     }
 
@@ -51,15 +57,19 @@ public class UsuarioControllerSpring {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Sucesso",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDto.class, description = "Usuario")) }),
+            @ApiResponse(responseCode = "400", description = "Foi gerada uma exceção",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageErrorHandler.class)) }),
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class)) }),
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageErrorHandler.class)) }),
     })
     @PutMapping
     public ResponseEntity<?> alterarUsuario(@RequestBody UsuarioDto usuarioDto ){
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(usuarioController.alterar(usuarioDto));
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        } catch (BusinessException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageErrorHandler.create(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(MessageErrorHandler.create(e.getMessage()));
         }
     }
 
@@ -67,18 +77,20 @@ public class UsuarioControllerSpring {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Sucesso",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDto.class, description = "Usuario")) }),
+            @ApiResponse(responseCode = "400", description = "Foi gerada uma exceção",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageErrorHandler.class)) }),
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class)) }),
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageErrorHandler.class)) }),
     })
     @DeleteMapping("/{email}")
-    public ResponseEntity<?> excluirUsuario(@PathVariable
-                                                @ApiParam(value = "Email", example = "exemplo@dominio.com.br")
-                                                String email ){
+    public ResponseEntity<?> excluirUsuario(@PathVariable @ApiParam(value = "Email", example = "exemplo@dominio.com.br") String email ){
         try{
             usuarioController.excluir(email);
             return ResponseEntity.status(HttpStatus.CREATED).body("Sucesso");
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        } catch (BusinessException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageErrorHandler.create(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(MessageErrorHandler.create(e.getMessage()));
         }
     }
 
@@ -86,15 +98,23 @@ public class UsuarioControllerSpring {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Sucesso",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDto.class, description = "Usuario")) }),
+            @ApiResponse(responseCode = "400", description = "Foi gerada uma exceção",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageErrorHandler.class)) }),
+            @ApiResponse(responseCode = "404", description = "Entidade não encontrada",
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageErrorHandler.class)) }),
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class)) }),
+                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageErrorHandler.class)) }),
     })
     @GetMapping("/{email}")
     public ResponseEntity<?> buscarPorUsuario(@PathVariable @ApiParam(value = "Email", example = "exemplo@dominio.com.br") String email){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(usuarioController.getBuscarPor(email));
+        } catch (EntidadeNaoEncontrada e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(MessageErrorHandler.create(e.getMessage()));
+        } catch (BusinessException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageErrorHandler.create(e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(MessageErrorHandler.create(e.getMessage()));
         }
     }
 }

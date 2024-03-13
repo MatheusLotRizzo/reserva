@@ -6,6 +6,7 @@ import com.fiap.reserva.application.usecase.usuario.CadastrarUsuario;
 import com.fiap.reserva.application.usecase.usuario.ExcluirUsuario;
 import com.fiap.reserva.domain.entity.Usuario;
 import com.fiap.reserva.domain.exception.BusinessException;
+import com.fiap.reserva.domain.exception.EntidadeNaoEncontrada;
 import com.fiap.reserva.domain.repository.UsuarioRepository;
 import com.fiap.reserva.domain.vo.EmailVo;
 
@@ -40,10 +41,18 @@ public class UsuarioService {
     }
 
     public Usuario getBuscarPor(final EmailVo emailVo) throws BusinessException{
-        return new BuscarUsuario(repository).getUsuario(emailVo);
+        Usuario usuario = new BuscarUsuario(repository).getUsuario(emailVo);
+        if(usuario == null){
+            throw new EntidadeNaoEncontrada("Usuário não encontrado!");
+        }
+        return usuario;
     }
 
     public List<Usuario> getTodos() throws BusinessException{
-        return new BuscarUsuario(repository).getTodos();
+        List<Usuario> usuarios = new BuscarUsuario(repository).getTodos();
+        if(usuarios.isEmpty()){
+            throw new EntidadeNaoEncontrada("Nenhum usuário encontrado!");
+        }
+        return usuarios;
     }
 }
