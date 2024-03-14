@@ -10,7 +10,7 @@ import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.spring.Controller.Dto.AvaliacaoDto;
 
 public class AvaliacaoControllerApplication {
-    private AvaliacaoService service;
+    private final AvaliacaoService service;
 
     public AvaliacaoControllerApplication(AvaliacaoService avaliacaoService){
         this.service = avaliacaoService;
