@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import com.fiap.reserva.application.usecase.reserva.AlterarReservaRestaurante;
+import com.fiap.reserva.application.usecase.reserva.BuscarReserva;
 import com.fiap.reserva.application.usecase.reserva.BuscarReservaRestaurante;
 import com.fiap.reserva.application.usecase.reserva.BuscarReservaUsuario;
 import com.fiap.reserva.application.usecase.reserva.CadastrarReserva;
@@ -62,12 +63,16 @@ public class ReservaService {
         return new AlterarReservaRestaurante(repository).executar(reserva);
     }
 
-    public void cancelarReserva(final Reserva reserva) throws BusinessException{
-        new CancelarReservaRestaurante(repository).executar(reserva);
+    public void cancelarReserva(final UUID numeroReserva) throws BusinessException{
+    	final Reserva reservaParaCancelar = new BuscarReserva(repository).reservaPor(numeroReserva);
+    	
+        new CancelarReservaRestaurante(repository).executar(reservaParaCancelar);
     }
     
-    public void concluirReserva(final Reserva reserva) throws BusinessException{
-        new ConcluirReservaRestaurante(repository).executar(reserva);
+    public void concluirReserva(final UUID numeroReserva) throws BusinessException{
+    	final Reserva reservaParaConcluir = new BuscarReserva(repository).reservaPor(numeroReserva);
+    	
+        new ConcluirReservaRestaurante(repository).executar(reservaParaConcluir);
     }
 
     public List<Reserva> getBuscarTodasReservaDoUsuarioPeloEmail(final EmailVo email) throws BusinessException{

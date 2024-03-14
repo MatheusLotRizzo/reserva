@@ -80,3 +80,6 @@ INSERT INTO tb_restaurante_horarios (cd_restaurante, nm_dia_semana, hr_abertura,
 INSERT INTO tb_restaurante_horarios (cd_restaurante, nm_dia_semana, hr_abertura, hr_fechamento) VALUES ('71736952000116', 'FRIDAY' ,'18:00:00','23:59:59');
 INSERT INTO tb_restaurante_horarios (cd_restaurante, nm_dia_semana, hr_abertura, hr_fechamento) VALUES ('71736952000116', 'SATURDAY' ,'12:00:00','18:00:00');
 INSERT INTO tb_restaurante_horarios (cd_restaurante, nm_dia_semana, hr_abertura, hr_fechamento) VALUES ('71736952000116', 'SUNDAY' ,'08:00:00','12:00:00');
+-- MASSA PARA TESTE INTEGRAÇÃO RESERVA
+INSERT INTO tb_reserva (cd_numero_reserva, cd_usuario, cd_restaurante, dt_hr_reserva, ds_status)
+VALUES ('cd5b81eb-1228-4c80-92e6-dc05b18d5e89', 'denis.benjamim@gmail.com', '71736952000116', '2024-03-13T12:00:00','RESERVADO');

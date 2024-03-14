@@ -17,14 +17,15 @@ public record ReservaDto(
     SituacaoReserva statusReserva       
 ) {
     public Reserva toEntity() throws BusinessException{
-        final UUID uuid = numeroReserva == null && statusReserva == SituacaoReserva.DISPONIVEL ? UUID.randomUUID() : numeroReserva;
+    	final SituacaoReserva situacaoReserva = statusReserva == null ? SituacaoReserva.DISPONIVEL : statusReserva;
+        final UUID uuid = numeroReserva == null && situacaoReserva == SituacaoReserva.DISPONIVEL ? UUID.randomUUID() : numeroReserva;
 		
         return new Reserva(
             uuid,
             new Usuario(emailUsuario), 
             new Restaurante(cnpjRestaurante), 
             dataHora, 
-            statusReserva
+            situacaoReserva
         );
     }
 }

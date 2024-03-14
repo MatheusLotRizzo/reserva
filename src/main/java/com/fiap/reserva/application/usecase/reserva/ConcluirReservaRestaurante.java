@@ -16,6 +16,7 @@ public class ConcluirReservaRestaurante {
     	if(reserva == null){
             throw new BusinessException("Informe a reserva para ser concluida");
         }
+    	
     	reserva.concluir();
         repository.alterar(reserva);
     }

@@ -31,12 +31,12 @@ public class ReservaControllerApplication {
         return toDTO(reservaEntity);
     }
 
-    public void cancelarReserva(final ReservaDto reservaDto) throws BusinessException{
-        service.cancelarReserva(reservaDto.toEntity());
+    public void cancelarReserva(final UUID numeroReserva) throws BusinessException{
+        service.cancelarReserva(numeroReserva);
     }
     
-    public void concluirReserva(final ReservaDto reservaDto) throws BusinessException{
-    	service.concluirReserva(reservaDto.toEntity());
+    public void concluirReserva(final UUID numeroReserva) throws BusinessException{
+    	service.concluirReserva(numeroReserva);
     }
 
     public List<ReservaDto> getBuscarReservasDoUsuarioPeloEmail(final String email) throws BusinessException {

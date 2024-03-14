@@ -80,10 +80,10 @@ public class ReservaControllerSpring {
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class)) }),
     })
-    @PatchMapping("/cancelar")
-    public ResponseEntity<?> cancelarReserva(@RequestBody ReservaDto reservaDto ){
+    @PatchMapping("/cancelar/{numeroReserva}")
+    public ResponseEntity<?> cancelarReserva(@PathVariable final UUID numeroReserva){
         try {
-        	reservaController.cancelarReserva(reservaDto);
+        	reservaController.cancelarReserva(numeroReserva);
             return ResponseEntity.noContent().build();
         }catch(BusinessException ex) {
         	return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -94,10 +94,10 @@ public class ReservaControllerSpring {
 	    }
     }
 
-    @PatchMapping("/concluir")
-    public ResponseEntity<?> concluirReserva(@RequestBody ReservaDto reservaDto ){
+    @PatchMapping("/concluir/{numeroReserva}")
+    public ResponseEntity<?> concluirReserva(@PathVariable("numeroReserva") UUID numeroReserva){
         try {
-        	reservaController.concluirReserva(reservaDto);
+        	reservaController.concluirReserva(numeroReserva);
             return ResponseEntity.noContent().build();
         } catch(BusinessException ex) {
         	return ResponseEntity.status(HttpStatus.BAD_REQUEST)

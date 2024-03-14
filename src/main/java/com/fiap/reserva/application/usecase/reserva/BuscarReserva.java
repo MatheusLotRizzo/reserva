@@ -25,7 +25,7 @@ public class BuscarReserva {
     
     public Reserva reservaPor(UUID codigo) throws BusinessException {
         if(codigo == null){
-            throw new BusinessException("Codigo da reserva é obrigatório");
+            throw new BusinessException("Número da reserva é obrigatório");
         }
         
         return repository.buscarPor(codigo);

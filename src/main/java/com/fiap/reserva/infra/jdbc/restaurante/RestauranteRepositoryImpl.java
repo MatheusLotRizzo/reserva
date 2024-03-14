@@ -115,7 +115,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
 
             try (final ResultSet rs = ps.executeQuery()) {
                 if(rs.next()){
-                    return Integer.parseInt(rs.getString("re.total_Mesas"));
+                    return Integer.parseInt(rs.getString("total_Mesas"));
                 }
             }
         } catch (SQLException e) {
