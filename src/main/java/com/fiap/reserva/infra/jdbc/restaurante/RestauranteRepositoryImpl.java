@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.entity.TipoCozinha;
+import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.RestauranteRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EnderecoVo;
@@ -27,7 +28,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
     }
 
     @Override
-    public Restaurante buscarPorCnpj(CnpjVo cnpj) {
+    public Restaurante buscarPorCnpj(CnpjVo cnpj) throws BusinessException {
         final StringBuilder query = new StringBuilder()
                 .append("SELECT * FROM tb_restaurante re ")
                 .append("INNER JOIN tb_restaurante_horarios hf ")
@@ -52,7 +53,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
     }
 
     @Override
-    public Restaurante buscarPorNome(String nome) {
+    public Restaurante buscarPorNome(String nome) throws BusinessException {
         final StringBuilder query = new StringBuilder()
                 .append("SELECT * FROM tb_restaurante re ")
                 .append("INNER JOIN tb_restaurante_horarios hf ")
@@ -77,7 +78,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
     }
 
     @Override
-    public List<Restaurante> buscarPorTipoCozinha(TipoCozinha tipoCozinha) {
+    public List<Restaurante> buscarPorTipoCozinha(TipoCozinha tipoCozinha) throws BusinessException {
         final List<Restaurante> list = new ArrayList<>();
         final StringBuilder query = new StringBuilder()
                 .append("SELECT * FROM tb_restaurante re ")
@@ -103,7 +104,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
     }
 
     @Override
-    public Integer obterLotacaoMaximaRestaurante(Restaurante restaurante) {
+    public Integer obterLotacaoMaximaRestaurante(Restaurante restaurante) throws BusinessException {
         final StringBuilder query = new StringBuilder()
                 .append("SELECT re.qt_capacidade_mesas total_Mesas FROM tb_restaurante re ")
                 .append("WHERE re.cd_cnpj = ? ")
@@ -124,7 +125,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
     }
 
     @Override
-    public List<Restaurante> buscarPorLocalizacao(EnderecoVo enderecoVo) {
+    public List<Restaurante> buscarPorLocalizacao(EnderecoVo enderecoVo) throws BusinessException {
         final List<Restaurante> list = new ArrayList<>();
         final StringBuilder query = new StringBuilder()
                 .append("SELECT * FROM tb_restaurante re ")
@@ -171,7 +172,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
     }
 
     @Override
-    public Restaurante cadastrar(Restaurante restaurante) {
+    public Restaurante cadastrar(Restaurante restaurante) throws BusinessException {
         final StringBuilder query = new StringBuilder()
                 .append("INSERT INTO tb_restaurante ")
                 .append("(cd_cnpj, nm_restaurante, qt_capacidade_mesas, ds_tipo_cozinha) ")
@@ -195,7 +196,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
     }
 
     @Override
-    public Restaurante alterar(Restaurante restaurante) {
+    public Restaurante alterar(Restaurante restaurante) throws BusinessException {
         final StringBuilder query = new StringBuilder()
                 .append("UPDATE tb_restaurante ")
                 .append("SET nm_restaurante = ?, ")
@@ -222,7 +223,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
     }
 
     @Override
-    public void excluir(CnpjVo cnpj) {
+    public void excluir(CnpjVo cnpj) throws BusinessException {
         final StringBuilder query = new StringBuilder()
                 .append("DELETE FROM tb_restaurante ")
                 .append("WHERE cd_cnpj = ? ")
@@ -238,7 +239,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
         }
     }
 
-    private Restaurante contruirRestaurante(ResultSet rs) throws SQLException {
+    private Restaurante contruirRestaurante(ResultSet rs) throws SQLException, BusinessException {
         return new Restaurante(
                 rs.getString("re.cd_cnpj"),
                 rs.getString("re.nm_restaurante"),

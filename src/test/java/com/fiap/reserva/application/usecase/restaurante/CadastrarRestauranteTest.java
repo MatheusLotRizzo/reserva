@@ -24,7 +24,7 @@ class CadastrarRestauranteTest {
     private Restaurante restaurante;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws BusinessException {
         // Configuração do restaurante de teste
         restaurante = new Restaurante(new CnpjVo("12345678901234"), "Restaurante Teste");
     }

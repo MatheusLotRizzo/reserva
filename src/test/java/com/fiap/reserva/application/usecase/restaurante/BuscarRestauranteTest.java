@@ -39,7 +39,7 @@ class BuscarRestauranteTest {
     }
 
     @Test
-    void naoDeveRetornarRestauranteQuandoCnpjInvalido() {
+    void naoDeveRetornarRestauranteQuandoCnpjInvalido() throws BusinessException {
         final String cnpjInvalido = "123"; // CNPJ inválido
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new CnpjVo(cnpjInvalido));
         assertEquals("Número de CNPJ inválido", exception.getMessage());
@@ -70,7 +70,7 @@ class BuscarRestauranteTest {
     }
 
     @Test
-    void deveLancarExcecaoQuandoNomeNaoEncontrado() {
+    void deveLancarExcecaoQuandoNomeNaoEncontrado() throws BusinessException {
         String nomeInexistente = "Nome Não Existe";
         when(repository.buscarPorNome(nomeInexistente)).thenReturn(null);
 

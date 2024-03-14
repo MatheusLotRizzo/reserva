@@ -43,7 +43,7 @@ class CadastrarHorarioFuncionamentoTest {
     }
 
     @Test
-    void executarFalhaHorarioFuncionamentoNulo() {
+    void executarFalhaHorarioFuncionamentoNulo() throws BusinessException {
         CnpjVo cnpj = new CnpjVo("12345678901234");
 
         BusinessException exception = assertThrows(BusinessException.class, () -> cadastrarHorarioFuncionamento.executar(cnpj, null));

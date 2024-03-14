@@ -35,7 +35,7 @@ class CadastrarEnderecoTest {
     }
 
     @Test
-    void naoDeveCadastrarEnderecoQuandoEnderecoEhNulo() {
+    void naoDeveCadastrarEnderecoQuandoEnderecoEhNulo() throws BusinessException {
         CnpjVo cnpj = new CnpjVo("12345678901234");
 
         final Throwable throwable = assertThrows(BusinessException.class, () -> cadastrarEndereco.executar(cnpj, null));

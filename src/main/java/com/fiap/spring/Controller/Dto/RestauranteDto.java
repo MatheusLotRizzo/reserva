@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.fiap.reserva.domain.entity.HorarioFuncionamento;
 import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.entity.TipoCozinha;
+import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.vo.EnderecoVo;
 
 public record RestauranteDto(
@@ -16,7 +17,7 @@ public record RestauranteDto(
         List<HorarioFuncionamentoDto> horariosFuncionamento,
         EnderecoDto endereco
 ) {
-	public Restaurante toEntity() {
+	public Restaurante toEntity() throws BusinessException {
 		final List<HorarioFuncionamento> hrf = this.horariosFuncionamento.stream()
 			.map(HorarioFuncionamentoDto::toEntity)
 			.collect(Collectors.toList());

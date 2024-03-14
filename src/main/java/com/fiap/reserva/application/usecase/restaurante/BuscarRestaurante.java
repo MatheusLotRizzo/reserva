@@ -32,11 +32,11 @@ public class BuscarRestaurante {
         return restaurante;
     }
 
-    public List<Restaurante> getRestaurantePorTipoCozinha(TipoCozinha tipoCozinha) {
+    public List<Restaurante> getRestaurantePorTipoCozinha(TipoCozinha tipoCozinha) throws BusinessException {
         return repository.buscarPorTipoCozinha(tipoCozinha);
     }
 
-    public List<Restaurante> getRestaurantePorLocalizacao(EnderecoVo enderecoVo) {
+    public List<Restaurante> getRestaurantePorLocalizacao(EnderecoVo enderecoVo) throws BusinessException {
         return repository.buscarPorLocalizacao(enderecoVo);
     }
 

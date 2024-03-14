@@ -26,8 +26,8 @@ class ObterLotacaoMaximaRestauranteTest {
     private Restaurante restaurante;
 
     @BeforeEach
-    void setUp() {
-        restaurante = new Restaurante(new CnpjVo("12345678901234"), "Restaurante Teste");
+    void setUp() throws BusinessException {
+        restaurante = new Restaurante(new CnpjVo("12345678901234"), "Restaurante Teste") ;
     }
 
     @Test

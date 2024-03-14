@@ -3,6 +3,7 @@ package com.fiap.reserva.domain.entity;
 import java.util.List;
 import java.util.Objects;
 
+import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EnderecoVo;
 
@@ -32,11 +33,11 @@ public class Restaurante {
         this.tipoCozinha = tipoCozinha;
     }
 
-    public Restaurante(String cnpj, String nome, EnderecoVo endereco, List<HorarioFuncionamento> horarioFuncionamento, int capacidadeMesas, TipoCozinha tipoCozinha) {
+    public Restaurante(String cnpj, String nome, EnderecoVo endereco, List<HorarioFuncionamento> horarioFuncionamento, int capacidadeMesas, TipoCozinha tipoCozinha) throws BusinessException  {
         this(new CnpjVo(cnpj), nome, endereco, horarioFuncionamento, capacidadeMesas, tipoCozinha);
     }
 
-    public Restaurante(String cnpj) {
+    public Restaurante(String cnpj) throws BusinessException {
         this(new CnpjVo(cnpj), null);
     }
 
