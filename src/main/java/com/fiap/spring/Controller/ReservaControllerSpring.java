@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fiap.reserva.application.controller.ReservaControllerApplication;
 import com.fiap.reserva.domain.exception.BusinessException;
+import com.fiap.spring.Controller.Dto.CriarReservaDTO;
 import com.fiap.spring.Controller.Dto.ReservaDto;
 
 import io.swagger.annotations.ApiOperation;
@@ -44,12 +45,12 @@ public class ReservaControllerSpring {
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class)) }),
     })
     @PostMapping
-    public ResponseEntity<?> criarReserva(@RequestBody ReservaDto reservaDto){
+    public ResponseEntity<?> criarReserva(@RequestBody CriarReservaDTO reservaDto){
         try {
             return ResponseEntity.status(HttpStatus.CREATED)
-            		.body(reservaController.criarReserva(reservaDto));
+            		.body(reservaController.criarReserva(reservaDto.toReservaDTO()));
         } catch(BusinessException ex) {
-        	return  ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        	return ResponseEntity.status(HttpStatus.BAD_REQUEST)
         				.body(MessageErrorHandler.create(ex.getMessage()));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

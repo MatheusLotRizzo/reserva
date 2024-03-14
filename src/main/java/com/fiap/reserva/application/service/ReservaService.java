@@ -66,13 +66,20 @@ public class ReservaService {
     public void cancelarReserva(final UUID numeroReserva) throws BusinessException{
     	final Reserva reservaParaCancelar = new BuscarReserva(repository).reservaPor(numeroReserva);
     	
+    	if(reservaParaCancelar == null) {
+    		throw new EntidadeNaoEncontrada("A Reserva informada, não é valida ou não foi encontrada");
+    	}
         new CancelarReservaRestaurante(repository).executar(reservaParaCancelar);
     }
     
     public void concluirReserva(final UUID numeroReserva) throws BusinessException{
     	final Reserva reservaParaConcluir = new BuscarReserva(repository).reservaPor(numeroReserva);
     	
-        new ConcluirReservaRestaurante(repository).executar(reservaParaConcluir);
+    	if(reservaParaConcluir == null) {
+    		throw new EntidadeNaoEncontrada("A Reserva informada, não é valida ou não foi encontrada");
+    	}
+        
+    	new ConcluirReservaRestaurante(repository).executar(reservaParaConcluir);
     }
 
     public List<Reserva> getBuscarTodasReservaDoUsuarioPeloEmail(final EmailVo email) throws BusinessException{

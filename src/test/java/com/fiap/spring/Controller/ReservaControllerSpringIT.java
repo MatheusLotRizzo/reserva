@@ -15,6 +15,8 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fiap.reserva.domain.entity.SituacaoReserva;
+import com.fiap.reserva.domain.exception.BusinessException;
+import com.fiap.spring.Controller.Dto.CriarReservaDTO;
 import com.fiap.spring.Controller.Dto.ReservaDto;
 
 import static io.restassured.RestAssured.given;
@@ -39,6 +41,34 @@ public class ReservaControllerSpringIT {
 	}
 	
 	@Nested
+	class ConcelarReserva{
+		@Test
+		void deveCacenlarReserva() throws Exception {
+			final String numeroReservaReservada = "fb93bb65-7e37-4990-8fb0-5a77e620a4ab";
+			
+			given()	
+				.when()
+					.patch("/reserva/cancelar/{numeroReserva}", numeroReservaReservada)
+				.then()
+					.statusCode(org.apache.http.HttpStatus.SC_NO_CONTENT)
+				;
+		}
+		
+		@Test
+		void naoDeveCancelarReservaCasoNaoEncontrada() throws Exception {
+			final String numeroReservaReservada = "f589ae8b-6924-4ad0-9ced-d2e712058056";
+			
+			given()	
+				.when()
+					.patch("/reserva/cancelar/{numeroReserva}", numeroReservaReservada)
+				.then()
+					.statusCode(org.apache.http.HttpStatus.SC_BAD_REQUEST)
+					.body("message", is("A Reserva informada, não é valida ou não foi encontrada"))
+				;
+		}
+	}
+	
+	@Nested
 	class ConcluirReserva{
 		@Test
 		void deveConcluirReserva() throws Exception {
@@ -51,18 +81,29 @@ public class ReservaControllerSpringIT {
 					.statusCode(org.apache.http.HttpStatus.SC_NO_CONTENT)
 				;
 		}
+		
+		@Test
+		void naoDeveConcluirReservaCasoNaoEncontrada() throws Exception {
+			final String numeroReservaReservada = "f589ae8b-6924-4ad0-9ced-d2e712058056";
+			
+			given()	
+				.when()
+					.patch("/reserva/concluir/{numeroReserva}", numeroReservaReservada)
+				.then()
+					.statusCode(org.apache.http.HttpStatus.SC_BAD_REQUEST)
+					.body("message", is("A Reserva informada, não é valida ou não foi encontrada"))
+				;
+		}
 	}
 	
 	@Nested
 	class CadastrarReserva{
 		@Test
 		void deveCriarReserva() throws Exception {
-			final ReservaDto reservaDto = new ReservaDto(
-				null, 
+			final CriarReservaDTO reservaDto = new CriarReservaDTO(
 				"denis.benjamim@gmail.com", 
 				"71736952000116", 
-				LocalDateTime.of(2024, 3, 10, 12, 0), 
-				null
+				LocalDateTime.of(2024, 3, 10, 12, 0) 
 			);
 			
 			final ReservaDto retorno = given()	
@@ -72,11 +113,29 @@ public class ReservaControllerSpringIT {
 					.post("/reserva")
 				.then()
 					.statusCode(org.apache.http.HttpStatus.SC_CREATED)
-//					.body("numeroReserva", is(notNull()))
 				.body("statusReserva", is(SituacaoReserva.RESERVADO.toString()))
 				.extract().as(ReservaDto.class);
 			
 			assertNotNull(retorno.numeroReserva());
+		}
+		
+		@Test
+		void naoDeveCadastrarReservaCasoRestauranteNaoPossuaMesasDisponiveis() throws BusinessException {
+			final CriarReservaDTO reservaDto = new CriarReservaDTO(
+				"denis.benjamim@gmail.com", 
+				"98376018000197", 
+				LocalDateTime.of(2024, 3, 10, 12, 0)
+			);
+				
+			given()	
+				.body(reservaDto)
+				.contentType(ContentType.JSON)
+				.when()
+					.post("/reserva")
+				.then()
+					.statusCode(org.apache.http.HttpStatus.SC_BAD_REQUEST)
+				.body("message", is("Não existe disponibilidade para este dia"))
+				;
 		}
 	}
 	
