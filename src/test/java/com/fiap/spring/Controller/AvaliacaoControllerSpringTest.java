@@ -34,7 +34,6 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @ContextConfiguration(classes = AvaliacaoControllerSpring.class)
 @ExtendWith(SpringExtension.class)
@@ -140,7 +139,7 @@ public class AvaliacaoControllerSpringTest {
                             .post("/avaliacao")
                             .content(UtilsTest.convertJson(avaliacaoDto))
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
-                    .andDo(print())
+//                    .andDo(print())
                     .andExpect(MockMvcResultMatchers.status().isBadRequest())
                     .andExpect(MockMvcResultMatchers.content().json(
                             UtilsTest.convertJson(MessageErrorHandler.create("Usuario é obrigatório")))
@@ -167,7 +166,7 @@ public class AvaliacaoControllerSpringTest {
                             .post("/avaliacao")
                             .content(UtilsTest.convertJson(avaliacaoDto))
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
-                    .andDo(print())
+//                    .andDo(print())
                     .andExpect(MockMvcResultMatchers.status().isBadRequest())
                     .andExpect(MockMvcResultMatchers.content().json(
                             UtilsTest.convertJson(MessageErrorHandler.create("Restaurante é obrigatório")))
@@ -176,6 +175,38 @@ public class AvaliacaoControllerSpringTest {
 
             verify(usuarioService).getBuscarPor(any());
             verify(restauranteService).getBuscarPor(any());
+        }
+
+        @Test
+        void naoDeveCriarAvaliacaoComPontuacaoInvalida() throws Exception {
+            final AvaliacaoDto avaliacaoDto = new CriarObjetosDto().criarAvaliacaoDtoComPontuacaoInvalida();
+
+            mockMvc.perform(MockMvcRequestBuilders
+                            .post("/avaliacao")
+                            .content(UtilsTest.convertJson(avaliacaoDto))
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+//                    .andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                    .andExpect(MockMvcResultMatchers.content().json(
+                            UtilsTest.convertJson(MessageErrorHandler.create("Valor inválido para a pontuação. É considerado valor válido os valores entre 0 e 5")))
+                    );
+            ;
+        }
+
+        @Test
+        void naoDeveCriarAvaliacaoSemComentario() throws Exception {
+            final AvaliacaoDto avaliacaoDto = new CriarObjetosDto().criarAvaliacaoDtoSemComentario();
+
+            mockMvc.perform(MockMvcRequestBuilders
+                            .post("/avaliacao")
+                            .content(UtilsTest.convertJson(avaliacaoDto))
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    //.andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                    .andExpect(MockMvcResultMatchers.content().json(
+                            UtilsTest.convertJson(MessageErrorHandler.create("Comentário é obrigatório")))
+                    );
+            ;
         }
     }
 
@@ -206,7 +237,7 @@ public class AvaliacaoControllerSpringTest {
                     )
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andExpect(MockMvcResultMatchers.content().json(UtilsTest.convertJson(avaliacoesRetorno)))
-                    .andDo(print())
+//                    .andDo(print())
             ;
 
             verify(restauranteService).getBuscarPor(any());
@@ -228,7 +259,7 @@ public class AvaliacaoControllerSpringTest {
                     .andExpect(MockMvcResultMatchers.content().json(
                             UtilsTest.convertJson(MessageErrorHandler.create("Restaurante não foi encontrado!")))
                     )
-                    .andDo(print())
+//                    .andDo(print())
             ;
 
             verify(restauranteService).getBuscarPor(any());
@@ -271,7 +302,22 @@ public class AvaliacaoControllerSpringTest {
                     "sujinho restaurante melhor experiencia em são paulo"
             );
         }
-
+        private AvaliacaoDto criarAvaliacaoDtoComPontuacaoInvalida() {
+            return new AvaliacaoDto(
+                    "teste_avaliacao@fiap.com.br",
+                    "94690811000105",
+                    6,
+                    "sujinho restaurante melhor experiencia em são paulo"
+            );
+        }
+        private AvaliacaoDto criarAvaliacaoDtoSemComentario() {
+            return new AvaliacaoDto(
+                    "teste_avaliacao@fiap.com.br",
+                    "94690811000105",
+                    5,
+                    null
+            );
+        }
         private RestauranteDto criarRestauranteDto() {
             return new RestauranteDto(
                     "94690811000105",
