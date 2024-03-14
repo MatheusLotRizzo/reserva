@@ -15,5 +15,4 @@ public class ObterEndereco {
     public EnderecoVo getObter(final CnpjVo cnpj, final EnderecoVo enderecoVo) throws BusinessException  {
         return repository.obter(cnpj,enderecoVo);
     }
-
 }

@@ -1,52 +1,63 @@
 package com.fiap.reserva.application.usecase.restaurante;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.fiap.reserva.domain.entity.HorarioFuncionamento;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.HorarioFuncionamentoRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-@ExtendWith(MockitoExtension.class)
 class CadastrarHorarioFuncionamentoTest {
 
     @Mock
-    private HorarioFuncionamentoRepository horarioFuncionamentoRepository;
+    private HorarioFuncionamentoRepository repository;
 
     @InjectMocks
     private CadastrarHorarioFuncionamento cadastrarHorarioFuncionamento;
 
+    private AutoCloseable autoCloseable;
+
     @BeforeEach
     void setUp() {
+        autoCloseable = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        autoCloseable.close();
     }
 
     @Test
-    void executarSucesso() throws BusinessException {
+    void naoDeveCadastrarHorarioFuncionamentoQuandoNulo() throws BusinessException {
         CnpjVo cnpj = new CnpjVo("12345678901234");
-        HorarioFuncionamento horarioFuncionamento = new HorarioFuncionamento(DayOfWeek.MONDAY, LocalDateTime.now(), LocalDateTime.now().plusHours(8));
 
-        doNothing().when(horarioFuncionamentoRepository).cadastrar(any(CnpjVo.class), any(HorarioFuncionamento.class));
+        final Throwable throwable = assertThrows(BusinessException.class,
+                () -> cadastrarHorarioFuncionamento.executar(cnpj, null));
 
-        assertDoesNotThrow(() -> cadastrarHorarioFuncionamento.executar(cnpj, horarioFuncionamento));
-        verify(horarioFuncionamentoRepository).cadastrar(cnpj, horarioFuncionamento);
+        assertEquals("Horario Funcionamento é obrigatorio", throwable.getMessage());
+        verifyNoInteractions(repository);
     }
 
     @Test
-    void executarFalhaHorarioFuncionamentoNulo() throws BusinessException {
+    void deveCadastrarHorarioFuncionamentoComSucesso() throws BusinessException {
         CnpjVo cnpj = new CnpjVo("12345678901234");
+        LocalDateTime inicio = LocalDateTime.of(2024, 3, 1, 9, 0);
+        LocalDateTime fim = LocalDateTime.of(2024, 3, 1, 18, 0);
+        HorarioFuncionamento horarioFuncionamento = new HorarioFuncionamento(DayOfWeek.MONDAY, inicio, fim);
 
-        BusinessException exception = assertThrows(BusinessException.class, () -> cadastrarHorarioFuncionamento.executar(cnpj, null));
-        assertEquals("Horario Funcionamento é obrigatorio", exception.getMessage());
+        cadastrarHorarioFuncionamento.executar(cnpj, horarioFuncionamento);
+
+        verify(repository).cadastrar(cnpj, horarioFuncionamento);
+        verifyNoMoreInteractions(repository);
     }
 }

@@ -17,7 +17,7 @@ public class AlterarRestaurante {
         }
 
         if(new BuscarRestaurante(repository).getRestaurantePor(restaurante.getCnpj()) == null){
-            throw new BusinessException("Restaurante não pode ser alterado, pois nao foi encontrada");
+            throw new BusinessException("Restaurante não pode ser alterado, pois nao foi encontrado");
         }
 
         return repository.alterar(restaurante);

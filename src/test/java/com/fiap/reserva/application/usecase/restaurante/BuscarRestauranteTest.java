@@ -41,8 +41,8 @@ class BuscarRestauranteTest {
     @Test
     void naoDeveRetornarRestauranteQuandoCnpjInvalido() throws BusinessException {
         final String cnpjInvalido = "123"; // CNPJ inválido
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new CnpjVo(cnpjInvalido));
-        assertEquals("Número de CNPJ inválido", exception.getMessage());
+        final Throwable throwable = assertThrows(BusinessException.class, () -> new CnpjVo(cnpjInvalido));
+        assertEquals("Número de CNPJ inválido", throwable.getMessage());
     }
 
     @Test

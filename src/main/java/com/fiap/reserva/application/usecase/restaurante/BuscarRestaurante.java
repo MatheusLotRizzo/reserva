@@ -39,5 +39,4 @@ public class BuscarRestaurante {
     public List<Restaurante> getRestaurantePorLocalizacao(EnderecoVo enderecoVo) throws BusinessException {
         return repository.buscarPorLocalizacao(enderecoVo);
     }
-
 }
