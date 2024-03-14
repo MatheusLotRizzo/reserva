@@ -63,7 +63,7 @@ public class AvaliacaoControllerSpring {
     public ResponseEntity<?> buscarTodasPorCnpj(@PathVariable @ApiParam(value = "Cnpj do restaurante", example = "11 caracteres alfanumericos")
                                                     String cnpj) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(
+            return ResponseEntity.status(HttpStatus.OK).body(
                     avaliacaoController.getBuscarTodasAvaliacoesRestaurantePeloCNPJ(cnpj)
             );
         } catch(BusinessException ex) {

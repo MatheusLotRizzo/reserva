@@ -17,18 +17,21 @@ public class AvaliacaoControllerApplication {
     }
 
     public AvaliacaoDto avaliar(final AvaliacaoDto avaliacaoDto) throws BusinessException{
-        return toAvaliacaoDto(service.avaliar(avaliacaoDto.toEntity()));
+        return toDto(service.avaliar(avaliacaoDto.toEntity()));
     }
 
     public List<AvaliacaoDto> getBuscarTodasAvaliacoesRestaurantePeloCNPJ(final String cnpj) throws BusinessException{
         List<Avaliacao> avaliacoes = service.getBuscarTodasAvaliacoesRestaurantePeloCNPJ(new CnpjVo(cnpj));
 
         return avaliacoes.stream()
-                        .map(this::toAvaliacaoDto)
+                        .map(this::toDto)
                         .collect(Collectors.toList());
     }
 
-      public AvaliacaoDto toAvaliacaoDto(final Avaliacao avaliacaoEntity){
+      public AvaliacaoDto toDto(final Avaliacao avaliacaoEntity){
+          if(avaliacaoEntity == null) {
+              return null;
+          }
         return new AvaliacaoDto(
                 avaliacaoEntity.getUsuario().getEmailString(),
                 avaliacaoEntity.getRestaurante().getCnpjString(),

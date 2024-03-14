@@ -12,11 +12,11 @@ public class Avaliacao {
     public Avaliacao(Usuario usuario, Restaurante restaurante, int pontuacao, String comentario) throws BusinessException {
 
         if (usuario == null){
-            throw new BusinessException("Usuario válido é obrigatório");
+            throw new BusinessException("Usuario é obrigatório");
         }
 
         if (restaurante == null ){
-            throw new BusinessException("Restaurante válido é obrigatório");
+            throw new BusinessException("Restaurante é obrigatório");
         }
 
         if (comentario == null || comentario.isEmpty()){
