@@ -3,7 +3,6 @@ package com.fiap.reserva.application.controller;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import com.fiap.reserva.application.service.ReservaService;
 import com.fiap.reserva.domain.entity.Reserva;
@@ -44,7 +43,7 @@ public class ReservaControllerApplication {
 
         return reservas.stream()
                 .map(this::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<ReservaDto> getBuscarTodasRerservasRestaurantePeloCNPJ(final String cnpj) throws BusinessException {
@@ -52,7 +51,7 @@ public class ReservaControllerApplication {
 
         return reservas.stream()
                 .map(this::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private ReservaDto toDTO(final Reserva reservaEntity) {
