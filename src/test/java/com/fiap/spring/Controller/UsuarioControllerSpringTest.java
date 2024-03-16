@@ -114,4 +114,152 @@ public class UsuarioControllerSpringTest {
             verifyNoInteractions(usuarioRepository);
         }
     }
+
+    @Nested
+    class AlterarUsuario{
+        @Test
+        void deveAlterarUsuario() throws Exception {
+            UsuarioDto usuarioDtoAntigo = new UsuarioDto("Matheus", "matheus@teste.com", "12999999999");
+            UsuarioDto usuarioDtoNovo = new UsuarioDto("Matheus 2", "matheus@teste.com", "12888888888");
+
+            when(usuarioRepository.buscarPor(any())).thenReturn(usuarioDtoAntigo.toEntity());
+            when(usuarioRepository.alterar(any())).thenReturn(usuarioDtoNovo.toEntity());
+
+            mockMvc.perform(MockMvcRequestBuilders
+                            .put("/usuario")
+                            .content(UtilsTest.convertJson(usuarioDtoNovo))
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isCreated())
+                    .andExpect(MockMvcResultMatchers.content().json(
+                            UtilsTest.convertJson(usuarioDtoNovo))
+                    );
+
+            verify(usuarioRepository).buscarPor(any());
+            verify(usuarioRepository).alterar(any());
+        }
+
+        @Test
+        void naoDeveAlterarUsuarioInexistente() throws Exception {
+            UsuarioDto usuarioDtoInexistente = new UsuarioDto("Matheus 2", "matheus2@teste.com", "12999999999");
+
+            when(usuarioRepository.buscarPor(any())).thenReturn(null);
+
+            mockMvc.perform(MockMvcRequestBuilders
+                            .put("/usuario")
+                            .content(UtilsTest.convertJson(usuarioDtoInexistente))
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                    .andExpect(MockMvcResultMatchers.content().json(
+                            UtilsTest.convertJson(MessageErrorHandler.create("Usuário não pode ser alterado, pois nao foi encontrada")))
+                    );
+
+            verify(usuarioRepository).buscarPor(any());
+        }
+
+        @Test
+        void naoDeveAlterarUsuarioComEnvioIncorreto() throws Exception {
+            UsuarioDto usuarioDtoSemEmail = new UsuarioDto("Matheus", "", "");
+            mockMvc.perform(MockMvcRequestBuilders
+                            .put("/usuario")
+                            .content(UtilsTest.convertJson(usuarioDtoSemEmail))
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                    .andExpect(MockMvcResultMatchers.content().json(
+                            UtilsTest.convertJson(MessageErrorHandler.create("E-mail inválido")))
+                    );
+
+            UsuarioDto usuarioDtoSemNome = new UsuarioDto("", "teste@teste.com", "");
+            mockMvc.perform(MockMvcRequestBuilders
+                            .put("/usuario")
+                            .content(UtilsTest.convertJson(usuarioDtoSemNome))
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                    .andExpect(MockMvcResultMatchers.content().json(
+                            UtilsTest.convertJson(MessageErrorHandler.create("O nome não pode ser vazio")))
+                    );
+
+            verifyNoInteractions(usuarioRepository);
+        }
+    }
+
+    @Nested
+    class ExcluirUsuario{
+        @Test
+        void deveExcluirUsuario() throws Exception {
+            UsuarioDto usuarioDto = new UsuarioDto("Matheus", "matheus@teste.com", "12999999999");
+            when(usuarioRepository.buscarPor(any())).thenReturn(usuarioDto.toEntity());
+
+            mockMvc.perform(MockMvcRequestBuilders
+                            .delete("/usuario/{email}", usuarioDto.email())
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+            verify(usuarioRepository).buscarPor(any());
+            verify(usuarioRepository).excluir(any());
+        }
+
+        @Test
+        void naoDeveExcluirUsuarioInexistente() throws Exception {
+            UsuarioDto usuarioDtoInexistente = new UsuarioDto("Matheus", "teste@teste.com", "12999999999");
+            when(usuarioRepository.buscarPor(any())).thenReturn(null);
+
+            mockMvc.perform(MockMvcRequestBuilders
+                            .delete("/usuario/{email}", usuarioDtoInexistente.email())
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                    .andExpect(MockMvcResultMatchers.content().json(
+                            UtilsTest.convertJson(MessageErrorHandler.create("Usuário não pode ser excluido, pois nao foi encontrada"))
+                    ));
+
+            verify(usuarioRepository).buscarPor(any());
+        }
+
+        @Test
+        void naoDeveExcluirUsuarioComEnvioIncorreto() throws Exception {
+            mockMvc.perform(MockMvcRequestBuilders
+                            .delete("/usuario/{email}", "teste")
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                    .andExpect(MockMvcResultMatchers.content().json(
+                            UtilsTest.convertJson(MessageErrorHandler.create("E-mail inválido"))
+                    ));
+
+            verifyNoInteractions(usuarioRepository);
+        }
+    }
+
+    @Nested
+    class BuscarUsuario{
+        @Test
+        void deveBuscarUsuario() throws Exception {
+            UsuarioDto usuarioDto = new UsuarioDto("Matheus", "matheus@teste.com", "12999999999");
+            when(usuarioRepository.buscarPor(any())).thenReturn(usuarioDto.toEntity());
+
+            mockMvc.perform(MockMvcRequestBuilders
+                            .get("/usuario/{email}", usuarioDto.email())
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.content().json(
+                            UtilsTest.convertJson(usuarioDto))
+                    );
+
+            verify(usuarioRepository).buscarPor(any());
+        }
+
+        @Test
+        void naoDeveBuscarUsuarioInexistente() throws Exception {
+            UsuarioDto usuarioDto = new UsuarioDto("Matheus", "matheus@teste.com", "12999999999");
+            when(usuarioRepository.buscarPor(any())).thenReturn(null);
+
+            mockMvc.perform(MockMvcRequestBuilders
+                            .get("/usuario/{email}", usuarioDto.email())
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isNotFound())
+                    .andExpect(MockMvcResultMatchers.content().json(
+                            UtilsTest.convertJson(MessageErrorHandler.create("Usuário não encontrado!"))
+                    ));
+
+            verify(usuarioRepository).buscarPor(any());
+        }
+    }
 }
