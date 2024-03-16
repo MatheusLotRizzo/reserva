@@ -852,7 +852,7 @@ class ReservaControllerSpringTest {
 			mockMvc.perform(MockMvcRequestBuilders
 				.get("/reserva/{numeroReserva}", numeroReservaProcurado)
 			)
-			.andExpect(MockMvcResultMatchers.status().isBadRequest())
+			.andExpect(MockMvcResultMatchers.status().isNotFound())
 			.andExpect(MockMvcResultMatchers.content().json(UtilsTest.convertJson(MessageErrorHandler.create("Reserva não encontrada"))))
 			//.andDo(MockMvcResultHandlers.print());
 			;

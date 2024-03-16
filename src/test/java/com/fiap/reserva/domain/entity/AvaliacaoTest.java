@@ -20,7 +20,7 @@ public class AvaliacaoTest {
                         ));
 
         // Act e Assert
-        assertEquals("Usuario obrigatório", throwable.getMessage());
+        assertEquals("Usuario é obrigatório", throwable.getMessage());
     }
 
     @Test
@@ -35,7 +35,7 @@ public class AvaliacaoTest {
                 ));
 
         // Act e Assert
-        assertEquals("Restaurante obrigatório", throwable.getMessage());
+        assertEquals("Restaurante é obrigatório", throwable.getMessage());
     }
 
     @Test

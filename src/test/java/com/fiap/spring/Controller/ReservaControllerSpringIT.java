@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.time.LocalDateTime;
 
+import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -62,7 +63,7 @@ public class ReservaControllerSpringIT {
 				.when()
 					.patch("/reserva/cancelar/{numeroReserva}", numeroReservaReservada)
 				.then()
-					.statusCode(org.apache.http.HttpStatus.SC_BAD_REQUEST)
+					.statusCode(HttpStatus.SC_NOT_FOUND)
 					.body("message", is("A Reserva informada, não é valida ou não foi encontrada"))
 				;
 		}
@@ -90,7 +91,7 @@ public class ReservaControllerSpringIT {
 				.when()
 					.patch("/reserva/concluir/{numeroReserva}", numeroReservaReservada)
 				.then()
-					.statusCode(org.apache.http.HttpStatus.SC_BAD_REQUEST)
+					.statusCode(HttpStatus.SC_NOT_FOUND)
 					.body("message", is("A Reserva informada, não é valida ou não foi encontrada"))
 				;
 		}
