@@ -25,7 +25,7 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     public List<Usuario> buscarTodos() throws BusinessException {
         final List<Usuario> list = new ArrayList<>();
         final StringBuilder query = new StringBuilder()
-                .append("SELECT u.ic_email, u.nm_usuario, u.ic_telefone FROM tb_usuario u");
+                .append("SELECT ic_email, nm_usuario, ic_telefone FROM tb_usuario");
 
         try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
             try (final ResultSet rs = ps.executeQuery()) {

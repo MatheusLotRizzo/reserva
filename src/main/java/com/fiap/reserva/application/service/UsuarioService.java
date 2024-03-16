@@ -50,7 +50,7 @@ public class UsuarioService {
 
     public List<Usuario> getTodos() throws BusinessException{
         List<Usuario> usuarios = new BuscarUsuario(repository).getTodos();
-        if(usuarios.isEmpty()){
+        if(usuarios == null){
             throw new EntidadeNaoEncontrada("Nenhum usuário encontrado!");
         }
         return usuarios;

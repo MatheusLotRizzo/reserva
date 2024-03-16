@@ -2,6 +2,7 @@ package com.fiap.reserva.application.service;
 
 import com.fiap.reserva.domain.entity.Usuario;
 import com.fiap.reserva.domain.exception.BusinessException;
+import com.fiap.reserva.domain.exception.EntidadeNaoEncontrada;
 import com.fiap.reserva.domain.repository.UsuarioRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -114,11 +115,11 @@ class UsuarioServiceTest {
 
 
     @Test
-    void deveRetornarNullSeNaoTiverUsuariosNaBase() throws BusinessException {
+    void naoDeveRetornarSeNaoTiverUsuariosNaBase() throws BusinessException {
         when(repository.buscarTodos()).thenReturn(null);
 
-        List<Usuario> usuarios = service.getTodos();
-        assertNull(usuarios);
+        final Throwable throwable = assertThrows(EntidadeNaoEncontrada.class, () -> service.getTodos());
+        assertEquals("Nenhum usuário encontrado!", throwable.getMessage());
         verify(repository).buscarTodos();
     }
 
