@@ -1,5 +1,6 @@
 package com.fiap.spring.infra;
 
+import com.fiap.reserva.domain.exception.EntidadeNaoEncontrada;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -22,7 +23,11 @@ public class Utils {
     		}
     		
             return ResponseEntity.status(httpStatus).body(acao.get());
-        } catch(BusinessException ex) {
+        } catch (EntidadeNaoEncontrada e){
+			return ResponseEntity
+					.status(HttpStatus.NOT_FOUND)
+					.body(MessageErrorHandler.create(e.getMessage()));
+		}catch(BusinessException ex) {
         	return ResponseEntity
     			.status(HttpStatus.BAD_REQUEST)
 				.body(MessageErrorHandler.create(ex.getMessage()));

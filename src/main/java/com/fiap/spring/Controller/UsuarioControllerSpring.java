@@ -1,7 +1,6 @@
 package com.fiap.spring.Controller;
 
-import com.fiap.reserva.domain.exception.BusinessException;
-import com.fiap.reserva.domain.exception.EntidadeNaoEncontrada;
+import com.fiap.spring.infra.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,13 +43,7 @@ public class UsuarioControllerSpring {
     })
     @PostMapping
     public ResponseEntity<?> criarUsuario(@RequestBody UsuarioDto usuarioDto){
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(usuarioController.cadastrar(usuarioDto));
-        } catch (BusinessException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageErrorHandler.create(e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(MessageErrorHandler.create(e.getMessage()));
-        }
+        return Utils.response(HttpStatus.CREATED, () -> usuarioController.cadastrar(usuarioDto));
     }
 
     @Operation(summary = "Altera um usuario")
@@ -64,18 +57,12 @@ public class UsuarioControllerSpring {
     })
     @PutMapping
     public ResponseEntity<?> alterarUsuario(@RequestBody UsuarioDto usuarioDto ){
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(usuarioController.alterar(usuarioDto));
-        } catch (BusinessException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageErrorHandler.create(e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(MessageErrorHandler.create(e.getMessage()));
-        }
+        return Utils.response(HttpStatus.CREATED, () -> usuarioController.alterar(usuarioDto));
     }
 
     @Operation(summary = "Deleta um usuario")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Sucesso",
+            @ApiResponse(responseCode = "204", description = "Sucesso",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDto.class, description = "Usuario")) }),
             @ApiResponse(responseCode = "400", description = "Foi gerada uma exceção",
                     content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageErrorHandler.class)) }),
@@ -84,14 +71,10 @@ public class UsuarioControllerSpring {
     })
     @DeleteMapping("/{email}")
     public ResponseEntity<?> excluirUsuario(@PathVariable @ApiParam(value = "Email", example = "exemplo@dominio.com.br") String email ){
-        try{
+        return Utils.response(HttpStatus.NO_CONTENT, () -> {
             usuarioController.excluir(email);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Sucesso");
-        } catch (BusinessException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageErrorHandler.create(e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(MessageErrorHandler.create(e.getMessage()));
-        }
+            return null;
+        });
     }
 
     @Operation(summary = "Busca usuario")
@@ -107,14 +90,6 @@ public class UsuarioControllerSpring {
     })
     @GetMapping("/{email}")
     public ResponseEntity<?> buscarPorUsuario(@PathVariable @ApiParam(value = "Email", example = "exemplo@dominio.com.br") String email){
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(usuarioController.getBuscarPor(email));
-        } catch (EntidadeNaoEncontrada e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(MessageErrorHandler.create(e.getMessage()));
-        } catch (BusinessException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MessageErrorHandler.create(e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(MessageErrorHandler.create(e.getMessage()));
-        }
+        return Utils.response(HttpStatus.OK, () -> usuarioController.getBuscarPor(email));
     }
 }
