@@ -98,14 +98,14 @@ public class EnderecoRepositoryImpl implements EnderecoRepository {
     }
 
     protected EnderecoVo construirEndereco(ResultSet rs) throws SQLException {
-        return new EnderecoVo(
-            rs.getString("e.cd_cep"),
-            rs.getString("e.ds_logradouro"),
-            rs.getString("e.ds_numero"),
-            rs.getString("e.ds_complemento"),
-            rs.getString("e.nm_bairro"),
-            rs.getString("e.nm_cidade"),
-            rs.getString("e.uf_estado")
+           	return new EnderecoVo(
+            rs.getString("cd_cep"),
+            rs.getString("ds_logradouro"),
+            rs.getString("ds_numero"),
+            rs.getString("ds_complemento"),
+            rs.getString("nm_bairro"),
+            rs.getString("nm_cidade"),
+            rs.getString("uf_estado")
         );
     }
 }
