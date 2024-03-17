@@ -71,6 +71,8 @@ FOREIGN KEY(cd_restaurante) REFERENCES tb_restaurante(cd_cnpj);
 
 -- Massa de Dados
 INSERT INTO tb_usuario (nm_usuario, ic_telefone, ic_email)  values ('Denis Benjamim','13997279686','denis.benjamim@gmail.com');
+INSERT INTO tb_usuario (nm_usuario, ic_telefone, ic_email)  values ('Matheus Rizzo','14999998888','matheus@gmail.com');
+INSERT INTO tb_usuario (nm_usuario, ic_telefone, ic_email)  values ('Matheus Rizzo','14999998888','matheus2@gmail.com');
 INSERT INTO tb_restaurante (cd_cnpj,nm_restaurante,ds_tipo_cozinha,qt_capacidade_mesas) values ('71736952000116', 'Restaurante Denis Benjamim', 'JAPONESA', 3);
 INSERT INTO tb_restaurante (cd_cnpj,nm_restaurante,ds_tipo_cozinha,qt_capacidade_mesas) values ('98376018000197', 'Restaurante Sem Mesas', 'JAPONESA', 0);
 INSERT INTO tb_restaurante_endereco (cd_restaurante, cd_cep, ds_logradouro, ds_numero, ds_complemento, nm_bairro, nm_cidade, uf_estado) VALUES ('71736952000116', '11533180', 'RUA SAO VICENTE', '273', 'apto 11', 'Casqueiro', 'Cubatão', 'SP');
