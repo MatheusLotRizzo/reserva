@@ -8,15 +8,11 @@ import com.fiap.reserva.domain.vo.EnderecoVo;
 public class ObterEndereco {
 
     private final EnderecoRepository repository;
-    public ObterEndereco(EnderecoRepository enderecoRepository) throws BusinessException {
+    public ObterEndereco(EnderecoRepository enderecoRepository) {
         this.repository =  enderecoRepository;
     }
 
-    public EnderecoVo getObter(final CnpjVo cnpj, final EnderecoVo enderecoVo) throws BusinessException {
-        EnderecoVo encontrado = repository.obter(cnpj, enderecoVo);
-        if (encontrado == null) {
-            throw new BusinessException("Endereço não encontrado");
-        }
-        return encontrado;
+    public EnderecoVo getObter(final CnpjVo cnpj, final EnderecoVo enderecoVo) throws BusinessException  {
+        return repository.obter(cnpj,enderecoVo);
     }
 }

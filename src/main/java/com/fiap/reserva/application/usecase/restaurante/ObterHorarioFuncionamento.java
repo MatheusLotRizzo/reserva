@@ -12,12 +12,8 @@ public class ObterHorarioFuncionamento {
         this.repository =  horarioFuncionamentoRepository;
     }
 
-    public HorarioFuncionamento getObter(final CnpjVo cnpj, final HorarioFuncionamento horarioFuncionamento) throws BusinessException {
-        HorarioFuncionamento encontrado = repository.obter(cnpj, horarioFuncionamento);
-        if (encontrado == null) {
-            throw new BusinessException("Horário de funcionamento não encontrado");
-        }
-        return encontrado;
+    public HorarioFuncionamento getObter(final CnpjVo cnpj, final HorarioFuncionamento horarioFuncionamento) throws BusinessException  {
+        return repository.obter(cnpj,horarioFuncionamento);
     }
 
 }
