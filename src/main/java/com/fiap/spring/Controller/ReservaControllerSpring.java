@@ -15,16 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fiap.reserva.application.controller.ReservaControllerApplication;
+import com.fiap.reserva.domain.entity.SituacaoReserva;
 import com.fiap.spring.Controller.Dto.CriarReservaDTO;
-import com.fiap.spring.Controller.Dto.ReservaDto;
 import com.fiap.spring.infra.Utils;
+import com.fiap.spring.swagger.annotations.ApiResponseSwaggerCreate;
+import com.fiap.spring.swagger.annotations.ApiResponseSwaggerNoContent;
+import com.fiap.spring.swagger.annotations.ApiResponseSwaggerOk;
 
-import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Reserva", description = "Reserva do usuário para um restaurante")
@@ -35,27 +33,17 @@ public class ReservaControllerSpring {
 	@Autowired
     private ReservaControllerApplication reservaController;
 
-	@Operation(summary = "Cria uma reserva")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Sucesso",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ReservaDto.class, description = "Reserva")) }),
-            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class)) }),
-    })
-    @PostMapping
+	@PostMapping
+	@Operation(summary = "Cria reserva")
+	@ApiResponseSwaggerCreate
     public ResponseEntity<?> criarReserva(@RequestBody CriarReservaDTO reservaDto){
         return Utils.response(HttpStatus.CREATED, 
     		() -> reservaController.criarReserva(reservaDto.toReservaDTO()));
     }
 
-    @Operation(summary = "Cancela uma reserva")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Sucesso",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ReservaDto.class, description = "Reserva")) }),
-            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class)) }),
-    })
-    @PatchMapping("/cancelar/{numeroReserva}")
+	@PatchMapping("/cancelar/{numeroReserva}")
+    @Operation(summary = "Cancela reserva")
+    @ApiResponseSwaggerNoContent
     public ResponseEntity<?> cancelarReserva(@PathVariable final UUID numeroReserva){
         return Utils.response(HttpStatus.NO_CONTENT,
 			() -> {
@@ -65,6 +53,8 @@ public class ReservaControllerSpring {
     }
 
     @PatchMapping("/concluir/{numeroReserva}")
+    @Operation(summary = "Conclui reserva")
+    @ApiResponseSwaggerNoContent
     public ResponseEntity<?> concluirReserva(@PathVariable("numeroReserva") UUID numeroReserva){
         return Utils.response(HttpStatus.NO_CONTENT,
 			() -> {
@@ -73,55 +63,49 @@ public class ReservaControllerSpring {
 			});
     }
 
-    @Operation(summary = "Busca reserva")
-    @ApiOperation("Busca reserva por email")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Sucesso",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ReservaDto.class, description = "Reserva")) }),
-            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class)) }),
-    })
     @GetMapping("/usuario/{email}")
+    @Operation(summary = "Busca reserva pelo email.")
+    @ApiResponseSwaggerOk
     public ResponseEntity<?> buscarReservasDoUsuarioPeloEmail(@PathVariable String email) {
 		return Utils.response(HttpStatus.OK,
 			() -> reservaController.getBuscarReservasDoUsuarioPeloEmail(email));
     }
     
-    
-    
-    @GetMapping("/usuario/situacao")
-    public ResponseEntity<?> buscarReservasDoUsuarioPelaSituacao(@RequestBody ReservaDto reservaDto) {
+    @GetMapping("/usuario/{email}/{situacao-reserva}")
+    @Operation(summary = "Busca reservas de um usuario por email e situação da reserva")
+    @ApiResponseSwaggerOk
+    public ResponseEntity<?> buscarReservasDoUsuarioPelaSituacao(@PathVariable("email")String email, @PathVariable("situacao-reserva") SituacaoReserva situacaoReserva) {
     	return Utils.response(HttpStatus.OK, 
-			() -> reservaController.getBuscarReservasDoUsuarioPelaSituacao(reservaDto));
+			() -> reservaController.getBuscarReservasDoUsuarioPelaSituacao(email, situacaoReserva));
     }
-
-    @Operation(summary = "Busca reserva")
-    @ApiOperation("Busca reserva por cnpj")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Sucesso",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ReservaDto.class, description = "Reserva")) }),
-            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class)) }),
-    })
+    
     @GetMapping("/restaurante/{cnpj}")
+    @Operation(summary = "Busca reservas do restaurante por cnpj")
+    @ApiResponseSwaggerOk
     public ResponseEntity<?> buscarReservasDoRestaurantePeloCnpj(@PathVariable("cnpj") String cnpj){
     	return Utils.response(HttpStatus.OK, 
 			() -> reservaController.getBuscarTodasRerservasRestaurantePeloCNPJ(cnpj));
     }
     
-    @GetMapping("/restaurante/situacao")
-    public ResponseEntity<?> buscarReservasDoRestaurantePorSituacao(@RequestBody ReservaDto reservaDto){
+    @GetMapping("/restaurante/{cnpj}/{situacao-reserva}")
+    @Operation(summary = "Busca reservas do restaurante por cnpj e situação da reserva")
+    @ApiResponseSwaggerOk
+    public ResponseEntity<?> buscarReservasDoRestaurantePorSituacao(@PathVariable("cnpj")String cnpj, @PathVariable("situacao-reserva") SituacaoReserva situacaoReserva){
         return Utils.response(HttpStatus.OK, 
-			() -> reservaController.getBuscarReservasDoRestaurantePorSituacao(reservaDto));
+			() -> reservaController.getBuscarReservasDoRestaurantePorSituacao(cnpj, situacaoReserva));
     }
     
     @GetMapping("/{numeroReserva}")
+    @Operation(summary = "Busca reserva do restaurante por numero da reserva")
+    @ApiResponseSwaggerOk
     public ResponseEntity<?> buscarReservaDoRestaurantePeloNumeroReserva(@PathVariable UUID numeroReserva){
     	return Utils.response(HttpStatus.OK, 
 			() -> reservaController.getBuscarReservaPeloNumeroReserva(numeroReserva));
     }
     
     @GetMapping("/restaurante/{cnpj}/{data}")
+    @Operation(summary = "Busca reservas do restaurante pelo cnpj e data")
+    @ApiResponseSwaggerOk
     public ResponseEntity<?> buscarReservaDoRestaurantePelaData(@PathVariable("cnpj") String cnpjVo,@PathVariable LocalDate data){
     	return Utils.response(HttpStatus.OK, 
 			() -> reservaController.getBuscarReservaDoRestaurantePeloData(cnpjVo, data));

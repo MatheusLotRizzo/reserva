@@ -143,7 +143,7 @@ public class ReservaControllerSpringIT {
 	@Nested
 	class BuscarReserva{
 		@Test
-		void deveBuscarReservasPeloUsuario() throws Exception {
+		void deveBuscarReservasPeloEmailDoUsuario() throws Exception {
 			final String emailUsuario = "denis.benjamim@gmail.com";
 			given()	
 				.pathParam("email", emailUsuario)		
@@ -151,6 +151,19 @@ public class ReservaControllerSpringIT {
 				.get("/reserva/usuario/{email}")
 			.then()
 				.statusCode(org.apache.http.HttpStatus.SC_OK)
+				;
+		}
+		
+		@Test
+		void naoDeveBuscarReservasPeloEmailDoUsuario() throws Exception {
+			final String emailUsuario = "denis.benjamim@gmail.com.br";
+			given()	
+				.pathParam("email", emailUsuario)
+			.when()
+				.get("/reserva/usuario/{email}")
+			.then()
+				.statusCode(org.apache.http.HttpStatus.SC_NOT_FOUND)
+				.body("message", is("Usuário não encontrado!"))
 				;
 		}
 	}
