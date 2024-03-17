@@ -8,12 +8,16 @@ import com.fiap.reserva.domain.vo.CnpjVo;
 public class ObterHorarioFuncionamento {
 
     private final HorarioFuncionamentoRepository repository;
+
     public ObterHorarioFuncionamento(HorarioFuncionamentoRepository horarioFuncionamentoRepository) {
-        this.repository =  horarioFuncionamentoRepository;
+        this.repository = horarioFuncionamentoRepository;
     }
 
-    public HorarioFuncionamento getObter(final CnpjVo cnpj, final HorarioFuncionamento horarioFuncionamento) throws BusinessException  {
-        return repository.obter(cnpj,horarioFuncionamento);
+    public HorarioFuncionamento getObter(final CnpjVo cnpj, final HorarioFuncionamento horarioFuncionamento) throws BusinessException {
+        HorarioFuncionamento encontrado = repository.obter(cnpj, horarioFuncionamento);
+        if (encontrado == null) {
+            throw new BusinessException("Horário de funcionamento não encontrado");
+        }
+        return encontrado;
     }
-
 }
