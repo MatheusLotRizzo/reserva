@@ -20,8 +20,12 @@ class AlterarRestauranteTest {
     @Mock
     private RestauranteRepository repository;
 
+    @Mock
+    private BuscarRestaurante buscarRestaurante;
+
     @InjectMocks
     private AlterarRestaurante alterarRestaurante;
+
     private AutoCloseable autoCloseable;
 
     @BeforeEach
@@ -45,13 +49,12 @@ class AlterarRestauranteTest {
     void naoDeveAlterarRestauranteSeNaoEncontrado() throws BusinessException {
         CnpjVo cnpj = new CnpjVo("12345678901234");
         Restaurante restaurante = new Restaurante(cnpj, "Restaurante Teste");
-
-        when(repository.buscarPorCnpj(cnpj)).thenReturn(null);
+        when(buscarRestaurante.getRestaurantePor(cnpj)).thenReturn(null);
 
         final Throwable throwable = assertThrows(BusinessException.class, () -> alterarRestaurante.executar(restaurante));
-        assertEquals("Restaurante não encontrado", throwable.getMessage());
+        assertEquals("Restaurante não pode ser alterado, pois não foi encontrado", throwable.getMessage());
 
-        verify(repository).buscarPorCnpj(cnpj); // Verifica se a busca foi realmente feita
+        verify(buscarRestaurante).getRestaurantePor(cnpj);
         verifyNoMoreInteractions(repository);
     }
 
@@ -60,13 +63,15 @@ class AlterarRestauranteTest {
         CnpjVo cnpj = new CnpjVo("12345678901234");
         Restaurante restaurante = new Restaurante(cnpj, "Restaurante Teste");
 
+        when(buscarRestaurante.getRestaurantePor(cnpj)).thenReturn(restaurante);
+
         when(repository.buscarPorCnpj(cnpj)).thenReturn(restaurante);
         when(repository.alterar(restaurante)).thenReturn(restaurante);
 
         Restaurante resultado = alterarRestaurante.executar(restaurante);
 
         assertEquals(restaurante, resultado);
-        verify(repository).buscarPorCnpj(cnpj);
+        verify(buscarRestaurante).getRestaurantePor(cnpj);
         verify(repository).alterar(restaurante);
     }
 }

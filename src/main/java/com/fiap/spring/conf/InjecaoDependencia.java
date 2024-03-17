@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import com.fiap.reserva.application.usecase.restaurante.BuscarRestaurante;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,14 +56,20 @@ public class InjecaoDependencia {
 	public RestauranteRepository getRestauranteRepository(@Autowired DataSource dataSource) throws SQLException {
 		return new RestauranteRepositoryImpl(dataSource.getConnection());
 	}
+
+	@Bean
+	public BuscarRestaurante getBuscarRestaurante(@Autowired RestauranteRepository repository) {
+		return new BuscarRestaurante(repository);
+	}
 	
 	@Bean
 	public RestauranteService getRestauranteService(
 		@Autowired RestauranteRepository repository, 
 		@Autowired EnderecoService enderecoService, 
-		@Autowired HorarioSuncionamentoService horarioSuncionamentoService
+		@Autowired HorarioSuncionamentoService horarioSuncionamentoService,
+		@Autowired BuscarRestaurante buscarRestaurante
 	) {
-		return new RestauranteService(repository, enderecoService, horarioSuncionamentoService);
+		return new RestauranteService(repository, enderecoService, horarioSuncionamentoService, buscarRestaurante);
 	}
 	
 	@Bean 

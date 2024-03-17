@@ -16,14 +16,18 @@ public class RestauranteService {
     private final EnderecoService enderecoService;
     private final HorarioSuncionamentoService horarioSuncionamentoService;
 
+    private final BuscarRestaurante buscarRestaurante;
+
     public RestauranteService(
-    		RestauranteRepository repository, 
-    		EnderecoService enderecoService,
-			HorarioSuncionamentoService horarioSuncionamentoService) {
+            RestauranteRepository repository,
+            EnderecoService enderecoService,
+            HorarioSuncionamentoService horarioSuncionamentoService,
+            BuscarRestaurante buscarRestaurante) {
 		this.repository = repository;
 		this.enderecoService = enderecoService;
 		this.horarioSuncionamentoService = horarioSuncionamentoService;
-	}
+        this.buscarRestaurante = buscarRestaurante;
+    }
 
     public Restaurante cadastrar(final Restaurante restaurante) throws BusinessException {
         Restaurante restauranteRetorno = new CadastrarRestaurante(repository).executar(restaurante);
@@ -35,7 +39,8 @@ public class RestauranteService {
     public Restaurante alterar(final Restaurante restaurante) throws BusinessException {
         cadastrarOuAlterarEndereco(restaurante);
         cadastrarOuAlterarHorarioFuncionamento(restaurante);
-        return new AlterarRestaurante(repository).executar(restaurante);
+        AlterarRestaurante alterarRestaurante = new AlterarRestaurante(repository, buscarRestaurante);
+        return alterarRestaurante.executar(restaurante);
     }
 
 	public void excluir(final CnpjVo cnpj) throws BusinessException{
@@ -85,16 +90,4 @@ public class RestauranteService {
             }
         }
     }
-
-
-//    private void cadastrarOuAlterarHorarioFuncionamento(final Restaurante restaurante) throws BusinessException{
-//        if (restaurante.getHorarioFuncionamento() != null) {
-//            HorarioFuncionamento horarioFuncionamento = horarioSuncionamentoService.getObter(restaurante.getCnpj(),restaurante.getHorarioFuncionamento());
-//            if(horarioFuncionamento != null) {
-//                horarioSuncionamentoService.alterar(restaurante.getCnpj(), restaurante.getHorarioFuncionamento());
-//            } else {
-//                horarioSuncionamentoService.cadastrar(restaurante.getCnpj(), restaurante.getHorarioFuncionamento());
-//            }
-//        }
-//    }
 }
