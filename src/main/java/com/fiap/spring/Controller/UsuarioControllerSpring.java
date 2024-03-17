@@ -1,6 +1,9 @@
 package com.fiap.spring.Controller;
 
 import com.fiap.spring.infra.Utils;
+import com.fiap.spring.swagger.annotations.ApiResponseSwaggerCreate;
+import com.fiap.spring.swagger.annotations.ApiResponseSwaggerNoContent;
+import com.fiap.spring.swagger.annotations.ApiResponseSwaggerOk;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,44 +35,23 @@ public class UsuarioControllerSpring {
 	@Autowired
     private UsuarioControllerApplication usuarioController;
 
-    @Operation(summary = "Cria um usuario")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Sucesso",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDto.class, description = "Usuario")) }),
-            @ApiResponse(responseCode = "400", description = "Foi gerada uma exceção",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageErrorHandler.class)) }),
-            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageErrorHandler.class)) }),
-    })
     @PostMapping
+    @Operation(summary = "Cria um usuario")
+    @ApiResponseSwaggerCreate
     public ResponseEntity<?> criarUsuario(@RequestBody UsuarioDto usuarioDto){
         return Utils.response(HttpStatus.CREATED, () -> usuarioController.cadastrar(usuarioDto));
     }
 
-    @Operation(summary = "Altera um usuario")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Sucesso",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDto.class, description = "Usuario")) }),
-            @ApiResponse(responseCode = "400", description = "Foi gerada uma exceção",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageErrorHandler.class)) }),
-            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageErrorHandler.class)) }),
-    })
     @PutMapping
+    @Operation(summary = "Altera um usuario")
+    @ApiResponseSwaggerCreate
     public ResponseEntity<?> alterarUsuario(@RequestBody UsuarioDto usuarioDto ){
         return Utils.response(HttpStatus.CREATED, () -> usuarioController.alterar(usuarioDto));
     }
 
-    @Operation(summary = "Deleta um usuario")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Sucesso",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDto.class, description = "Usuario")) }),
-            @ApiResponse(responseCode = "400", description = "Foi gerada uma exceção",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageErrorHandler.class)) }),
-            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageErrorHandler.class)) }),
-    })
     @DeleteMapping("/{email}")
+    @Operation(summary = "Deleta um usuario")
+    @ApiResponseSwaggerNoContent
     public ResponseEntity<?> excluirUsuario(@PathVariable @ApiParam(value = "Email", example = "exemplo@dominio.com.br") String email ){
         return Utils.response(HttpStatus.NO_CONTENT, () -> {
             usuarioController.excluir(email);
@@ -77,18 +59,9 @@ public class UsuarioControllerSpring {
         });
     }
 
-    @Operation(summary = "Busca usuario")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Sucesso",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioDto.class, description = "Usuario")) }),
-            @ApiResponse(responseCode = "400", description = "Foi gerada uma exceção",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageErrorHandler.class)) }),
-            @ApiResponse(responseCode = "404", description = "Entidade não encontrada",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageErrorHandler.class)) }),
-            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção",
-                    content = { @Content(mediaType = "application/json", schema = @Schema(implementation = MessageErrorHandler.class)) }),
-    })
     @GetMapping("/{email}")
+    @Operation(summary = "Busca usuario")
+    @ApiResponseSwaggerOk
     public ResponseEntity<?> buscarPorUsuario(@PathVariable @ApiParam(value = "Email", example = "exemplo@dominio.com.br") String email){
         return Utils.response(HttpStatus.OK, () -> usuarioController.getBuscarPor(email));
     }
