@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import com.fiap.reserva.application.usecase.reserva.AlterarReservaRestaurante;
 import com.fiap.reserva.application.usecase.reserva.BuscarReserva;
 import com.fiap.reserva.application.usecase.reserva.BuscarReservaRestaurante;
 import com.fiap.reserva.application.usecase.reserva.BuscarReservaUsuario;
@@ -59,10 +58,6 @@ public class ReservaService {
         }
 	}
 
-	public Reserva alterarReserva(final Reserva reserva) throws BusinessException{
-        return new AlterarReservaRestaurante(repository).executar(reserva);
-    }
-
     public void cancelarReserva(final UUID numeroReserva) throws BusinessException{
     	final Reserva reservaParaCancelar = new BuscarReserva(repository).reservaPor(numeroReserva);
     	
@@ -90,10 +85,6 @@ public class ReservaService {
 
     public List<Reserva> getBuscarTodasRerservasRestaurantePeloCNPJ(final CnpjVo cnpj) throws BusinessException{
         final Restaurante restaurante = restauranteService.getBuscarPor(cnpj);
-        
-        if(restaurante == null) {
-        	throw new EntidadeNaoEncontrada("Restaurante não encontrado");
-        }
         
         return new BuscarReservaRestaurante(repository).executar(restaurante);
     }

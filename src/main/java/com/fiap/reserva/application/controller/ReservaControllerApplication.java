@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.fiap.reserva.application.service.ReservaService;
 import com.fiap.reserva.domain.entity.Reserva;
+import com.fiap.reserva.domain.entity.SituacaoReserva;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EmailVo;
@@ -20,12 +21,6 @@ public class ReservaControllerApplication {
 
 	public ReservaDto criarReserva(ReservaDto reservaDto)throws BusinessException{
         final Reserva reservaEntity = service.criarReserva(reservaDto.toEntity());
-        
-        return toDTO(reservaEntity);
-    }
-
-    public ReservaDto alterarReserva(final ReservaDto reservaDto) throws BusinessException{
-        final Reserva reservaEntity = service.alterarReserva(reservaDto.toEntity());
         
         return toDTO(reservaEntity);
     }
@@ -68,15 +63,15 @@ public class ReservaControllerApplication {
         );
     }
 
-	public List<ReservaDto> getBuscarReservasDoRestaurantePorSituacao(ReservaDto reservaDto) throws BusinessException  {
-		return service.getBuscarReservasDoRestaurantePorSituacao(new CnpjVo(reservaDto.cnpjRestaurante()), reservaDto.statusReserva())
+	public List<ReservaDto> getBuscarReservasDoRestaurantePorSituacao(String cnpj, SituacaoReserva situacaoReserva) throws BusinessException  {
+		return service.getBuscarReservasDoRestaurantePorSituacao(new CnpjVo(cnpj), situacaoReserva)
 			.stream()
 			.map(this::toDTO)
 			.toList();
 	}
 
-	public List<ReservaDto> getBuscarReservasDoUsuarioPelaSituacao(ReservaDto reservaDto) throws BusinessException {
-		return service.getBuscarReservasDoUsuarioPorSituacao(new EmailVo(reservaDto.emailUsuario()), reservaDto.statusReserva())
+	public List<ReservaDto> getBuscarReservasDoUsuarioPelaSituacao(String emailUsuario, SituacaoReserva situacaoReserva) throws BusinessException {
+		return service.getBuscarReservasDoUsuarioPorSituacao(new EmailVo(emailUsuario), situacaoReserva)
 			.stream()
 			.map(this::toDTO)
 			.toList();
