@@ -1,16 +1,13 @@
 package com.fiap.reserva.domain.entity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.Objects;
-
-import org.junit.jupiter.api.Test;
-
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.vo.EmailVo;
 import com.fiap.spring.Controller.Dto.UsuarioDto;
+import org.junit.jupiter.api.Test;
+
+import java.util.Objects;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class UsuarioTest {
 
@@ -96,33 +93,33 @@ class UsuarioTest {
     void deveRetornarVerdadeiroCasoDoisUsuariosTenhamMesmoEmail() throws BusinessException{
         Usuario usuario1 = new Usuario("Matheus", "matheus@teste.com");
         Usuario usuario2 = new Usuario("Matheus", "matheus@teste.com");
-        assertEquals(true, usuario1.equals(usuario2));
+        assertTrue(usuario1.equals(usuario2));
     }
 
     @Test
     void deveRetornarVerdadeiroEnviandoOMesmoUsuario() throws BusinessException{
         Usuario usuario = new Usuario("Matheus", "matheus@teste.com");
-        assertEquals(true, usuario.equals(usuario));
+        assertTrue(usuario.equals(usuario));
     }
 
     @Test
     void deveRetornarFalsoCasoDoisUsuariosTenhamEmailDiferentes() throws BusinessException{
         Usuario usuario1 = new Usuario("Matheus", "matheus@teste.com");
         Usuario usuario2 = new Usuario("Matheus 2", "matheus2@teste.com");
-        assertEquals(false, usuario1.equals(usuario2));
+        assertFalse(usuario1.equals(usuario2));
     }
 
     @Test
-    void deveRetornarFalsoEnviadoObjetoDiferenteDeUsuario() throws BusinessException{
+    void deveRetornarFalsoEnviandoObjetoDiferenteDeUsuario() throws BusinessException{
         Usuario usuario = new Usuario("Matheus", "matheus@teste.com");
         EmailVo emailVo = new EmailVo("matheus@teste.com");
-        assertEquals(false, usuario.equals(emailVo));
+        assertFalse(usuario.equals(emailVo));
     }
 
     @Test
     void deveRetornarFalsoEnviadoNull() throws BusinessException{
         Usuario usuario = new Usuario("Matheus", "matheus@teste.com");
-        assertEquals(false, usuario.equals(null));
+        assertFalse(usuario.equals(null));
     }
 
     @Test

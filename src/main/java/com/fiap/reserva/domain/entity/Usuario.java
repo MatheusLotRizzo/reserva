@@ -1,10 +1,10 @@
 package com.fiap.reserva.domain.entity;
 
-import java.util.Objects;
-
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.vo.EmailVo;
 import com.fiap.spring.Controller.Dto.UsuarioDto;
+
+import java.util.Objects;
 
 public class Usuario {
     private final String nome;
@@ -57,12 +57,12 @@ public class Usuario {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj != null) {
+        if (obj != null && obj instanceof Usuario){
             return this.hashCode() == obj.hashCode();
         }
         return false;
     }
-	
+
 	public UsuarioDto toDto(){
         return new UsuarioDto(
                 this.nome,
