@@ -6,4 +6,4 @@ RUN mvn clean package -X -DskipTests
 FROM openjdk:17-ea-10-jdk-slim
 WORKDIR /app
 COPY --from=build ./app/target/*.jar ./reserva.jar
-ENTRYPOINT java -jar -Dspring.profiles.active=prd reserva.jar
+ENTRYPOINT java -jar -Dspring.profiles.active=prod reserva.jar
