@@ -5,6 +5,7 @@ import com.fiap.reserva.domain.entity.HorarioFuncionamento;
 import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.entity.TipoCozinha;
 import com.fiap.reserva.domain.exception.BusinessException;
+import com.fiap.reserva.domain.exception.EntidadeNaoEncontrada;
 import com.fiap.reserva.domain.repository.RestauranteRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EnderecoVo;
@@ -26,7 +27,11 @@ public class RestauranteService {
     }
 
     public Restaurante cadastrar(final Restaurante restaurante) throws BusinessException {
-        Restaurante restauranteRetorno = new CadastrarRestaurante(repository).executar(restaurante);
+        Restaurante existente = repository.buscarPorCnpj(restaurante.getCnpj());
+        if (existente != null) {
+            throw new BusinessException("Restaurante não pode ser cadastrado, pois já existe");
+        }
+        Restaurante restauranteRetorno = repository.cadastrar(restaurante);
         cadastrarOuAlterarEndereco(restaurante);
         cadastrarOuAlterarHorarioFuncionamento(restaurante);
         return restauranteRetorno;
@@ -39,28 +44,49 @@ public class RestauranteService {
         return alterarRestaurante.executar(restaurante);
     }
 
-    public void excluir(final CnpjVo cnpj) throws BusinessException{
-        new ExcluirRestaurante(repository).executar(cnpj);
+    public void excluir(final CnpjVo cnpj) throws BusinessException {
+        Restaurante restaurante = repository.buscarPorCnpj(cnpj);
+        if (restaurante == null) {
+            throw new EntidadeNaoEncontrada("Restaurante não pode ser excluído, pois não foi encontrado");
+        }
+
+        repository.excluir(cnpj);
     }
 
     public Restaurante getBuscarPorNome(final String nome) throws BusinessException{
         return new BuscarRestaurante(repository).getRestaurantePorNome(nome);
     }
 
-    public List<Restaurante> getBuscarPorTipoCozinha(final TipoCozinha tipoCozinha) throws BusinessException{
-        return new BuscarRestaurante(repository).getRestaurantePorTipoCozinha(tipoCozinha);
+    public List<Restaurante> getBuscarPorTipoCozinha(final TipoCozinha tipoCozinha) throws BusinessException {
+        List<Restaurante> restaurantes = new BuscarRestaurante(repository).getRestaurantePorTipoCozinha(tipoCozinha);
+        if (restaurantes == null || restaurantes.isEmpty()) {
+            throw new EntidadeNaoEncontrada("Nenhum restaurante encontrado para o tipo de cozinha: " + tipoCozinha);
+        }
+        return restaurantes;
     }
 
-    public List<Restaurante> getBuscarPorLocalizacao(final EnderecoVo enderecoVo) throws BusinessException{
-        return new BuscarRestaurante(repository).getRestaurantePorLocalizacao(enderecoVo);
+    public List<Restaurante> getBuscarPorLocalizacao(final EnderecoVo enderecoVo) throws BusinessException {
+        List<Restaurante> restaurantes = new BuscarRestaurante(repository).getRestaurantePorLocalizacao(enderecoVo);
+        if (restaurantes == null || restaurantes.isEmpty()) {
+            throw new EntidadeNaoEncontrada("Nenhum restaurante encontrado para a localização especificada.");
+        }
+        return restaurantes;
     }
 
-    public Restaurante getBuscarPor(final CnpjVo cnpj) throws BusinessException{
-        return new BuscarRestaurante(repository).getRestaurantePor(cnpj);
+    public Restaurante getBuscarPor(final CnpjVo cnpj) throws BusinessException {
+        Restaurante restaurante = repository.buscarPorCnpj(cnpj);
+        if (restaurante == null) {
+            throw new EntidadeNaoEncontrada("Restaurante não encontrado");
+        }
+        return restaurante;
     }
 
-    public Integer obterLocacaoMaxRestaurante(Restaurante restaurante) throws BusinessException{
-        return new ObterLotacaoMaximaRestaurante(repository).executar(restaurante);
+    public Integer obterLocacaoMaxRestaurante(Restaurante restaurante) throws BusinessException {
+        if (restaurante == null) {
+            throw new BusinessException("Restaurante é obrigatório para obter a lotação máxima.");
+        }
+
+        return repository.obterLotacaoMaximaRestaurante(restaurante);
     }
 
     private void cadastrarOuAlterarEndereco(final Restaurante restaurante) throws BusinessException{
