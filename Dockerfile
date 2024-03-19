@@ -1,16 +1,9 @@
-FROM ubuntu:latest
-
-RUN apt-get update
-RUN apt-get install openjdk-17-jdk -y
+FROM maven:3.8.6-amazoncorretto-17 as build
+WORKDIR /app
 COPY . .
+RUN mvn clean package -X -DskipTests
 
-RUN apt-get install maven -y
-RUN mvn clean install -DskipTests
-
-FROM openjdk:17-jdk
-
-EXPOSE 8080
-
+FROM openjdk:17-ea-10-jdk-slim
+WORKDIR /app
 COPY --from=build ./app/target/*.jar ./reserva.jar
-
-ENTRYPOINT ["java", "-jar", "reserva.jar"]
+ENTRYPOINT java -jar reserva.jar
