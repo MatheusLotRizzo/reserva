@@ -132,9 +132,6 @@ public class AvaliacaoControllerSpringTest {
             when(restauranteService.getBuscarPor(any())).thenReturn(restauranteDto.toEntity());
             when(usuarioService.getBuscarPor(any())).thenReturn(null);
 
-            when(repository.avaliar(any()))
-                    .thenReturn(avaliacaoDto.toEntity());
-
             mockMvc.perform(MockMvcRequestBuilders
                             .post("/avaliacao")
                             .content(UtilsTest.convertJson(avaliacaoDto))

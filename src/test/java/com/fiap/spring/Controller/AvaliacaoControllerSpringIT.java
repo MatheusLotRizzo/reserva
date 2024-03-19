@@ -176,14 +176,7 @@ public class AvaliacaoControllerSpringIT {
                     "sujinho restaurante melhor experiencia em são paulo"
             );
         }
-        private AvaliacaoDto criarAvaliacaoDtoCompleto2() {
-            return new AvaliacaoDto(
-                    "teste_avaliacao2@fiap.com.br",
-                    "94690811000105",
-                    3,
-                    "bom"
-            );
-        }
+
         private AvaliacaoDto criarAvaliacaoDtoSemUsuario() {
             return new AvaliacaoDto(
                     "",
