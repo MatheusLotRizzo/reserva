@@ -11,9 +11,7 @@ import com.fiap.reserva.domain.exception.BusinessException;
 public interface ReservaRepository {
     List<Reserva> buscarTodasPor(Restaurante restaurante) throws BusinessException;
     List<Reserva> buscarTodasPor(Usuario usuario) throws BusinessException;
-    Reserva buscarPor(Reserva reserva) throws BusinessException;
     Reserva buscarPor(UUID uuid) throws BusinessException;
     Reserva criar(Reserva reserva) throws BusinessException;
     Reserva alterar(Reserva reserva) throws BusinessException;
-    void excluir(Reserva reserva);
 }

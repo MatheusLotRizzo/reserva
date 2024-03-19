@@ -81,32 +81,6 @@ public class ReservaRepositoryImpl implements ReservaRepository{
     }
 
     @Override
-    public Reserva buscarPor(Reserva reserva) throws BusinessException {
-        final StringBuilder query = new StringBuilder()
-                .append("SELECT * FROM tb_reserva r ")
-                .append("WHERE cd_usuario = ? ")
-                .append("AND cd_restaurante")
-                .append("AND dt_hr_reserva = ? ")
-                ;
-
-        try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
-            int i=1;
-            ps.setString(i++, reserva.getUsuario().getEmailString());
-            ps.setString(i++, reserva.getRestaurante().getCnpjString());
-            ps.setTimestamp(i++, Timestamp.valueOf(reserva.getDataHora()));
-            
-            try (final ResultSet rs = ps.executeQuery()) {
-                if(rs.next()){
-                    return popularReserva(rs);
-                }
-            }
-        } catch (SQLException e) {
-            throw new TechnicalException(e);
-        }
-        return null;
-    }
-
-    @Override
     public Reserva criar(Reserva reserva) {
         final StringBuilder query = new StringBuilder()
         .append("INSERT INTO tb_reserva ")
@@ -151,23 +125,6 @@ public class ReservaRepositoryImpl implements ReservaRepository{
             ps.executeUpdate();
 
             return reserva;
-        } catch (SQLException e) {
-            throw new TechnicalException(e);
-        }
-    }
-
-    @Override
-    public void excluir(Reserva reserva) {
-        final StringBuilder query = new StringBuilder()
-                .append("DELETE FROM tb_reserva ")
-                .append("WHERE cd_numero_reserva = ? ")
-                ;
-
-        try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
-            int i = 1;
-            ps.setString(i++, reserva.getNumeroReserva().toString());
-            
-            ps.execute();
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }

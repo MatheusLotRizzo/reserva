@@ -1,14 +1,17 @@
 package com.fiap.reserva.application.usecase.reserva;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doNothing;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -19,11 +22,14 @@ import com.fiap.reserva.domain.entity.Usuario;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.ReservaRepository;
 
-class ExcluirReservaRestauranteTest {
+class BuscarReservaTest {
 
 	@Mock
 	private ReservaRepository repository;
 	private AutoCloseable autoCloseable;
+	
+	@InjectMocks
+	private BuscarReserva buscarReserva;
 	
 	@BeforeEach
 	void setUp() {
@@ -34,27 +40,29 @@ class ExcluirReservaRestauranteTest {
 	void tearDown() throws Exception {
 		autoCloseable.close();
 	}
-	
+
 	@Test
-	void naoDeveAlterarReservaCasoNaoSejaPassadaViaParametro() {
-		final Throwable throwable = assertThrows(BusinessException.class, () -> new ExcluirReservaRestaurante(repository).executar(null));
-		assertEquals("Informe a reserva para ser excluida", throwable.getMessage());
+	void naoDeveBuscarReservaPorNumeroReservaCasoNaoSejaPassadaViaParametro() {
+		Throwable throwable = assertThrows(BusinessException.class, () -> buscarReserva.executar(null));
+		assertEquals("Número da reserva é obrigatório", throwable.getMessage());
 	}
 	
 	@Test
-	void deveAlterarReserva() throws BusinessException {
+	void deveBuscarReservasDoUsuario() throws BusinessException {
+		final UUID numeroReserva  = UUID.randomUUID();
 		final Reserva reserva = new Reserva(
-			UUID.randomUUID(), 
-			new Usuario("teste@teste.com"), 
-			new Restaurante("12345678900000"), 
+			numeroReserva, 
+			new Usuario("teste@teste.com.br"), 
+			new Restaurante("12345678900909"), 
 			LocalDateTime.now(), 
-			SituacaoReserva.RESERVADO);
+			SituacaoReserva.RESERVADO
+		);
 		
-		doNothing().when(repository).excluir(reserva);
+		when(repository.buscarPor(numeroReserva)).thenReturn(reserva);
+		final Reserva retorno = buscarReserva.executar(numeroReserva);
 		
-		new ExcluirReservaRestaurante(repository).executar(reserva);
-		
-		verify(repository).excluir(reserva);
+		assertEquals(reserva, retorno);
+		verify(repository).buscarPor(numeroReserva);
 	}
 
 }
