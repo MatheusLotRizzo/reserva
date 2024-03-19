@@ -16,17 +16,13 @@ public class RestauranteService {
     private final EnderecoService enderecoService;
     private final HorarioSuncionamentoService horarioSuncionamentoService;
 
-    private final BuscarRestaurante buscarRestaurante;
-
     public RestauranteService(
             RestauranteRepository repository,
             EnderecoService enderecoService,
-            HorarioSuncionamentoService horarioSuncionamentoService,
-            BuscarRestaurante buscarRestaurante) {
-		this.repository = repository;
-		this.enderecoService = enderecoService;
-		this.horarioSuncionamentoService = horarioSuncionamentoService;
-        this.buscarRestaurante = buscarRestaurante;
+            HorarioSuncionamentoService horarioSuncionamentoService) {
+        this.repository = repository;
+        this.enderecoService = enderecoService;
+        this.horarioSuncionamentoService = horarioSuncionamentoService;
     }
 
     public Restaurante cadastrar(final Restaurante restaurante) throws BusinessException {
@@ -39,11 +35,11 @@ public class RestauranteService {
     public Restaurante alterar(final Restaurante restaurante) throws BusinessException {
         cadastrarOuAlterarEndereco(restaurante);
         cadastrarOuAlterarHorarioFuncionamento(restaurante);
-        AlterarRestaurante alterarRestaurante = new AlterarRestaurante(repository, buscarRestaurante);
+        AlterarRestaurante alterarRestaurante = new AlterarRestaurante(repository);
         return alterarRestaurante.executar(restaurante);
     }
 
-	public void excluir(final CnpjVo cnpj) throws BusinessException{
+    public void excluir(final CnpjVo cnpj) throws BusinessException{
         new ExcluirRestaurante(repository).executar(cnpj);
     }
 
