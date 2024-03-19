@@ -16,7 +16,7 @@ import com.fiap.reserva.domain.entity.TipoCozinha;
 import com.fiap.reserva.domain.entity.Usuario;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.ReservaRepository;
-import com.fiap.reserva.infra.jdbc.H2Connection;
+import com.fiap.reserva.infra.jdbc.DataBaseConnection;
 import com.fiap.reserva.infra.jdbc.reserva.ReservaRepositoryImpl;
 import com.fiap.reserva.infra.jdbc.restaurante.RestauranteRepositoryImpl;
 import com.fiap.reserva.infra.jdbc.usuario.UsuarioRepositoryImpl;
@@ -29,7 +29,7 @@ public class ReservaApplication {
 	}
 
 	void insereReservaNoBanco() throws SQLException, BusinessException {
-		Connection connection = H2Connection.conectar();
+		Connection connection = DataBaseConnection.conectar();
 		ReservaRepository reservaRepository = new ReservaRepositoryImpl(connection);
 		CadastrarReserva cadastrarReserva = new CadastrarReserva(reservaRepository);
 		
