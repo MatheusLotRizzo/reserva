@@ -33,7 +33,7 @@ public class AvaliacaoRepositoryImpl implements AvaliacaoRepository {
                             new Usuario(rs.getString("cd_usuario")),
                             new Restaurante(rs.getString("cd_restaurante")),
                             rs.getInt("qt_pontos"),
-                            rs.getString("comentario")
+                            rs.getString("ds_comentario")
                     ));
                 }
             }
