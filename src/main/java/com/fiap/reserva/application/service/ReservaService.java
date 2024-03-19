@@ -94,7 +94,8 @@ public class ReservaService {
 	}
 	
 	public List<Reserva> getBuscarReservasDoUsuarioPorSituacao(EmailVo emailVo, SituacaoReserva situacaoReserva) throws BusinessException {
-		return getBuscarTodasReservaDoUsuarioPeloEmail(emailVo).stream().filter(r -> situacaoReserva == r.getSituacao()).toList();
+		final List<Reserva> buscarTodasReservaDoUsuarioPeloEmail = getBuscarTodasReservaDoUsuarioPeloEmail(emailVo);
+		return buscarTodasReservaDoUsuarioPeloEmail.stream().filter(r -> situacaoReserva == r.getSituacao()).toList();
 	}
 
 	public Reserva getBuscarReservaPeloNumeroReserva(UUID numeroReserva) throws BusinessException {

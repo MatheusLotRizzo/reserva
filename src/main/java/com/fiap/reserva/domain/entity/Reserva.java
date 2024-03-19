@@ -61,7 +61,7 @@ public class Reserva {
         validarReservaEstaDisponivel();
         validarReservaEstaConcluida();
         
-        this.situacao = SituacaoReserva.CONLUIDO;
+        this.situacao = SituacaoReserva.CONCLUIDO;
     }
 
     private void validarReservaJaReservada() throws BusinessException {
@@ -83,7 +83,7 @@ public class Reserva {
     }
     
     private void validarReservaEstaConcluida() throws BusinessException {
-        if (this.situacao == SituacaoReserva.CONLUIDO) {
+        if (this.situacao == SituacaoReserva.CONCLUIDO) {
             throw new BusinessException("Esta reserva ja esta concluida");
         }
     }

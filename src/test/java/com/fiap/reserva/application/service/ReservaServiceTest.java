@@ -99,7 +99,7 @@ class ReservaServiceTest {
 			new Usuario("teste@teste.com"), 
 			new Restaurante("12345678900000"), 
 			LocalDateTime.now(), 
-			SituacaoReserva.CONLUIDO
+			SituacaoReserva.CONCLUIDO
 		);
 		
 		final Reserva rCancelada = new Reserva(

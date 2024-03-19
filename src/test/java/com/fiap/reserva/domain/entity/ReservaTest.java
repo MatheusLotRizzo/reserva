@@ -238,7 +238,7 @@ class ReservaTest {
 	            new Usuario("fualno@teste.com"), 
 	            new Restaurante("12345678900000"), 
 	            LocalDateTime.now(), 
-	            SituacaoReserva.CONLUIDO
+	            SituacaoReserva.CONCLUIDO
 	        );
 	    	
 	    	reserva.concluir();
@@ -275,7 +275,7 @@ class ReservaTest {
         );
     	
     	reserva.concluir();    	
-    	assertEquals(SituacaoReserva.CONLUIDO, reserva.getSituacao());
+    	assertEquals(SituacaoReserva.CONCLUIDO, reserva.getSituacao());
     }
     
     

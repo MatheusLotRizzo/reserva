@@ -1,6 +1,5 @@
 package com.fiap.spring.Controller;
 
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,6 +25,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -170,146 +170,25 @@ class ReservaControllerSpringTest {
 			verify(repository).buscarTodasPor(any(Restaurante.class));
 			verify(restauranteService).obterLocacaoMaxRestaurante(any());
 		}
-		
-		@Test
-		void naoDeveCriarReservaCasoSituacaoCancelada() throws Exception {
-			final ReservaDto reservaDto = new ReservaDto(
-				UUID.randomUUID(), 
-				"denis.benjamim@gmail.com", 
-				"71736952000116", 
-				LocalDateTime.of(2024, 3, 10, 12, 0), 
-				SituacaoReserva.CANCELADO
-			);
-			
-			when(restauranteService.obterLocacaoMaxRestaurante(any()))
-				.thenReturn(1);
-			
-			when(repository.buscarTodasPor(any(Restaurante.class)))
-				.thenReturn(Arrays.asList(reservaDto.toEntity()));
-			
-			when(repository.criar(any()))
-				.thenReturn(reservaDto.toEntity());
-			
-			mockMvc.perform(MockMvcRequestBuilders
-				.post("/reserva")
-				.content(UtilsTest.convertJson(reservaDto))
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-			)
-			.andExpect(MockMvcResultMatchers.status().isBadRequest())
-			.andExpect(
-				MockMvcResultMatchers.content()
-				.json(UtilsTest.convertJson(MessageErrorHandler.create("Esta reserva ja esta cancelada")))
-			)
-			;
-			
-			verify(restauranteService).obterLocacaoMaxRestaurante(any());
-			verify(repository).buscarTodasPor(any(Restaurante.class));
-		}
-		
-		@Test
-		void naoDeveCriarReservaCasoSituacaoConcluida() throws Exception {
-			final ReservaDto reservaDto = new ReservaDto(
-				UUID.randomUUID(), 
-				"denis.benjamim@gmail.com", 
-				"71736952000116", 
-				LocalDateTime.of(2024, 3, 10, 12, 0), 
-				SituacaoReserva.CONLUIDO
-			);
-			
-			when(restauranteService.obterLocacaoMaxRestaurante(any()))
-				.thenReturn(1);
-			
-			when(repository.buscarTodasPor(any(Restaurante.class)))
-				.thenReturn(Arrays.asList(reservaDto.toEntity()));
-			
-			when(repository.criar(any()))
-				.thenReturn(reservaDto.toEntity());
-			
-			mockMvc.perform(MockMvcRequestBuilders
-				.post("/reserva")
-				.content(UtilsTest.convertJson(reservaDto))
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-			)
-			.andExpect(MockMvcResultMatchers.status().isBadRequest())
-			.andExpect(
-				MockMvcResultMatchers.content()
-				.json(UtilsTest.convertJson(MessageErrorHandler.create("Esta reserva ja esta concluida")))
-			)
-			;
-			
-			verify(restauranteService).obterLocacaoMaxRestaurante(any());
-			verify(repository).buscarTodasPor(any(Restaurante.class));
-		}
-		
-		@Test
-		void naoDeveCriarReservaCasoSituacaoReservada() throws Exception {
-			final ReservaDto reservaDto = new ReservaDto(
-				UUID.randomUUID(), 
-				"denis.benjamim@gmail.com", 
-				"71736952000116", 
-				LocalDateTime.of(2024, 3, 10, 12, 0), 
-				SituacaoReserva.RESERVADO
-			);
-			
-			when(restauranteService.obterLocacaoMaxRestaurante(any()))
-				.thenReturn(2);
-			
-			when(repository.buscarTodasPor(any(Restaurante.class)))
-				.thenReturn(Arrays.asList(reservaDto.toEntity()));
-			
-			when(repository.criar(any()))
-				.thenReturn(reservaDto.toEntity());
-			
-			mockMvc.perform(MockMvcRequestBuilders
-				.post("/reserva")
-				.content(UtilsTest.convertJson(reservaDto))
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-			)
-			.andExpect(MockMvcResultMatchers.status().isBadRequest())
-			.andExpect(
-				MockMvcResultMatchers.content()
-				.json(UtilsTest.convertJson(MessageErrorHandler.create("Esta reserva ja esta reservada")))
-			)
-			;
-			
-			verify(restauranteService).obterLocacaoMaxRestaurante(any());
-			verify(repository).buscarTodasPor(any(Restaurante.class));
-		}
-	}
-	
-	@Nested
-	class AlterarReserva{
-		@Test
-		void deveAlterarReserva() {
-			fail("Not yet implemented");
-		}
-		
-		@Test
-		void naoDeveAlterarReservaConcluida() {
-			fail("Not yet implemented");
-		}
-		
-		@Test
-		void naoDeveAlterarReservaCancelada() {
-			fail("Not yet implemented");
-		}
 	}
 	
 	@Nested
 	class ConcluirReserva{
 		@Test
 		void deveConcluirReserva() throws Exception {
+			final UUID numeroReserva = UUID.randomUUID();
 			final ReservaDto reservaDto = new ReservaDto(
-				UUID.randomUUID(), 
+				numeroReserva, 
 				"denis.benjamim@gmail.com", 
 				"71736952000116", 
 				LocalDateTime.of(2024, 3, 10, 12, 0), 
 				SituacaoReserva.RESERVADO
 			);
 			
+			when(repository.buscarPor(numeroReserva)).thenReturn(reservaDto.toEntity());
+			
 			mockMvc.perform(MockMvcRequestBuilders
-				.patch("/reserva/concluir")
-				.content(UtilsTest.convertJson(reservaDto))
+				.patch("/reserva/concluir/{numeroReserva}", numeroReserva)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 			).andExpect(MockMvcResultMatchers.status().isNoContent());
 			
@@ -317,28 +196,20 @@ class ReservaControllerSpringTest {
 		}
 		
 		@Test
-		void naoDeveConcluirSeJsonVazio() throws Exception {
-			mockMvc.perform(MockMvcRequestBuilders
-				.patch("/reserva/concluir")
-				.content("{}")
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-			)
-			.andExpect(MockMvcResultMatchers.status().isBadRequest());
-		}
-		
-		@Test
 		void naoDeveConcluirReservaDisponivel() throws Exception {
+			final UUID numeroReserva = UUID.randomUUID();
 			final ReservaDto reservaDto = new ReservaDto(
-				UUID.randomUUID(), 
+				numeroReserva, 
 				"denis.benjamim@gmail.com", 
 				"71736952000116", 
 				LocalDateTime.of(2024, 3, 10, 12, 0), 
 				SituacaoReserva.DISPONIVEL
 			);
 			
+			when(repository.buscarPor(numeroReserva)).thenReturn(reservaDto.toEntity());
+			
 			mockMvc.perform(MockMvcRequestBuilders
-				.patch("/reserva/concluir")
-				.content(UtilsTest.convertJson(reservaDto))
+				.patch("/reserva/concluir/{numeroReserva}", numeroReserva)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 			)
 			.andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -349,17 +220,19 @@ class ReservaControllerSpringTest {
 		
 		@Test
 		void naoDeveConcluirReservaCancelada() throws Exception  {
+			final UUID numeroReserva = UUID.randomUUID();
 			final ReservaDto reservaDto = new ReservaDto(
-				UUID.randomUUID(), 
+				numeroReserva, 
 				"denis.benjamim@gmail.com", 
 				"71736952000116", 
 				LocalDateTime.of(2024, 3, 10, 12, 0), 
 				SituacaoReserva.CANCELADO
 			);
 			
+			when(repository.buscarPor(numeroReserva)).thenReturn(reservaDto.toEntity());
+			
 			mockMvc.perform(MockMvcRequestBuilders
-				.patch("/reserva/concluir")
-				.content(UtilsTest.convertJson(reservaDto))
+				.patch("/reserva/concluir/{numeroReserva}", numeroReserva)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 			)
 			.andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -370,17 +243,19 @@ class ReservaControllerSpringTest {
 		
 		@Test
 		void naoDeveConcluirReservaConcluida() throws Exception {
+			final UUID numeroReserva = UUID.randomUUID();
 			final ReservaDto reservaDto = new ReservaDto(
-				UUID.randomUUID(), 
+				numeroReserva, 
 				"denis.benjamim@gmail.com", 
 				"71736952000116", 
 				LocalDateTime.of(2024, 3, 10, 12, 0), 
-				SituacaoReserva.CONLUIDO
+				SituacaoReserva.CONCLUIDO
 			);
 			
+			when(repository.buscarPor(numeroReserva)).thenReturn(reservaDto.toEntity());
+			
 			mockMvc.perform(MockMvcRequestBuilders
-				.patch("/reserva/concluir")
-				.content(UtilsTest.convertJson(reservaDto))
+				.patch("/reserva/concluir/{numeroReserva}", numeroReserva)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 			)
 			.andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -394,17 +269,19 @@ class ReservaControllerSpringTest {
 	class CancelarReserva{
 		@Test
 		void deveCancelarReserva() throws Exception {
+			final UUID numeroReserva = UUID.randomUUID();
 			final ReservaDto reservaDto = new ReservaDto(
-				UUID.randomUUID(), 
+				numeroReserva, 
 				"denis.benjamim@gmail.com", 
 				"71736952000116", 
 				LocalDateTime.of(2024, 3, 10, 12, 0), 
 				SituacaoReserva.RESERVADO
 			);
+				
+			when(repository.buscarPor(numeroReserva)).thenReturn(reservaDto.toEntity());
 			
 			mockMvc.perform(MockMvcRequestBuilders
-				.patch("/reserva/cancelar")
-				.content(UtilsTest.convertJson(reservaDto))
+				.patch("/reserva/cancelar/{numeroReserva}",numeroReserva.toString())
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 			).andExpect(MockMvcResultMatchers.status().isNoContent());
 			
@@ -413,17 +290,19 @@ class ReservaControllerSpringTest {
 		
 		@Test
 		void naoDeveCancelarReservaConcluida() throws Exception  {
+			final UUID numeroReserva = UUID.randomUUID();
 			final ReservaDto reservaDto = new ReservaDto(
-				UUID.randomUUID(), 
+				numeroReserva, 
 				"denis.benjamim@gmail.com", 
 				"71736952000116", 
 				LocalDateTime.of(2024, 3, 10, 12, 0), 
-				SituacaoReserva.CONLUIDO
+				SituacaoReserva.CONCLUIDO
 			);
 			
+			when(repository.buscarPor(numeroReserva)).thenReturn(reservaDto.toEntity());
+			
 			mockMvc.perform(MockMvcRequestBuilders
-				.patch("/reserva/cancelar")
-				.content(UtilsTest.convertJson(reservaDto))
+				.patch("/reserva/cancelar/{numeroReserva}", numeroReserva)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 			)
 			.andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -434,16 +313,19 @@ class ReservaControllerSpringTest {
 		
 		@Test
 		void naoDeveCancelarReservaCancelada() throws Exception {
+			final UUID numeroReserva = UUID.randomUUID();
 			final ReservaDto reservaDto = new ReservaDto(
-				UUID.randomUUID(), 
+				numeroReserva, 
 				"denis.benjamim@gmail.com", 
 				"71736952000116", 
 				LocalDateTime.of(2024, 3, 10, 12, 0), 
 				SituacaoReserva.CANCELADO
 			);
 			
+			when(repository.buscarPor(numeroReserva)).thenReturn(reservaDto.toEntity());
+			
 			mockMvc.perform(MockMvcRequestBuilders
-				.patch("/reserva/cancelar")
+				.patch("/reserva/cancelar/{numeroReserva}", numeroReserva)
 				.content(UtilsTest.convertJson(reservaDto))
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 			)
@@ -455,17 +337,19 @@ class ReservaControllerSpringTest {
 		
 		@Test
 		void naoDeveCancelarReservaDisponivel() throws Exception {
+			final UUID numeroReserva = UUID.randomUUID();
 			final ReservaDto reservaDto = new ReservaDto(
-				UUID.randomUUID(), 
+				numeroReserva, 
 				"denis.benjamim@gmail.com", 
 				"71736952000116", 
 				LocalDateTime.of(2024, 3, 10, 12, 0), 
 				SituacaoReserva.DISPONIVEL
 			);
+
+			when(repository.buscarPor(numeroReserva)).thenReturn(reservaDto.toEntity());
 			
 			mockMvc.perform(MockMvcRequestBuilders
-				.patch("/reserva/cancelar")
-				.content(UtilsTest.convertJson(reservaDto))
+				.patch("/reserva/cancelar/{numeroReserva}", numeroReserva)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 			)
 			.andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -489,7 +373,7 @@ class ReservaControllerSpringTest {
 			
 			final ReservaDto reserva1 = criarReservaSituacaoPersonalizada(SituacaoReserva.DISPONIVEL);
 			final ReservaDto reserva2 = criarReservaSituacaoPersonalizada(SituacaoReserva.CANCELADO);
-			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONLUIDO);
+			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONCLUIDO);
 			final ReservaDto reserva4 = criarReservaSituacaoPersonalizada(SituacaoReserva.RESERVADO);
 			final ReservaDto reserva5 = criarReservaSituacaoPersonalizada(SituacaoReserva.DISPONIVEL);
 			final List<Reserva> reservasDisponiveisRestaurante = Arrays.asList(reserva1.toEntity(), reserva2.toEntity(), reserva3.toEntity(), reserva4.toEntity(), reserva5.toEntity());
@@ -525,12 +409,11 @@ class ReservaControllerSpringTest {
 			
 			final ReservaDto reserva1 = criarReservaSituacaoPersonalizada(SituacaoReserva.DISPONIVEL);
 			final ReservaDto reserva2 = criarReservaSituacaoPersonalizada(SituacaoReserva.CANCELADO);
-			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONLUIDO);
+			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONCLUIDO);
 			final ReservaDto reserva4 = criarReservaSituacaoPersonalizada(SituacaoReserva.RESERVADO);
 			final ReservaDto reserva5 = criarReservaSituacaoPersonalizada(SituacaoReserva.DISPONIVEL);
 			final List<Reserva> reservasDisponiveisRestaurante = Arrays.asList(reserva1.toEntity(), reserva2.toEntity(), reserva3.toEntity(), reserva4.toEntity(), reserva5.toEntity());
 			final List<ReservaDto> reservasDisponiveisRestauranteDto = Arrays.asList(reserva1, reserva5);
-			final ReservaDto parametrosBusca = new ReservaDto(null, null, cnpjRestaurante, null, SituacaoReserva.DISPONIVEL);
 			
 			when(restauranteService.getBuscarPor(any())).thenReturn(restaurante);
 			
@@ -538,13 +421,12 @@ class ReservaControllerSpringTest {
 				reservasDisponiveisRestaurante);
 			
 			mockMvc.perform(MockMvcRequestBuilders
-				.get("/reserva/restaurante/situacao")
-				.content(UtilsTest.convertJson(parametrosBusca))
+				.get("/reserva/restaurante/{cnpj}/situacao/{situacao-reserva}", cnpjRestaurante, SituacaoReserva.DISPONIVEL)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 			)
 			.andExpect(MockMvcResultMatchers.status().isOk())
 			.andExpect(MockMvcResultMatchers.content().json(UtilsTest.convertJson(reservasDisponiveisRestauranteDto)))
-			//.andDo(MockMvcResultHandlers.print());
+			.andDo(MockMvcResultHandlers.print())
 			;
 			
 			verify(restauranteService).getBuscarPor(any());
@@ -564,12 +446,11 @@ class ReservaControllerSpringTest {
 			
 			final ReservaDto reserva1 = criarReservaSituacaoPersonalizada(SituacaoReserva.DISPONIVEL);
 			final ReservaDto reserva2 = criarReservaSituacaoPersonalizada(SituacaoReserva.CANCELADO);
-			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONLUIDO);
+			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONCLUIDO);
 			final ReservaDto reserva4 = criarReservaSituacaoPersonalizada(SituacaoReserva.RESERVADO);
 			final ReservaDto reserva5 = criarReservaSituacaoPersonalizada(SituacaoReserva.CANCELADO);
 			final List<Reserva> reservasDisponiveisRestaurante = Arrays.asList(reserva1.toEntity(), reserva2.toEntity(), reserva3.toEntity(), reserva4.toEntity(), reserva5.toEntity());
 			final List<ReservaDto> reservasDisponiveisRestauranteDto = Arrays.asList(reserva2, reserva5);
-			final ReservaDto parametrosBusca = new ReservaDto(null, null, cnpjRestaurante, null, SituacaoReserva.CANCELADO);
 			
 			when(restauranteService.getBuscarPor(any())).thenReturn(restaurante);
 			
@@ -577,8 +458,7 @@ class ReservaControllerSpringTest {
 				reservasDisponiveisRestaurante);
 			
 			mockMvc.perform(MockMvcRequestBuilders
-				.get("/reserva/restaurante/situacao")
-				.content(UtilsTest.convertJson(parametrosBusca))
+				.get("/reserva/restaurante/{cnpj}/situacao/{situacao-reserva}", cnpjRestaurante, SituacaoReserva.CANCELADO)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 			)
 			.andExpect(MockMvcResultMatchers.status().isOk())
@@ -603,12 +483,11 @@ class ReservaControllerSpringTest {
 			
 			final ReservaDto reserva1 = criarReservaSituacaoPersonalizada(SituacaoReserva.DISPONIVEL);
 			final ReservaDto reserva2 = criarReservaSituacaoPersonalizada(SituacaoReserva.CANCELADO);
-			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONLUIDO);
+			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONCLUIDO);
 			final ReservaDto reserva4 = criarReservaSituacaoPersonalizada(SituacaoReserva.RESERVADO);
-			final ReservaDto reserva5 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONLUIDO);
+			final ReservaDto reserva5 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONCLUIDO);
 			final List<Reserva> reservasDisponiveisRestaurante = Arrays.asList(reserva1.toEntity(), reserva2.toEntity(), reserva3.toEntity(), reserva4.toEntity(), reserva5.toEntity());
 			final List<ReservaDto> reservasDisponiveisRestauranteDto = Arrays.asList(reserva3, reserva5);
-			final ReservaDto parametrosBusca = new ReservaDto(null, null, cnpjRestaurante, null, SituacaoReserva.CONLUIDO);
 			
 			when(restauranteService.getBuscarPor(any())).thenReturn(restaurante);
 			
@@ -616,8 +495,7 @@ class ReservaControllerSpringTest {
 				reservasDisponiveisRestaurante);
 			
 			mockMvc.perform(MockMvcRequestBuilders
-				.get("/reserva/restaurante/situacao")
-				.content(UtilsTest.convertJson(parametrosBusca))
+				.get("/reserva/restaurante/{cnpj}/situacao/{situacao-reserva}", cnpjRestaurante, SituacaoReserva.CONCLUIDO)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 			)
 			.andExpect(MockMvcResultMatchers.status().isOk())
@@ -642,12 +520,11 @@ class ReservaControllerSpringTest {
 			
 			final ReservaDto reserva1 = criarReservaSituacaoPersonalizada(SituacaoReserva.DISPONIVEL);
 			final ReservaDto reserva2 = criarReservaSituacaoPersonalizada(SituacaoReserva.CANCELADO);
-			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONLUIDO);
+			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONCLUIDO);
 			final ReservaDto reserva4 = criarReservaSituacaoPersonalizada(SituacaoReserva.RESERVADO);
 			final ReservaDto reserva5 = criarReservaSituacaoPersonalizada(SituacaoReserva.RESERVADO);
 			final List<Reserva> reservasDisponiveisRestaurante = Arrays.asList(reserva1.toEntity(), reserva2.toEntity(), reserva3.toEntity(), reserva4.toEntity(), reserva5.toEntity());
 			final List<ReservaDto> reservasDisponiveisRestauranteDto = Arrays.asList(reserva4, reserva5);
-			final ReservaDto parametrosBusca = new ReservaDto(null, null, cnpjRestaurante, null, SituacaoReserva.RESERVADO);
 			
 			when(restauranteService.getBuscarPor(any())).thenReturn(restaurante);
 			
@@ -655,8 +532,7 @@ class ReservaControllerSpringTest {
 				reservasDisponiveisRestaurante);
 			
 			mockMvc.perform(MockMvcRequestBuilders
-				.get("/reserva/restaurante/situacao")
-				.content(UtilsTest.convertJson(parametrosBusca))
+				.get("/reserva/restaurante/{cnpj}/situacao/{situacao-reserva}", cnpjRestaurante, SituacaoReserva.RESERVADO)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 			)
 			.andExpect(MockMvcResultMatchers.status().isOk())
@@ -674,7 +550,7 @@ class ReservaControllerSpringTest {
 			
 			final ReservaDto reserva1 = criarReservaSituacaoPersonalizada(SituacaoReserva.DISPONIVEL);
 			final ReservaDto reserva2 = criarReservaSituacaoPersonalizada(SituacaoReserva.CANCELADO);
-			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONLUIDO);
+			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONCLUIDO);
 			final ReservaDto reserva4 = criarReservaSituacaoPersonalizada(SituacaoReserva.RESERVADO);
 			final ReservaDto reserva5 = criarReservaSituacaoPersonalizada(SituacaoReserva.DISPONIVEL);
 			final List<Reserva> reservas = Arrays.asList(reserva1.toEntity(), reserva2.toEntity(), reserva3.toEntity(), reserva4.toEntity(), reserva5.toEntity());
@@ -703,21 +579,18 @@ class ReservaControllerSpringTest {
 			
 			final ReservaDto reserva1 = criarReservaSituacaoPersonalizada(SituacaoReserva.DISPONIVEL);
 			final ReservaDto reserva2 = criarReservaSituacaoPersonalizada(SituacaoReserva.CANCELADO);
-			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONLUIDO);
+			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONCLUIDO);
 			final ReservaDto reserva4 = criarReservaSituacaoPersonalizada(SituacaoReserva.RESERVADO);
 			final ReservaDto reserva5 = criarReservaSituacaoPersonalizada(SituacaoReserva.DISPONIVEL);
 			final List<Reserva> reservas = Arrays.asList(reserva1.toEntity(), reserva2.toEntity(), reserva3.toEntity(), reserva4.toEntity(), reserva5.toEntity());
 			final List<ReservaDto> reservasDTO = Arrays.asList(reserva1, reserva5);
 			final Usuario usuario = new UsuarioDto("Denis Alves", emailUsuario, "13997279686").toEntity();
 			
-			final ReservaDto parametrosBusca = new ReservaDto(null, emailUsuario, null, null, SituacaoReserva.DISPONIVEL);
-			
 			when(repository.buscarTodasPor(usuario)).thenReturn(reservas);
 			when(usuarioService.getBuscarPor(usuario.getEmail())).thenReturn(usuario);
 			
 			mockMvc.perform(MockMvcRequestBuilders
-				.get("/reserva/usuario/situacao", emailUsuario)
-				.content(UtilsTest.convertJson(parametrosBusca))
+				.get("/reserva/usuario/{email}/{situacao-reserva}", emailUsuario, SituacaoReserva.DISPONIVEL)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 			)
 			.andExpect(MockMvcResultMatchers.status().isOk())
@@ -735,21 +608,18 @@ class ReservaControllerSpringTest {
 			
 			final ReservaDto reserva1 = criarReservaSituacaoPersonalizada(SituacaoReserva.DISPONIVEL);
 			final ReservaDto reserva2 = criarReservaSituacaoPersonalizada(SituacaoReserva.CANCELADO);
-			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONLUIDO);
+			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONCLUIDO);
 			final ReservaDto reserva4 = criarReservaSituacaoPersonalizada(SituacaoReserva.RESERVADO);
 			final ReservaDto reserva5 = criarReservaSituacaoPersonalizada(SituacaoReserva.CANCELADO);
 			final List<Reserva> reservas = Arrays.asList(reserva1.toEntity(), reserva2.toEntity(), reserva3.toEntity(), reserva4.toEntity(), reserva5.toEntity());
 			final List<ReservaDto> reservasDTO = Arrays.asList(reserva2, reserva5);
 			final Usuario usuario = new UsuarioDto("Denis Alves", emailUsuario, "13997279686").toEntity();
 			
-			final ReservaDto parametrosBusca = new ReservaDto(null, emailUsuario, null, null, SituacaoReserva.CANCELADO);
-			
 			when(repository.buscarTodasPor(usuario)).thenReturn(reservas);
 			when(usuarioService.getBuscarPor(usuario.getEmail())).thenReturn(usuario);
 			
 			mockMvc.perform(MockMvcRequestBuilders
-				.get("/reserva/usuario/situacao", emailUsuario)
-				.content(UtilsTest.convertJson(parametrosBusca))
+				.get("/reserva/usuario/{email}/{situacao-reserva}", emailUsuario, SituacaoReserva.CANCELADO)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 			)
 			.andExpect(MockMvcResultMatchers.status().isOk())
@@ -767,22 +637,21 @@ class ReservaControllerSpringTest {
 			
 			final ReservaDto reserva1 = criarReservaSituacaoPersonalizada(SituacaoReserva.DISPONIVEL);
 			final ReservaDto reserva2 = criarReservaSituacaoPersonalizada(SituacaoReserva.CANCELADO);
-			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONLUIDO);
+			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONCLUIDO);
 			final ReservaDto reserva4 = criarReservaSituacaoPersonalizada(SituacaoReserva.RESERVADO);
-			final ReservaDto reserva5 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONLUIDO);
+			final ReservaDto reserva5 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONCLUIDO);
 			final List<Reserva> reservas = Arrays.asList(reserva1.toEntity(), reserva2.toEntity(), reserva3.toEntity(), reserva4.toEntity(), reserva5.toEntity());
 			final List<ReservaDto> reservasDTO = Arrays.asList(reserva3, reserva5);
 			final Usuario usuario = new UsuarioDto("Denis Alves", emailUsuario, "13997279686").toEntity();
 			
-			final ReservaDto parametrosBusca = new ReservaDto(null, emailUsuario, null, null, SituacaoReserva.CONLUIDO);
+			final ReservaDto parametrosBusca = new ReservaDto(null, emailUsuario, null, null, SituacaoReserva.CONCLUIDO);
 			
 			when(repository.buscarTodasPor(usuario)).thenReturn(reservas);
 			when(usuarioService.getBuscarPor(usuario.getEmail())).thenReturn(usuario);
 			
 			mockMvc.perform(MockMvcRequestBuilders
-				.get("/reserva/usuario/situacao", emailUsuario)
-				.content(UtilsTest.convertJson(parametrosBusca))
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
+					.get("/reserva/usuario/{email}/{situacao-reserva}", emailUsuario, SituacaoReserva.CONCLUIDO)
+					.contentType(MediaType.APPLICATION_JSON_VALUE)
 			)
 			.andExpect(MockMvcResultMatchers.status().isOk())
 			.andExpect(MockMvcResultMatchers.content().json(UtilsTest.convertJson(reservasDTO)))
@@ -799,21 +668,18 @@ class ReservaControllerSpringTest {
 			
 			final ReservaDto reserva1 = criarReservaSituacaoPersonalizada(SituacaoReserva.DISPONIVEL);
 			final ReservaDto reserva2 = criarReservaSituacaoPersonalizada(SituacaoReserva.CANCELADO);
-			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONLUIDO);
+			final ReservaDto reserva3 = criarReservaSituacaoPersonalizada(SituacaoReserva.CONCLUIDO);
 			final ReservaDto reserva4 = criarReservaSituacaoPersonalizada(SituacaoReserva.RESERVADO);
 			final ReservaDto reserva5 = criarReservaSituacaoPersonalizada(SituacaoReserva.RESERVADO);
 			final List<Reserva> reservas = Arrays.asList(reserva1.toEntity(), reserva2.toEntity(), reserva3.toEntity(), reserva4.toEntity(), reserva5.toEntity());
 			final List<ReservaDto> reservasDTO = Arrays.asList(reserva4, reserva5);
 			final Usuario usuario = new UsuarioDto("Denis Alves", emailUsuario, "13997279686").toEntity();
 			
-			final ReservaDto parametrosBusca = new ReservaDto(null, emailUsuario, null, null, SituacaoReserva.RESERVADO);
-			
 			when(repository.buscarTodasPor(usuario)).thenReturn(reservas);
 			when(usuarioService.getBuscarPor(usuario.getEmail())).thenReturn(usuario);
 			
 			mockMvc.perform(MockMvcRequestBuilders
-				.get("/reserva/usuario/situacao", emailUsuario)
-				.content(UtilsTest.convertJson(parametrosBusca))
+				.get("/reserva/usuario/{email}/{situacao-reserva}", emailUsuario, SituacaoReserva.RESERVADO)
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 			)
 			.andExpect(MockMvcResultMatchers.status().isOk())

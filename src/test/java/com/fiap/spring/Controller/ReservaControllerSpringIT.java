@@ -1,9 +1,11 @@
 package com.fiap.spring.Controller;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -165,6 +167,161 @@ public class ReservaControllerSpringIT {
 				.statusCode(org.apache.http.HttpStatus.SC_NOT_FOUND)
 				.body("message", is("Usuário não encontrado!"))
 				;
+		}
+		
+		@Test
+		void deveBuscarReservasPeloEmailDoUsuarioESituacaoDaReserva() throws Exception {
+			final String emailUsuario = "denis.benjamim@gmail.com";
+			final String situacaoReserva = SituacaoReserva.CONCLUIDO.name();
+			final UUID uuid = UUID.fromString("de297c49-159b-49a1-bbb7-3339aee9eb14");
+			
+			final ReservaDto retorno = given()	
+				.pathParam("email", emailUsuario)		
+				.pathParam("situacao-reserva", situacaoReserva)	
+				.contentType(ContentType.JSON)
+			.when()
+				.get("/reserva/usuario/{email}/{situacao-reserva}")
+			.then()
+				.statusCode(org.apache.http.HttpStatus.SC_OK)
+				.extract()
+				.as(ReservaDto[].class)[0];
+			
+			assertEquals(uuid, retorno.numeroReserva());
+			assertEquals("98376018000197", retorno.cnpjRestaurante());
+			assertEquals(situacaoReserva, retorno.statusReserva().name());
+		}
+		
+		@Test
+		void deveBuscarReservasPeloCNPJDoRestaurante() throws Exception {
+			final String cnpj = "71736952000116";
+			
+			given()	
+				.pathParam("cnpj", cnpj)		
+			.when()
+				.get("/reserva/restaurante/{cnpj}")
+			.then()
+				.statusCode(org.apache.http.HttpStatus.SC_OK)
+				;
+		}
+		
+		@Test
+		void naoDeveBuscarReservasPeloCNPJDoRestaurante() throws Exception {
+			final String cnpj = "11906180000191";
+			
+			final ReservaDto[] retorno = given()	
+				.pathParam("cnpj", cnpj)		
+			.when()
+				.get("/reserva/restaurante/{cnpj}")
+			.then()
+				.statusCode(org.apache.http.HttpStatus.SC_OK)
+				.extract()
+				.as(ReservaDto[].class)
+				;
+			assertEquals(0, retorno.length);
+		}
+		
+		@Test
+		void deveBuscarReservasPeloCNPJDoRestauranteSituacaoDaReserva() throws Exception {
+			final String cnpj = "71736952000116";
+			final String situacaoReserva = SituacaoReserva.RESERVADO.name();
+			
+			final ReservaDto retorno = given()	
+				.pathParam("cnpj", cnpj)		
+				.pathParam("situacao-reserva", situacaoReserva)	
+				.contentType(ContentType.JSON)
+			.when()
+				.get("/reserva/restaurante/{cnpj}/situacao/{situacao-reserva}")
+			.then()
+				.statusCode(org.apache.http.HttpStatus.SC_OK)
+				.extract()
+				.as(ReservaDto[].class)[0];
+			
+			assertEquals("71736952000116", retorno.cnpjRestaurante());
+			assertEquals(situacaoReserva, retorno.statusReserva().name());
+		}
+		
+		@Test
+		void naoDeveBuscarReservasPeloCNPJDoRestauranteSituacaoDaReserva() throws Exception {
+			final String cnpj = "71736952000111";
+			final String situacaoReserva = SituacaoReserva.RESERVADO.name();
+			
+			given()	
+				.pathParam("cnpj", cnpj)		
+				.pathParam("situacao-reserva", situacaoReserva)	
+				.contentType(ContentType.JSON)
+			.when()
+				.get("/reserva/restaurante/{cnpj}/situacao/{situacao-reserva}")
+			.then()
+				.statusCode(org.apache.http.HttpStatus.SC_NOT_FOUND)
+				.body("message", is("Restaurante não encontrado"));
+		}
+		
+		@Test
+		void deveBuscarReservasPeloNumeroDaReserva() throws Exception {
+			final String reserva = "cd5b81eb-1228-4c80-92e6-dc05b18d5e89";
+			
+			final ReservaDto retorno = given()	
+				.pathParam("numeroReserva", reserva)		
+				.contentType(ContentType.JSON)
+			.when()
+				.get("/reserva/{numeroReserva}")
+			.then()
+				.statusCode(org.apache.http.HttpStatus.SC_OK)
+				.extract()
+				.as(ReservaDto.class);
+			
+			assertEquals("71736952000116", retorno.cnpjRestaurante());
+			assertEquals(SituacaoReserva.RESERVADO, retorno.statusReserva());
+		}
+		
+		@Test
+		void naoDeveBuscarReservasPeloNumeroDaReserva() throws Exception {
+			final String reserva = "cd5b81eb-1228-4c80-92e6-dc05b18d5e82";
+			
+			given()	
+				.pathParam("numeroReserva", reserva)		
+				.contentType(ContentType.JSON)
+			.when()
+				.get("/reserva/{numeroReserva}")
+			.then()
+				.statusCode(org.apache.http.HttpStatus.SC_NOT_FOUND)
+				.body("message", is("Reserva não encontrada"));
+		}
+		
+		@Test
+		void deveBuscarReservasPeloCNPJDoRestauranteDataDeReservas() throws Exception {
+			final String cnpj = "71736952000116";
+			
+			final ReservaDto[] retorno = given()	
+				.pathParam("cnpj", cnpj)		
+				.pathParam("data", "2024-03-13")	
+				.contentType(ContentType.JSON)
+			.when()
+				.get("/reserva/restaurante/{cnpj}/{data}")
+			.then()
+				.statusCode(org.apache.http.HttpStatus.SC_OK)
+				.extract()
+				.as(ReservaDto[].class);
+			
+			assertEquals(2, retorno.length);
+		}
+		
+		@Test
+		void naoDeveBuscarReservasPeloCNPJDoRestauranteDataDeReservas() throws Exception {
+			final String cnpj = "71736952000116";
+			
+			final ReservaDto[] retorno = given()	
+				.pathParam("cnpj", cnpj)		
+				.pathParam("data", "2024-03-11")	
+				.contentType(ContentType.JSON)
+			.when()
+				.get("/reserva/restaurante/{cnpj}/{data}")
+			.then()
+				.statusCode(org.apache.http.HttpStatus.SC_OK)
+				.extract()
+				.as(ReservaDto[].class);
+			
+			assertEquals(0, retorno.length);
 		}
 	}
 }

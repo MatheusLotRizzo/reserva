@@ -85,7 +85,7 @@ class ConcluirReservaRestauranteTest {
 					new Usuario("teste@teste.com"), 
 					new Restaurante("12345678900000"), 
 					LocalDateTime.now(), 
-					SituacaoReserva.CONLUIDO);
+					SituacaoReserva.CONCLUIDO);
 				
 				when(repository.alterar(reserva)).thenReturn(reserva);
 				
@@ -109,7 +109,7 @@ class ConcluirReservaRestauranteTest {
 		
 		verify(repository).alterar(reserva);
 		
-		assertEquals(SituacaoReserva.CONLUIDO, reserva.getSituacao());
+		assertEquals(SituacaoReserva.CONCLUIDO, reserva.getSituacao());
 		
 	}
 

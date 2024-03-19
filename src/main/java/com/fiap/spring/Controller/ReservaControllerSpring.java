@@ -87,7 +87,7 @@ public class ReservaControllerSpring {
 			() -> reservaController.getBuscarTodasRerservasRestaurantePeloCNPJ(cnpj));
     }
     
-    @GetMapping("/restaurante/{cnpj}/{situacao-reserva}")
+    @GetMapping("/restaurante/{cnpj}/situacao/{situacao-reserva}")
     @Operation(summary = "Busca reservas do restaurante por cnpj e situação da reserva")
     @ApiResponseSwaggerOk
     public ResponseEntity<?> buscarReservasDoRestaurantePorSituacao(@PathVariable("cnpj")String cnpj, @PathVariable("situacao-reserva") SituacaoReserva situacaoReserva){

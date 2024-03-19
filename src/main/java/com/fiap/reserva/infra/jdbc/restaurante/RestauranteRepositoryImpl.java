@@ -30,10 +30,10 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
     @Override
     public Restaurante buscarPorCnpj(CnpjVo cnpj) throws BusinessException {
         final StringBuilder query = new StringBuilder()
-                .append("SELECT * FROM tb_restaurante re ")
-                .append("INNER JOIN tb_restaurante_horarios hf ")
+                .append("SELECT * FROM tb_restaurante as re ")
+                .append("LEFT JOIN tb_restaurante_horarios as hf ")
                 .append("ON re.cd_cnpj = hf.cd_restaurante ")
-                .append("INNER JOIN tb_restaurante_endereco e ")
+                .append("LEFT JOIN tb_restaurante_endereco as e ")
                 .append("ON re.cd_cnpj = e.cd_restaurante ")
                 .append("WHERE re.cd_cnpj = ? ")
                 ;
@@ -243,7 +243,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
         return new Restaurante(
                 rs.getString("cd_cnpj"),
                 rs.getString("nm_restaurante"),
-                null,//enderecoRepository.construirEndereco(rs),
+               null,// enderecoRepository.construirEndereco(rs),
                 Collections.emptyList(), // horarioFuncionamentoRepository.construirHorarioFuncionamento(rs), <- ta errado tem de ser uma lista
                 rs.getInt("qt_capacidade_mesas"),
                 TipoCozinha.valueOf(rs.getString("ds_tipo_cozinha"))
