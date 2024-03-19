@@ -45,7 +45,6 @@ class CadastrarRestauranteTest {
 
     @Test
     void deveCadastrarRestauranteComSucesso() throws BusinessException {
-        CnpjVo cnpj = new CnpjVo("12345678901234");
         Restaurante restaurante = new Restaurante(new CnpjVo("12345678901234"), "Restaurante Teste");
 
         when(repository.cadastrar(restaurante)).thenReturn(restaurante);

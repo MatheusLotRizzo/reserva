@@ -66,10 +66,9 @@ public class InjecaoDependencia {
 	public RestauranteService getRestauranteService(
 		@Autowired RestauranteRepository repository, 
 		@Autowired EnderecoService enderecoService, 
-		@Autowired HorarioSuncionamentoService horarioSuncionamentoService,
-		@Autowired BuscarRestaurante buscarRestaurante
+		@Autowired HorarioSuncionamentoService horarioSuncionamentoService
 	) {
-		return new RestauranteService(repository, enderecoService, horarioSuncionamentoService, buscarRestaurante);
+		return new RestauranteService(repository, enderecoService, horarioSuncionamentoService);
 	}
 	
 	@Bean 

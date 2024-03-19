@@ -3,6 +3,7 @@ package com.fiap.reserva.application.usecase.restaurante;
 import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.entity.TipoCozinha;
 import com.fiap.reserva.domain.exception.BusinessException;
+import com.fiap.reserva.domain.exception.EntidadeNaoEncontrada;
 import com.fiap.reserva.domain.repository.RestauranteRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EnderecoVo;
@@ -13,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.*;

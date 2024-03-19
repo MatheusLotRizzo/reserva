@@ -3,6 +3,7 @@ package com.fiap.reserva.application.usecase.restaurante;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.fiap.reserva.domain.exception.EntidadeNaoEncontrada;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,9 +20,6 @@ class AlterarRestauranteTest {
 
     @Mock
     private RestauranteRepository repository;
-
-    @Mock
-    private BuscarRestaurante buscarRestaurante;
 
     @InjectMocks
     private AlterarRestaurante alterarRestaurante;
@@ -49,29 +47,31 @@ class AlterarRestauranteTest {
     void naoDeveAlterarRestauranteSeNaoEncontrado() throws BusinessException {
         CnpjVo cnpj = new CnpjVo("12345678901234");
         Restaurante restaurante = new Restaurante(cnpj, "Restaurante Teste");
-        when(buscarRestaurante.getRestaurantePor(cnpj)).thenReturn(null);
+        AlterarRestaurante alterarRestaurante = new AlterarRestaurante(repository);
 
-        final Throwable throwable = assertThrows(BusinessException.class, () -> alterarRestaurante.executar(restaurante));
+        when(repository.buscarPorCnpj(cnpj)).thenReturn(null);
+
+        final Throwable throwable = assertThrows(EntidadeNaoEncontrada.class, () -> alterarRestaurante.executar(restaurante));
+
         assertEquals("Restaurante não pode ser alterado, pois não foi encontrado", throwable.getMessage());
-
-        verify(buscarRestaurante).getRestaurantePor(cnpj);
+        verify(repository).buscarPorCnpj(cnpj);
         verifyNoMoreInteractions(repository);
     }
 
     @Test
-    void deveAlterarRestauranteComSucesso() throws BusinessException {
+    void deveAlterarRestauranteExistente() throws BusinessException {
         CnpjVo cnpj = new CnpjVo("12345678901234");
-        Restaurante restaurante = new Restaurante(cnpj, "Restaurante Teste");
+        Restaurante restauranteExistente = new Restaurante(cnpj, "Restaurante Existente");
+        Restaurante restauranteAlterado = new Restaurante(cnpj, "Restaurante Alterado");
 
-        when(buscarRestaurante.getRestaurantePor(cnpj)).thenReturn(restaurante);
+        when(repository.buscarPorCnpj(cnpj)).thenReturn(restauranteExistente);
+        when(repository.alterar(restauranteAlterado)).thenReturn(restauranteAlterado);
 
-        when(repository.buscarPorCnpj(cnpj)).thenReturn(restaurante);
-        when(repository.alterar(restaurante)).thenReturn(restaurante);
+        Restaurante resultado = new AlterarRestaurante(repository).executar(restauranteAlterado);
 
-        Restaurante resultado = alterarRestaurante.executar(restaurante);
-
-        assertEquals(restaurante, resultado);
-        verify(buscarRestaurante).getRestaurantePor(cnpj);
-        verify(repository).alterar(restaurante);
+        assertNotNull(resultado);
+        assertEquals(restauranteAlterado, resultado);
+        verify(repository).buscarPorCnpj(cnpj);
+        verify(repository).alterar(restauranteAlterado);
     }
 }
