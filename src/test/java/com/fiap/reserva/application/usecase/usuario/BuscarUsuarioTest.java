@@ -10,10 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.assertj.core.api.CollectionAssert.assertThatCollection;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -64,27 +60,5 @@ class BuscarUsuarioTest {
         final Usuario usuarioEsperado = buscarUsuario.getUsuario(usuarioInexistente.getEmail());
         assertNull(usuarioEsperado);
         verify(repository).buscarPor(usuarioInexistente.getEmail());
-    }
-
-    @Test
-    void deveRetornarTodosUsuarios() throws BusinessException {
-        Usuario usuario = new Usuario("Matheus", "teste@teste.com");
-        Usuario usuario2 = new Usuario("Matheus2", "teste2@teste.com");
-        when(repository.buscarTodos()).thenReturn(Arrays.asList(usuario, usuario2));
-
-        final List<Usuario> esperado = buscarUsuario.getTodos();
-        assertNotNull(esperado);
-        assertThatCollection(esperado).hasSize(2);
-        assertThatCollection(esperado).filteredOnAssertions(u -> u.equals(usuario));
-        verify(repository).buscarTodos();
-    }
-
-    @Test
-    void deveRetornarNullSeNaoTiverUsuariosNaBase() throws BusinessException {
-        when(repository.buscarTodos()).thenReturn(null);
-
-        final List<Usuario> esperado = buscarUsuario.getTodos();
-        assertNull(esperado);
-        verify(repository).buscarTodos();
     }
 }

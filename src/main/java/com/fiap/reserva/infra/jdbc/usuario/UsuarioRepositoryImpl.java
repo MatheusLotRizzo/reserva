@@ -1,17 +1,15 @@
 package com.fiap.reserva.infra.jdbc.usuario;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fiap.reserva.domain.entity.Usuario;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.UsuarioRepository;
 import com.fiap.reserva.domain.vo.EmailVo;
 import com.fiap.reserva.infra.exception.TechnicalException;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class UsuarioRepositoryImpl implements UsuarioRepository {
 
@@ -19,24 +17,6 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
 
     public UsuarioRepositoryImpl(Connection connection) {
         this.connection = connection;
-    }
-
-    @Override
-    public List<Usuario> buscarTodos() throws BusinessException {
-        final List<Usuario> list = new ArrayList<>();
-        final StringBuilder query = new StringBuilder()
-                .append("SELECT ic_email, nm_usuario, ic_telefone FROM tb_usuario");
-
-        try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
-            try (final ResultSet rs = ps.executeQuery()) {
-                while(rs.next()){
-                    list.add(contruirUsuario(rs));
-                }
-            }
-        }catch (SQLException e) {
-            throw new TechnicalException(e);
-        }
-        return list;
     }
 
     @Override

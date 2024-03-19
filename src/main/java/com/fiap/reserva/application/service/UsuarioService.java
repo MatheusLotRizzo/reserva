@@ -10,8 +10,6 @@ import com.fiap.reserva.domain.exception.EntidadeNaoEncontrada;
 import com.fiap.reserva.domain.repository.UsuarioRepository;
 import com.fiap.reserva.domain.vo.EmailVo;
 
-import java.util.List;
-
 public class UsuarioService {
     private final UsuarioRepository repository;
 
@@ -46,13 +44,5 @@ public class UsuarioService {
             throw new EntidadeNaoEncontrada("Usuário não encontrado!");
         }
         return usuario;
-    }
-
-    public List<Usuario> getTodos() throws BusinessException{
-        List<Usuario> usuarios = new BuscarUsuario(repository).getTodos();
-        if(usuarios == null){
-            throw new EntidadeNaoEncontrada("Nenhum usuário encontrado!");
-        }
-        return usuarios;
     }
 }

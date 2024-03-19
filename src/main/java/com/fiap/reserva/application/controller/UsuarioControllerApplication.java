@@ -6,8 +6,6 @@ import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.vo.EmailVo;
 import com.fiap.spring.Controller.Dto.UsuarioDto;
 
-import java.util.List;
-
 public class UsuarioControllerApplication {
 
     private final UsuarioService service;
@@ -21,6 +19,7 @@ public class UsuarioControllerApplication {
     public UsuarioDto alterar(final UsuarioDto usuarioDto) throws BusinessException {
         return construirUsuarioDto( service.alterar(construirUsuario(usuarioDto)) );
     }
+
     public void excluir(final String email) throws BusinessException {
         service.excluir(new EmailVo(email));
     }
@@ -28,13 +27,6 @@ public class UsuarioControllerApplication {
         return construirUsuarioDto(service.getBuscarPor(new EmailVo(email)));
     }
 
-    public List<UsuarioDto> getTodos() throws BusinessException{
-        List<Usuario> usuarios = service.getTodos();
-
-        return usuarios.stream()
-                .map(this::construirUsuarioDto)
-                .toList();
-    }
     private Usuario construirUsuario(final UsuarioDto usuarioDto) throws BusinessException {
         return new Usuario(usuarioDto.nome(), usuarioDto.email(), usuarioDto.celular());
     }

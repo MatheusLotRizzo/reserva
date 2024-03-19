@@ -1,7 +1,5 @@
 package com.fiap.reserva.application.usecase.usuario;
 
-import java.util.List;
-
 import com.fiap.reserva.domain.entity.Usuario;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.UsuarioRepository;
@@ -19,9 +17,5 @@ public class BuscarUsuario {
             throw new BusinessException("Email é obrigatorio para realizar a busca!");
         }
         return repository.buscarPor(emailVo);
-    }
-
-    public List<Usuario> getTodos()throws BusinessException{
-        return repository.buscarTodos();
     }
 }

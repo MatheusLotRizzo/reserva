@@ -2,7 +2,6 @@ package com.fiap.reserva.application.service;
 
 import com.fiap.reserva.domain.entity.Usuario;
 import com.fiap.reserva.domain.exception.BusinessException;
-import com.fiap.reserva.domain.exception.EntidadeNaoEncontrada;
 import com.fiap.reserva.domain.repository.UsuarioRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,10 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.assertj.core.api.CollectionAssert.assertThatCollection;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -97,30 +92,6 @@ class UsuarioServiceTest {
         when(repository.buscarPor(usuario.getEmail())).thenReturn(usuario);
         service.excluir(usuario.getEmail());
         verify(repository).excluir(usuario.getEmail());
-    }
-
-    @Test
-    void deveBuscarTodosUsuarios() throws BusinessException {
-        Usuario usuario1 = new Usuario("Matheus", "teste@teste.com");
-        Usuario usuario2 = new Usuario("Matheus 2", "teste2@teste.com");
-        when(repository.buscarTodos()).thenReturn(Arrays.asList(usuario1, usuario2));
-
-        List<Usuario> usuarios = service.getTodos();
-        assertNotNull(usuarios);
-        assertThatCollection(usuarios).hasSize(2);
-        assertThatCollection(usuarios).filteredOnAssertions(u -> u.equals(usuario1));
-        assertThatCollection(usuarios).filteredOnAssertions(u -> u.equals(usuario2));
-        verify(repository).buscarTodos();
-    }
-
-
-    @Test
-    void naoDeveRetornarSeNaoTiverUsuariosNaBase() throws BusinessException {
-        when(repository.buscarTodos()).thenReturn(null);
-
-        final Throwable throwable = assertThrows(EntidadeNaoEncontrada.class, () -> service.getTodos());
-        assertEquals("Nenhum usuário encontrado!", throwable.getMessage());
-        verify(repository).buscarTodos();
     }
 
     @Test
