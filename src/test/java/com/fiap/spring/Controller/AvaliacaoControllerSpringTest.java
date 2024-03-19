@@ -127,7 +127,6 @@ public class AvaliacaoControllerSpringTest {
         void naoDeveCriarAvaliacaoUsuarioNaoExiste() throws Exception {
             final AvaliacaoDto avaliacaoDto = new CriarObjetosDto().criarAvaliacaoDtoCompleto();
             final RestauranteDto restauranteDto = new CriarObjetosDto().criarRestauranteDto();
-            final UsuarioDto usuarioDto = new CriarObjetosDto().criarUsuarioDto();
 
             when(restauranteService.getBuscarPor(any())).thenReturn(restauranteDto.toEntity());
             when(usuarioService.getBuscarPor(any())).thenReturn(null);
