@@ -41,7 +41,7 @@ class BuscarAvaliacaoPorRestauranteTest {
     void naoDeveBuscarAvaliacaoPorRestaurante() throws BusinessException {
         //Arrange // Act // Assert
         final Throwable throwable = assertThrows(BusinessException.class, () -> new BuscarAvaliacaoPorRestaurante(repository).executar(null));
-        assertEquals("Restaurante é obrigatorio para realizar a busca!", throwable.getMessage());
+        assertEquals("Restaurante não foi encontrado!", throwable.getMessage());
     }
 
     @Test

@@ -27,6 +27,8 @@ class AvaliacaoServiceTest {
     private AvaliacaoRepository repository;
     @Mock
     private RestauranteService restauranteService;
+    @Mock
+    private UsuarioService usuarioService;
     private AutoCloseable autoCloseable;
 
     @BeforeEach
@@ -43,7 +45,7 @@ class AvaliacaoServiceTest {
     void naoDeveBuscarAvaliacaoPorRestaurante() throws BusinessException {
         //Arrange // Act // Assert
         final Throwable throwable = assertThrows(BusinessException.class, () -> service.getBuscarTodasAvaliacoesRestaurantePeloCNPJ(null));
-        assertEquals("Restaurante é obrigatorio para realizar a busca!", throwable.getMessage());
+        assertEquals("Restaurante não foi encontrado!", throwable.getMessage());
     }
 
     @Test
@@ -104,7 +106,12 @@ class AvaliacaoServiceTest {
                 "sujinho restaurante melhor experiencia em são paulo"
         ) ;
 
-        when(repository.avaliar(avaliacao)).thenReturn(avaliacao);
+        final Restaurante restauranteMock = mock(Restaurante.class);
+        when(restauranteService.getBuscarPor(any())).thenReturn(restauranteMock);
+        final Usuario usuarioMock = mock(Usuario.class);
+        when(usuarioService.getBuscarPor(any())).thenReturn(usuarioMock);
+
+        when(service.avaliar(avaliacao)).thenReturn(avaliacao);
         //Act
         final Avaliacao avaliacaoArmazenada = service.avaliar(avaliacao);
 

@@ -94,9 +94,9 @@ public class HorarioFuncionamentoRepositoryImpl implements HorarioFuncionamentoR
 
     protected HorarioFuncionamento construirHorarioFuncionamento(ResultSet rs) throws SQLException {
         return new HorarioFuncionamento(
-    		DayOfWeek.valueOf(rs.getString("hf.nm_dia_semana")),
-            LocalDateTime.parse(rs.getString("hf.hr_abertura")),
-            LocalDateTime.parse(rs.getString("hf.hr_fechamento"))
+    		DayOfWeek.valueOf(rs.getString("nm_dia_semana")),
+            LocalDateTime.parse(rs.getString("hr_abertura")),
+            LocalDateTime.parse(rs.getString("hr_fechamento"))
         );
     }
 }

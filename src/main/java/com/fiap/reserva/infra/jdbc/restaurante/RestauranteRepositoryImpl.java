@@ -241,12 +241,12 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
 
     private Restaurante contruirRestaurante(ResultSet rs) throws SQLException, BusinessException {
         return new Restaurante(
-                rs.getString("re.cd_cnpj"),
-                rs.getString("re.nm_restaurante"),
-                enderecoRepository.construirEndereco(rs),
+                rs.getString("cd_cnpj"),
+                rs.getString("nm_restaurante"),
+                null,//enderecoRepository.construirEndereco(rs),
                 Collections.emptyList(), // horarioFuncionamentoRepository.construirHorarioFuncionamento(rs), <- ta errado tem de ser uma lista
-                rs.getInt("re.qt_capacidade_mesas"),
-                TipoCozinha.valueOf(rs.getString("re.ds_tipo_cozinha"))
+                rs.getInt("qt_capacidade_mesas"),
+                TipoCozinha.valueOf(rs.getString("ds_tipo_cozinha"))
         );
     }
 }

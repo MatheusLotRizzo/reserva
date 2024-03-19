@@ -42,7 +42,7 @@ public class ReservaControllerSpringIT {
 	}
 	
 	@Nested
-	class ConcelarReserva{
+	class CancelarReserva{
 		@Test
 		void deveCacenlarReserva() throws Exception {
 			final String numeroReservaReservada = "fb93bb65-7e37-4990-8fb0-5a77e620a4ab";

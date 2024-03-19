@@ -30,10 +30,10 @@ public class AvaliacaoRepositoryImpl implements AvaliacaoRepository {
             try (final ResultSet rs = ps.executeQuery()) {
                 while(rs.next()){
                     list.add(new Avaliacao (
-                            new Usuario(rs.getString("a.cd_usuario")),
-                            new Restaurante(rs.getString("a.cd_restaurante")),
-                            rs.getInt("r.qt_pontos"),
-                            rs.getString("r.comentario")
+                            new Usuario(rs.getString("cd_usuario")),
+                            new Restaurante(rs.getString("cd_restaurante")),
+                            rs.getInt("qt_pontos"),
+                            rs.getString("comentario")
                     ));
                 }
             }

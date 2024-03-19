@@ -24,6 +24,9 @@ public class AvaliacaoService {
     }
 
     public Avaliacao avaliar(final Avaliacao avaliacao) throws BusinessException{
+        if(avaliacao == null) {
+            throw new BusinessException("Avaliacao é obrigatorio");
+        }
         final Usuario usuario = usuarioService.getBuscarPor(avaliacao.getUsuario().getEmail());
         final Restaurante restaurante = restauranteService.getBuscarPor(avaliacao.getRestaurante().getCnpj());
         final Avaliacao avaliacaoValidada = new Avaliacao(usuario,restaurante,avaliacao.getPontuacao(),avaliacao.getComentario());
