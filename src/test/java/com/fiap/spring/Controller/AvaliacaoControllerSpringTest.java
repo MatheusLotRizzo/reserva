@@ -136,12 +136,10 @@ public class AvaliacaoControllerSpringTest {
                             .post("/avaliacao")
                             .content(UtilsTest.convertJson(avaliacaoDto))
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
-//                    .andDo(print())
                     .andExpect(MockMvcResultMatchers.status().isBadRequest())
                     .andExpect(MockMvcResultMatchers.content().json(
                             UtilsTest.convertJson(MessageErrorHandler.create("Usuario é obrigatório")))
                     );
-            ;
 
             verify(usuarioService).getBuscarPor(any());
             verify(restauranteService).getBuscarPor(any());
@@ -150,7 +148,6 @@ public class AvaliacaoControllerSpringTest {
         @Test
         void naoDeveCriarAvaliacaoRestauranteNaoExiste() throws Exception {
             final AvaliacaoDto avaliacaoDto = new CriarObjetosDto().criarAvaliacaoDtoCompleto();
-            final RestauranteDto restauranteDto = new CriarObjetosDto().criarRestauranteDto();
             final UsuarioDto usuarioDto = new CriarObjetosDto().criarUsuarioDto();
 
             when(restauranteService.getBuscarPor(any())).thenReturn(null);
@@ -163,13 +160,10 @@ public class AvaliacaoControllerSpringTest {
                             .post("/avaliacao")
                             .content(UtilsTest.convertJson(avaliacaoDto))
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
-//                    .andDo(print())
                     .andExpect(MockMvcResultMatchers.status().isBadRequest())
                     .andExpect(MockMvcResultMatchers.content().json(
                             UtilsTest.convertJson(MessageErrorHandler.create("Restaurante é obrigatório")))
                     );
-            ;
-
             verify(usuarioService).getBuscarPor(any());
             verify(restauranteService).getBuscarPor(any());
         }
@@ -182,12 +176,10 @@ public class AvaliacaoControllerSpringTest {
                             .post("/avaliacao")
                             .content(UtilsTest.convertJson(avaliacaoDto))
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
-//                    .andDo(print())
                     .andExpect(MockMvcResultMatchers.status().isBadRequest())
                     .andExpect(MockMvcResultMatchers.content().json(
                             UtilsTest.convertJson(MessageErrorHandler.create("Valor inválido para a pontuação. É considerado valor válido os valores entre 0 e 5")))
                     );
-            ;
         }
 
         @Test
@@ -203,7 +195,6 @@ public class AvaliacaoControllerSpringTest {
                     .andExpect(MockMvcResultMatchers.content().json(
                             UtilsTest.convertJson(MessageErrorHandler.create("Comentário é obrigatório")))
                     );
-            ;
         }
     }
 
