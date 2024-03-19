@@ -7,10 +7,10 @@ COPY . .
 RUN apt-get install maven -y
 RUN mvn clean install -DskipTests
 
-FROM openjdk:17-jdk-slim
+FROM openjdk:17-jdk
 
 EXPOSE 8080
 
-COPY --from=build /target/reserva-0.0.1-SNAPSHOT.jar reserva.jar
+COPY --from=build ./app/target/*.jar ./reserva.jar
 
 ENTRYPOINT ["java", "-jar", "reserva.jar"]
