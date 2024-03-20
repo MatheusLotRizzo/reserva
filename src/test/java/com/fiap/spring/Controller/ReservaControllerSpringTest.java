@@ -644,8 +644,6 @@ class ReservaControllerSpringTest {
 			final List<ReservaDto> reservasDTO = Arrays.asList(reserva3, reserva5);
 			final Usuario usuario = new UsuarioDto("Denis Alves", emailUsuario, "13997279686").toEntity();
 			
-			final ReservaDto parametrosBusca = new ReservaDto(null, emailUsuario, null, null, SituacaoReserva.CONCLUIDO);
-			
 			when(repository.buscarTodasPor(usuario)).thenReturn(reservas);
 			when(usuarioService.getBuscarPor(usuario.getEmail())).thenReturn(usuario);
 			
