@@ -17,6 +17,7 @@ import java.util.Collections;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
@@ -141,16 +142,37 @@ public class AvaliacaoControllerSpringIT {
         @Test
         void deveBuscarTodasAvaliacoesDoRestaurante() throws Exception {
             final String cnpjRestaurante = new CriarObjetosDto().criarRestauranteDto().cnpj();
-            given()
+            final AvaliacaoDto retorno = given()
                     .pathParam("cnpj", cnpjRestaurante)
                     .when()
                     .get("/avaliacao/{cnpj}")
                     .then()
                     .statusCode(org.apache.http.HttpStatus.SC_OK)
+                    .extract()
+                    .as(AvaliacaoDto[].class)[0];
             ;
+
+            assertEquals("94690811000105", retorno.cnpjRestaurante());
         }
         @Test
         void naoDeveEncontrarAvaliacoesDoRestaurante() throws Exception {
+            final String cnpjRestaurante = new CriarObjetosDto().criarRestauranteDtoSemAvaliacao().cnpj();
+            final AvaliacaoDto[] retorno = given()
+                    .pathParam("cnpj", cnpjRestaurante)
+                    .when()
+                    .get("/avaliacao/{cnpj}")
+                    .then()
+                    .statusCode(HttpStatus.SC_OK)
+                    //.body("message", is("Restaurante não encontrado"))
+                    .extract()
+                    .as(AvaliacaoDto[].class);
+            ;
+
+            assertEquals(0, retorno.length);
+        }
+
+        @Test
+        void naoDeveEncontrarAvaliacoesDeRestauranteNaoEncontrado() throws Exception {
             final String cnpjRestaurante = new CriarObjetosDto().criarAvaliacaoDtoRestauranteNaoExiste().cnpjRestaurante();
             given()
                     .pathParam("cnpj", cnpjRestaurante)
@@ -159,7 +181,6 @@ public class AvaliacaoControllerSpringIT {
                     .then()
                     .statusCode(HttpStatus.SC_NOT_FOUND)
                     .body("message", is("Restaurante não encontrado"))
-            .log().body()
             ;
         }
 
@@ -209,6 +230,7 @@ public class AvaliacaoControllerSpringIT {
                     "sujinho restaurante melhor experiencia em são paulo"
             );
         }
+
         private AvaliacaoDto criarAvaliacaoDtoComPontuacaoInvalida() {
             return new AvaliacaoDto(
                     "teste_avaliacao@fiap.com.br",
@@ -230,6 +252,16 @@ public class AvaliacaoControllerSpringIT {
             return new RestauranteDto(
                     "94690811000105",
                     "Sujinho Restaurante",
+                    5,
+                    TipoCozinha.JAPONESA,
+                    Collections.emptyList(),
+                    null);
+        }
+
+        private RestauranteDto criarRestauranteDtoSemAvaliacao() {
+            return new RestauranteDto(
+                    "98376018000197",
+                    "Restaurante Sem Mesas",
                     5,
                     TipoCozinha.JAPONESA,
                     Collections.emptyList(),
