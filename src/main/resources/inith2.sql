@@ -73,7 +73,7 @@ FOREIGN KEY(cd_restaurante) REFERENCES tb_restaurante(cd_cnpj);
 INSERT INTO tb_usuario (nm_usuario, ic_telefone, ic_email)  values ('Denis Benjamim','13997279686','denis.benjamim@gmail.com');
 INSERT INTO tb_usuario (nm_usuario, ic_telefone, ic_email)  values ('Matheus Rizzo','14999998888','matheus@gmail.com');
 INSERT INTO tb_usuario (nm_usuario, ic_telefone, ic_email)  values ('Matheus Rizzo','14999998888','matheus2@gmail.com');
-INSERT INTO tb_usuario (nm_usuario, ic_telefone, ic_email)  values ('Teste Availação','14999998888','teste_avaliacao@fiap.com.br');
+INSERT INTO tb_usuario (nm_usuario, ic_telefone, ic_email)  values ('Teste Availação','1499999885','teste_avaliacao@fiap.com.br');
 INSERT INTO tb_restaurante (cd_cnpj,nm_restaurante,ds_tipo_cozinha,qt_capacidade_mesas) values ('71736952000116', 'Restaurante Denis Benjamim', 'JAPONESA', 3);
 INSERT INTO tb_restaurante (cd_cnpj,nm_restaurante,ds_tipo_cozinha,qt_capacidade_mesas) values ('98376018000197', 'Restaurante Sem Mesas', 'JAPONESA', 0);
 INSERT INTO tb_restaurante (cd_cnpj,nm_restaurante,ds_tipo_cozinha,qt_capacidade_mesas) values ('94690811000105', 'Restaurante Sujinho', 'JAPONESA', 3);
@@ -93,3 +93,6 @@ INSERT INTO tb_restaurante_horarios (cd_restaurante, nm_dia_semana, hr_abertura,
 INSERT INTO tb_reserva (cd_numero_reserva, cd_usuario, cd_restaurante, dt_hr_reserva, ds_status)VALUES ('cd5b81eb-1228-4c80-92e6-dc05b18d5e89', 'denis.benjamim@gmail.com', '71736952000116', '2024-03-13T12:00:00','RESERVADO');
 INSERT INTO tb_reserva (cd_numero_reserva, cd_usuario, cd_restaurante, dt_hr_reserva, ds_status)VALUES ('fb93bb65-7e37-4990-8fb0-5a77e620a4ab', 'denis.benjamim@gmail.com', '71736952000116', '2024-03-13T08:00:00','RESERVADO');
 INSERT INTO tb_reserva (cd_numero_reserva, cd_usuario, cd_restaurante, dt_hr_reserva, ds_status)VALUES ('de297c49-159b-49a1-bbb7-3339aee9eb14', 'denis.benjamim@gmail.com', '98376018000197', '2024-03-13T08:00:00','CONCLUIDO');
+
+-- AVALIACAO
+INSERT INTO tb_avaliacao (cd_usuario,cd_restaurante,qt_pontos,ds_comentario) VALUES ('teste_avaliacao@fiap.com.br','94690811000105',5,'muito bom');
