@@ -149,7 +149,7 @@ public class AvaliacaoControllerSpringIT {
                     .then()
                     .statusCode(org.apache.http.HttpStatus.SC_OK)
                     .extract()
-                    .as(AvaliacaoDto[].class)[0];
+                    .as(AvaliacaoDto[].class)[0]
             ;
 
             assertEquals("94690811000105", retorno.cnpjRestaurante());
@@ -165,7 +165,7 @@ public class AvaliacaoControllerSpringIT {
                     .statusCode(HttpStatus.SC_OK)
                     //.body("message", is("Restaurante não encontrado"))
                     .extract()
-                    .as(AvaliacaoDto[].class);
+                    .as(AvaliacaoDto[].class)
             ;
 
             assertEquals(0, retorno.length);
