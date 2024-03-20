@@ -1,5 +1,6 @@
 package com.fiap.reserva.application.service;
 
+import com.fiap.reserva.domain.entity.HorarioFuncionamento;
 import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.entity.TipoCozinha;
 import com.fiap.reserva.domain.exception.BusinessException;
@@ -14,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -301,4 +304,31 @@ class RestauranteServiceTest {
 
         verify(enderecoService).alterar(cnpj, enderecoExistente);
     }
+
+    @Test
+    void deveCadastrarHorarioFuncionamentoQuandoNaoExistente() throws BusinessException {
+        CnpjVo cnpj = new CnpjVo("12345678901234");
+        HorarioFuncionamento novoHorario = new HorarioFuncionamento(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 17, 0));
+        Restaurante restaurante = new Restaurante(cnpj, "Restaurante Teste", null, List.of(novoHorario), 0, null);
+
+        when(horarioSuncionamentoService.getObter(cnpj, novoHorario)).thenReturn(null);
+
+        service.cadastrar(restaurante);
+
+        verify(horarioSuncionamentoService).cadastrar(cnpj, novoHorario);
+    }
+
+    @Test
+    void deveAlterarHorarioFuncionamentoQuandoExistente() throws BusinessException {
+        CnpjVo cnpj = new CnpjVo("12345678901234");
+        HorarioFuncionamento horarioExistente = new HorarioFuncionamento(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 17, 0));
+        Restaurante restaurante = new Restaurante(cnpj, "Restaurante Teste", null, List.of(horarioExistente), 0, null);
+
+        when(horarioSuncionamentoService.getObter(cnpj, horarioExistente)).thenReturn(horarioExistente);
+
+        service.cadastrar(restaurante);
+
+        verify(horarioSuncionamentoService).alterar(cnpj, horarioExistente);
+    }
+
 }
