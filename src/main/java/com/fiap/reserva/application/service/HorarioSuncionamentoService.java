@@ -10,13 +10,9 @@ import com.fiap.reserva.domain.vo.CnpjVo;
 
 public class HorarioSuncionamentoService {
     private final HorarioFuncionamentoRepository repository;
-   // RESTURANTE SERVICE NAO DEVERIA SER CHAMADO DENTRO DE HORARIO
-   // private final RestauranteService restauranteService;
-
 
     public HorarioSuncionamentoService(HorarioFuncionamentoRepository repository) {
 		this.repository = repository;
-		//this.restauranteService = restauranteService;
 	}
 
 	public void cadastrar(final CnpjVo cnpj, final HorarioFuncionamento horarioFuncionamento) throws BusinessException  {
@@ -24,13 +20,6 @@ public class HorarioSuncionamentoService {
     }
 
     public void alterar(final CnpjVo cnpj, final HorarioFuncionamento horarioFuncionamento) throws BusinessException  {
-    	//ISSO NAO PODE OCORRER AQUI O RESTAURANTE TEM DE SER PASSADO DE FORA PRONTO NAO ~E OBRIGAÇAO
-    	//DESSE SERVICE VALIDAR , INCLUSIVE ACREDITO QUE RESTAURANTE PODERIA TER TODA ESSA REGRA
-    	//        Restaurante restaurante = restauranteService.getBuscarPor(cnpj);
-		//      	  if (restaurante == null){
-		//            throw new BusinessException("Restaurante não existe");
-		//        }
-
         new AlterarHorarioFuncionamento(repository).executar(cnpj,horarioFuncionamento);
     }
 
