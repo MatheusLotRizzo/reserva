@@ -4,11 +4,8 @@ import com.fiap.reserva.application.controller.RestauranteControllerApplication;
 import com.fiap.reserva.domain.entity.TipoCozinha;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.exception.EntidadeNaoEncontrada;
-import com.fiap.reserva.domain.repository.RestauranteRepository;
-import com.fiap.reserva.domain.repository.UsuarioRepository;
 import com.fiap.spring.Controller.Dto.EnderecoDto;
 import com.fiap.spring.Controller.Dto.RestauranteDto;
-import com.fiap.spring.Controller.Dto.UsuarioDto;
 import com.fiap.spring.conf.DataSourceMock;
 import com.fiap.spring.conf.InjecaoDependencia;
 import infraTest.UtilsTest;
@@ -47,9 +44,6 @@ public class RestauranteControllerSpringTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @MockBean
-    private RestauranteRepository restauranteRepository;
 
     @MockBean
     private RestauranteControllerApplication restauranteControllerApplication;
