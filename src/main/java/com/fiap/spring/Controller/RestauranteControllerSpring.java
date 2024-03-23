@@ -63,14 +63,14 @@ public class RestauranteControllerSpring {
         return Utils.response(HttpStatus.OK, () -> restauranteController.getBuscarPor(cnpj));
     }
 
-    @GetMapping("/{nome}")
+    @GetMapping("/nome/{nome}")
     @Operation(summary = "Busca restaurante por nome")
     @ApiResponseSwaggerOk
     public ResponseEntity<?> buscarPorNome(@PathVariable @ApiParam(value = "nome", example = "nome do restaurante") String nome) {
         return Utils.response(HttpStatus.OK, () -> restauranteController.getBuscarPorNome(nome));
     }
 
-    @GetMapping("/{tipoCozinha}")
+    @GetMapping("/tipo-cozinha/{tipoCozinha}")
     @Operation(summary = "Busca restaurante por tipo de cozinha")
     @ApiResponseSwaggerOk
     public ResponseEntity<?> buscarPorTipoCozinha(@PathVariable @ApiParam(value = "Status da entidade", example = "ITALIANA",  allowableValues = "ITALIANA,JAPONESABRASILEIRA,FRANCESA,MEXICANA,VEGANA,VEGETARIANA") String tipoCozinha) {
