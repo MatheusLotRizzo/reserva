@@ -19,7 +19,7 @@ public class AlterarRestaurante {
         }
 
         try {
-            Restaurante encontrado = new BuscarRestaurante(repository).getRestaurantePor(restaurante.getCnpj());
+            new BuscarRestaurante(repository).getRestaurantePor(restaurante.getCnpj());
             // A lógica para alterar o restaurante segue aqui, assumindo que o restaurante foi encontrado
             return repository.alterar(restaurante);
         } catch (EntidadeNaoEncontrada e) {

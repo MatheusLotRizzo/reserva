@@ -1,8 +1,5 @@
 package com.fiap.reserva.domain.entity;
 
-import com.fiap.reserva.domain.entity.HorarioFuncionamento;
-
-import com.fiap.reserva.domain.exception.BusinessException;
 import org.junit.jupiter.api.Test;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;

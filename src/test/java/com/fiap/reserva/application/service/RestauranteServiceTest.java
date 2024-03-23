@@ -37,9 +37,6 @@ class RestauranteServiceTest {
     @InjectMocks
     private RestauranteService service;
 
-    private Restaurante restaurante;
-    private EnderecoVo endereco;
-
     private AutoCloseable autoCloseable;
 
     @BeforeEach

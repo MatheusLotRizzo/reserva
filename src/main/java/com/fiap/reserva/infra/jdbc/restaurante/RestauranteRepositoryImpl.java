@@ -20,9 +20,6 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
 
     final Connection connection;
 
-    private EnderecoRepositoryImpl enderecoRepository;
-    private HorarioFuncionamentoRepositoryImpl horarioFuncionamentoRepository;
-
     public RestauranteRepositoryImpl(Connection connection) {
         this.connection = connection;
     }
