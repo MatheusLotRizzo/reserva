@@ -49,7 +49,7 @@ public class ReservaControllerApplication {
                 .toList();
     }
 
-    private ReservaDto toDTO(final Reserva reservaEntity) {
+    ReservaDto toDTO(final Reserva reservaEntity) {
     	if(reservaEntity == null) {
     		return null;
     	}

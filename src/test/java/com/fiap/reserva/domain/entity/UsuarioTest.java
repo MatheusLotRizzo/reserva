@@ -109,7 +109,8 @@ class UsuarioTest {
         assertFalse(usuario1.equals(usuario2));
     }
 
-    @Test
+    @SuppressWarnings("unlikely-arg-type")
+	@Test
     void deveRetornarFalsoEnviandoObjetoDiferenteDeUsuario() throws BusinessException{
         Usuario usuario = new Usuario("Matheus", "matheus@teste.com");
         EmailVo emailVo = new EmailVo("matheus@teste.com");
