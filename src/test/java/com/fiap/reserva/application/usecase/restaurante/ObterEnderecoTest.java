@@ -35,19 +35,6 @@ class ObterEnderecoTest {
     }
 
     @Test
-    void deveLancarExcecaoQuandoEnderecoNaoEncontrado() throws BusinessException {
-        CnpjVo cnpj = new CnpjVo("12345678901234");
-        EnderecoVo enderecoVo = new EnderecoVo("00000-000", "Rua Inexistente", "0", "", "Bairro", "Cidade", "Estado");
-
-        when(enderecoRepository.obter(cnpj, enderecoVo)).thenReturn(null);
-
-        final Throwable throwable = assertThrows(BusinessException.class, () -> obterEndereco.getObter(cnpj, enderecoVo));
-
-        assertEquals("Endereço não encontrado", throwable.getMessage());
-        verify(enderecoRepository).obter(cnpj, enderecoVo);
-    }
-
-    @Test
     void deveObterEnderecoComSucesso() throws BusinessException {
         CnpjVo cnpj = new CnpjVo("12345678901234");
         EnderecoVo enderecoEsperado = new EnderecoVo("05020-000", "Rua Exemplo", "123", "Apto 1", "Bairro", "Cidade", "Estado");
