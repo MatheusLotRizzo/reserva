@@ -78,8 +78,11 @@ INSERT INTO tb_restaurante (cd_cnpj,nm_restaurante,ds_tipo_cozinha,qt_capacidade
 INSERT INTO tb_restaurante (cd_cnpj,nm_restaurante,ds_tipo_cozinha,qt_capacidade_mesas) values ('98376018000197', 'Restaurante Sem Mesas', 'JAPONESA', 0);
 INSERT INTO tb_restaurante (cd_cnpj,nm_restaurante,ds_tipo_cozinha,qt_capacidade_mesas) values ('94690811000105', 'Restaurante Sujinho', 'JAPONESA', 3);
 INSERT INTO tb_restaurante (cd_cnpj,nm_restaurante,ds_tipo_cozinha,qt_capacidade_mesas) values ('11906180000191', 'Restaurante Sem Reservas', 'ITALIANA', 0);
+INSERT INTO tb_restaurante (cd_cnpj,nm_restaurante,ds_tipo_cozinha,qt_capacidade_mesas) values ('95856819000161', 'Restaurante Bidigaray', 'MEXICANA', 10);
+INSERT INTO tb_restaurante (cd_cnpj,nm_restaurante,ds_tipo_cozinha,qt_capacidade_mesas) values ('64292159000100', 'Restaurante Teste', 'ITALIANA', 10);
 INSERT INTO tb_restaurante_endereco (cd_restaurante, cd_cep, ds_logradouro, ds_numero, ds_complemento, nm_bairro, nm_cidade, uf_estado) VALUES ('71736952000116', '11533180', 'RUA SAO VICENTE', '273', 'apto 11', 'Casqueiro', 'Cubatão', 'SP');
 INSERT INTO tb_restaurante_endereco (cd_restaurante, cd_cep, ds_logradouro, ds_numero, ds_complemento, nm_bairro, nm_cidade, uf_estado) VALUES ('94690811000105', '03550123', 'AVENIDA CONSOLAÇÃO', '1000', 'PREDICIO', 'CONSOLAÇÃO', 'SÃO PAULO', 'SP');
+INSERT INTO tb_restaurante_endereco (cd_restaurante, cd_cep, ds_logradouro, ds_numero, ds_complemento, nm_bairro, nm_cidade, uf_estado) VALUES ('95856819000161', '66816810', 'Rua Peru', '273', 'apto 301', 'Pratinha', 'Belém', 'PA');
 INSERT INTO tb_restaurante_horarios (cd_restaurante, nm_dia_semana, hr_abertura, hr_fechamento) VALUES ('71736952000116', 'MONDAY' ,'18:00:00','23:59:59');
 INSERT INTO tb_restaurante_horarios (cd_restaurante, nm_dia_semana, hr_abertura, hr_fechamento) VALUES ('71736952000116', 'TUESDAY' ,'18:00:00','23:59:59');
 INSERT INTO tb_restaurante_horarios (cd_restaurante, nm_dia_semana, hr_abertura, hr_fechamento) VALUES ('71736952000116', 'WEDNESDAY' ,'18:00:00','23:59:59');
