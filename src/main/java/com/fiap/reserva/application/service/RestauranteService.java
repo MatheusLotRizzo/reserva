@@ -38,8 +38,17 @@ public class RestauranteService {
     }
 
     public Restaurante alterar(final Restaurante restaurante) throws BusinessException {
+        // Verifica se o restaurante existe antes de proceder com as alterações
+        Restaurante existente = repository.buscarPorCnpj(restaurante.getCnpj());
+        if (existente == null) {
+            throw new EntidadeNaoEncontrada("Restaurante não pode ser alterado, pois não foi encontrado");
+        }
+
+        // Caso o restaurante exista, prossegue com as alterações
         cadastrarOuAlterarEndereco(restaurante);
         cadastrarOuAlterarHorarioFuncionamento(restaurante);
+
+        // Finaliza a alteração do restaurante
         AlterarRestaurante alterarRestaurante = new AlterarRestaurante(repository);
         return alterarRestaurante.executar(restaurante);
     }

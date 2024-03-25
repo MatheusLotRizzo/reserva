@@ -87,12 +87,15 @@ class RestauranteServiceTest {
         CnpjVo cnpj = new CnpjVo("98765432109876");
         Restaurante restauranteInexistente = new Restaurante(cnpj, "Restaurante Inexistente");
 
+        // Simular que o restaurante não existe no banco de dados
         when(repository.buscarPorCnpj(cnpj)).thenReturn(null);
 
         final Throwable throwable = assertThrows(EntidadeNaoEncontrada.class, () -> service.alterar(restauranteInexistente));
         assertEquals("Restaurante não pode ser alterado, pois não foi encontrado", throwable.getMessage());
 
+        // Verificar se o método buscarPorCnpj foi chamado no repository
         verify(repository).buscarPorCnpj(cnpj);
+        // Verificar se o método alterar não foi chamado
         verify(repository, never()).alterar(restauranteInexistente);
     }
 
@@ -105,10 +108,11 @@ class RestauranteServiceTest {
         when(repository.buscarPorCnpj(cnpj)).thenReturn(restauranteExistente);
         when(repository.alterar(restauranteExistente)).thenReturn(restauranteExistente);
 
-        Restaurante restauranteAlterado  = service.alterar(restauranteExistente);
+        Restaurante restauranteAlterado = service.alterar(restauranteExistente);
 
-        assertNotNull(restauranteAlterado );
-        assertEquals(restauranteExistente, restauranteAlterado );
+        assertNotNull(restauranteAlterado);
+        assertEquals(restauranteExistente, restauranteAlterado);
+
         verify(repository).buscarPorCnpj(cnpj);
         verify(repository).alterar(restauranteExistente);
     }
