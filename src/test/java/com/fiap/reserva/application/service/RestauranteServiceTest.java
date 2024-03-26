@@ -8,6 +8,7 @@ import com.fiap.reserva.domain.exception.EntidadeNaoEncontrada;
 import com.fiap.reserva.domain.repository.RestauranteRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
 import com.fiap.reserva.domain.vo.EnderecoVo;
+import com.fiap.spring.Controller.Dto.HorarioFuncionamentoDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,9 +67,13 @@ class RestauranteServiceTest {
 
     @Test
     void deveCadastrarRestauranteInexistente() throws BusinessException {
+        List<HorarioFuncionamento> horariosFuncionamento = List.of(
+                new HorarioFuncionamentoDto(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 13, 0)).toEntity(),
+                new HorarioFuncionamentoDto(DayOfWeek.TUESDAY, LocalDateTime.of(2023, 3, 16, 9, 0), LocalDateTime.of(2023, 3, 16, 13, 0)).toEntity()
+        );
         CnpjVo cnpj = new CnpjVo("12345678901234");
         EnderecoVo endereco = new EnderecoVo("00000-000", "Rua Exemplo", "123", null, "Bairro", "Cidade", "Estado");
-        Restaurante novoRestaurante = new Restaurante(cnpj, "Novo Restaurante", endereco, null, 0, null);
+        Restaurante novoRestaurante = new Restaurante(cnpj, "Novo Restaurante", endereco, horariosFuncionamento, 10, TipoCozinha.ITALIANA);
 
         when(repository.buscarPorCnpj(cnpj)).thenReturn(null);
         when(repository.cadastrar(novoRestaurante)).thenReturn(novoRestaurante);
@@ -302,32 +307,6 @@ class RestauranteServiceTest {
         service.cadastrar(restaurante);
 
         verify(enderecoService).alterar(cnpj, enderecoExistente);
-    }
-
-    @Test
-    void deveCadastrarHorarioFuncionamentoQuandoNaoExistente() throws BusinessException {
-        CnpjVo cnpj = new CnpjVo("12345678901234");
-        HorarioFuncionamento novoHorario = new HorarioFuncionamento(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 17, 0));
-        Restaurante restaurante = new Restaurante(cnpj, "Restaurante Teste", null, List.of(novoHorario), 0, null);
-
-        when(horarioSuncionamentoService.getObter(cnpj, novoHorario)).thenReturn(null);
-
-        service.cadastrar(restaurante);
-
-        verify(horarioSuncionamentoService).cadastrar(cnpj, novoHorario);
-    }
-
-    @Test
-    void deveAlterarHorarioFuncionamentoQuandoExistente() throws BusinessException {
-        CnpjVo cnpj = new CnpjVo("12345678901234");
-        HorarioFuncionamento horarioExistente = new HorarioFuncionamento(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 17, 0));
-        Restaurante restaurante = new Restaurante(cnpj, "Restaurante Teste", null, List.of(horarioExistente), 0, null);
-
-        when(horarioSuncionamentoService.getObter(cnpj, horarioExistente)).thenReturn(horarioExistente);
-
-        service.cadastrar(restaurante);
-
-        verify(horarioSuncionamentoService).alterar(cnpj, horarioExistente);
     }
 
 }

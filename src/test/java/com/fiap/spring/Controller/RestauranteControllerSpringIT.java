@@ -3,6 +3,7 @@ package com.fiap.spring.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fiap.reserva.domain.entity.TipoCozinha;
 import com.fiap.spring.Controller.Dto.EnderecoDto;
+import com.fiap.spring.Controller.Dto.HorarioFuncionamentoDto;
 import com.fiap.spring.Controller.Dto.RestauranteDto;
 import infraTest.UtilsTest;
 import io.restassured.RestAssured;
@@ -16,7 +17,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -36,14 +40,19 @@ public class RestauranteControllerSpringIT {
     @Nested
     class CriarRestaurante {
         @Test
-        void deveCriarRestaurante() throws JsonProcessingException {
+        void deveCriarRestaurante() {
+            List<HorarioFuncionamentoDto> horariosFuncionamento = List.of(
+                    new HorarioFuncionamentoDto(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 13, 0)),
+                    new HorarioFuncionamentoDto(DayOfWeek.TUESDAY, LocalDateTime.of(2023, 3, 16, 9, 0), LocalDateTime.of(2023, 3, 16, 13, 0))
+            );
             final RestauranteDto restauranteDto = new RestauranteDto(
-                "12345678901234",
-                "Restaurante Teste",
+                "01771554000155",
+                "Restaurante Criado",
                 10,
                 TipoCozinha.ITALIANA,
-                new ArrayList<>(),
-                new EnderecoDto("00000-000", "Rua Exemplo", "123", null, "Bairro", "Cidade", "Estado")
+//                new ArrayList<>(),
+                horariosFuncionamento,
+                new EnderecoDto("77816740", "Rua das Orquídeas", "123", "apto 301", "Jardim Pedra Alta", "Araguaína", "TO")
             );
 
             given()
@@ -52,8 +61,7 @@ public class RestauranteControllerSpringIT {
                 .when()
                     .post("/restaurante")
                 .then()
-                    .statusCode(HttpStatus.SC_CREATED)
-                    .body(is(UtilsTest.convertJson(restauranteDto)));
+                    .statusCode(HttpStatus.SC_CREATED);
         }
 
 

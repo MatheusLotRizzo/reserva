@@ -48,17 +48,4 @@ class HorarioSuncionamentoServiceTest {
 
         verify(repository).alterar(cnpj, horario);
     }
-
-    @Test
-    void deveObterHorarioFuncionamentoComSucesso() throws BusinessException {
-        CnpjVo cnpj = new CnpjVo("12345678901234");
-        HorarioFuncionamento horarioEsperado = new HorarioFuncionamento(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 17, 0));
-
-        when(repository.obter(cnpj, horarioEsperado)).thenReturn(horarioEsperado);
-
-        HorarioFuncionamento horarioObtido = service.getObter(cnpj, horarioEsperado);
-
-        assertEquals(horarioEsperado, horarioObtido);
-        verify(repository).obter(cnpj, horarioEsperado);
-    }
 }

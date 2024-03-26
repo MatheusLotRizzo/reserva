@@ -112,12 +112,7 @@ public class RestauranteService {
     private void cadastrarOuAlterarHorarioFuncionamento(final Restaurante restaurante) throws BusinessException {
         if (restaurante.getHorarioFuncionamento() != null && !restaurante.getHorarioFuncionamento().isEmpty()) {
             for (HorarioFuncionamento horario : restaurante.getHorarioFuncionamento()) {
-                HorarioFuncionamento horarioExistente = horarioSuncionamentoService.getObter(restaurante.getCnpj(), horario);
-                if (horarioExistente != null) {
-                    horarioSuncionamentoService.alterar(restaurante.getCnpj(), horario);
-                } else {
-                    horarioSuncionamentoService.cadastrar(restaurante.getCnpj(), horario);
-                }
+                horarioSuncionamentoService.cadastrar(restaurante.getCnpj(), horario);
             }
         }
     }
