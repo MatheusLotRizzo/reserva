@@ -140,7 +140,7 @@ public class RestauranteControllerSpringIT {
 
         @Test
         void naoDeveExcluirRestauranteInexistente() {
-            final String cnpjInexistente = "12345678901234";
+            final String cnpjInexistente = "12345678901000";
 
             given()
                 .pathParam("cnpj", cnpjInexistente)
