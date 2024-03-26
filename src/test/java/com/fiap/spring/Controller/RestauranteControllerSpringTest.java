@@ -5,6 +5,7 @@ import com.fiap.reserva.domain.entity.TipoCozinha;
 import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.exception.EntidadeNaoEncontrada;
 import com.fiap.spring.Controller.Dto.EnderecoDto;
+import com.fiap.spring.Controller.Dto.HorarioFuncionamentoDto;
 import com.fiap.spring.Controller.Dto.RestauranteDto;
 import com.fiap.spring.conf.DataSourceMock;
 import com.fiap.spring.conf.InjecaoDependencia;
@@ -26,7 +27,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.ArrayList;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -66,12 +68,15 @@ public class RestauranteControllerSpringTest {
     class CriarRestaurante {
         @Test
         void deveCriarRestaurante() throws Exception {
+            List<HorarioFuncionamentoDto> horarios = List.of(
+                    new HorarioFuncionamentoDto(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 17, 0))
+            );
             RestauranteDto restauranteDto = new RestauranteDto(
                     "12345678901234",
                     "Restaurante Teste",
                     10,
                     TipoCozinha.ITALIANA,
-                    new ArrayList<>(),
+                    horarios,
                     new EnderecoDto("00000-000", "Rua Exemplo", "123", null, "Bairro", "Cidade", "Estado"));
 
             when(restauranteControllerApplication.cadastrar(any(RestauranteDto.class))).thenReturn(restauranteDto);
@@ -88,12 +93,15 @@ public class RestauranteControllerSpringTest {
 
         @Test
         void naoDeveCriarRestauranteExistente() throws Exception {
+            List<HorarioFuncionamentoDto> horarios = List.of(
+                    new HorarioFuncionamentoDto(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 17, 0))
+            );
             RestauranteDto restauranteExistenteDto  = new RestauranteDto(
                     "12345678901234",
                     "Restaurante Existente",
                     10,
                     TipoCozinha.ITALIANA,
-                    new ArrayList<>(),
+                    horarios,
                     new EnderecoDto("00000-000", "Rua Exemplo", "123", null, "Bairro", "Cidade", "Estado"));
 
             when(restauranteControllerApplication.cadastrar(any(RestauranteDto.class)))
@@ -116,12 +124,15 @@ public class RestauranteControllerSpringTest {
     class AlterarRestaurante{
         @Test
         void deveAlterarRestaurante() throws Exception {
+            List<HorarioFuncionamentoDto> horarios = List.of(
+                    new HorarioFuncionamentoDto(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 17, 0))
+            );
             RestauranteDto restauranteDtoNovo = new RestauranteDto(
                     "12345678901234",
                     "Restaurante Atualizado",
                     20,
                     TipoCozinha.ITALIANA,
-                    new ArrayList<>(),
+                    horarios,
                     new EnderecoDto("00000-000", "Rua Atualizada", "123", null, "Bairro", "Cidade", "Estado"));
 
             when(restauranteControllerApplication.alterar(any(RestauranteDto.class))).thenReturn(restauranteDtoNovo);
@@ -140,12 +151,15 @@ public class RestauranteControllerSpringTest {
 
         @Test
         void naoDeveAlterarRestauranteInexistente() throws Exception {
+            List<HorarioFuncionamentoDto> horarios = List.of(
+                    new HorarioFuncionamentoDto(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 17, 0))
+            );
             RestauranteDto restauranteDtoInexistente = new RestauranteDto(
                     "98765432101234",
                     "Restaurante Inexistente",
                     20,
                     TipoCozinha.ITALIANA,
-                    new ArrayList<>(),
+                    horarios,
                     new EnderecoDto("00000-000", "Rua Inexistente", "123", null, "Bairro", "Cidade", "Estado"));
 
             when(restauranteControllerApplication.alterar(any(RestauranteDto.class)))
@@ -206,12 +220,15 @@ public class RestauranteControllerSpringTest {
         @Test
         void deveBuscarRestaurantePorCnpj() throws Exception {
             String cnpj = "12345678901234";
+            List<HorarioFuncionamentoDto> horarios = List.of(
+                    new HorarioFuncionamentoDto(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 17, 0))
+            );
             RestauranteDto restauranteDto = new RestauranteDto(
                     cnpj,
                     "Restaurante Teste",
                     20,
                     TipoCozinha.ITALIANA,
-                    new ArrayList<>(),
+                    horarios,
                     new EnderecoDto("00000-000", "Rua Teste", "123", null, "Bairro", "Cidade", "Estado"));
 
             when(restauranteControllerApplication.getBuscarPor(cnpj)).thenReturn(restauranteDto);
@@ -245,12 +262,15 @@ public class RestauranteControllerSpringTest {
         @Test
         void deveBuscarRestaurantePorNome() throws Exception {
             String nome = "Restaurante Teste";
+            List<HorarioFuncionamentoDto> horarios = List.of(
+                    new HorarioFuncionamentoDto(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 17, 0))
+            );
             RestauranteDto restauranteDto = new RestauranteDto(
                     "12345678901234",
                     nome,
                     20,
                     TipoCozinha.ITALIANA,
-                    new ArrayList<>(),
+                    horarios,
                     new EnderecoDto("00000-000", "Rua Teste", "123", null, "Bairro", "Cidade", "Estado"));
 
             when(restauranteControllerApplication.getBuscarPorNome(nome)).thenReturn(restauranteDto);
@@ -284,12 +304,15 @@ public class RestauranteControllerSpringTest {
         @Test
         void deveBuscarRestaurantePorTipoCozinha() throws Exception {
             String tipoCozinha = "ITALIANA";
+            List<HorarioFuncionamentoDto> horarios = List.of(
+                    new HorarioFuncionamentoDto(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 17, 0))
+            );
             List<RestauranteDto> restaurantes = List.of(new RestauranteDto(
                     "12345678901234",
                     "Restaurante Italiano",
                     20,
                     TipoCozinha.ITALIANA,
-                    new ArrayList<>(),
+                    horarios,
                     new EnderecoDto("00000-000", "Rua Italiana", "123", null, "Bairro", "Cidade", "Estado")));
 
             when(restauranteControllerApplication.getBuscarPorTipoCozinha(tipoCozinha)).thenReturn(restaurantes);
@@ -323,12 +346,15 @@ public class RestauranteControllerSpringTest {
         @Test
         void deveBuscarRestaurantesPorCep() throws Exception {
             String cep = "12345678";
+            List<HorarioFuncionamentoDto> horarios = List.of(
+                    new HorarioFuncionamentoDto(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 17, 0))
+            );
             List<RestauranteDto> restaurantesEsperados = List.of(new RestauranteDto(
                     "12345678901234",
                     "Restaurante Teste",
                     20,
                     TipoCozinha.ITALIANA,
-                    new ArrayList<>(),
+                    horarios,
                     new EnderecoDto(cep, "Rua Teste", "123", null, "Bairro", "Cidade", "Estado"))
             );
 
