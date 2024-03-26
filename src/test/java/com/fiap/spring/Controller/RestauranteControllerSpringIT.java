@@ -2,7 +2,6 @@ package com.fiap.spring.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fiap.reserva.domain.entity.TipoCozinha;
-import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.spring.Controller.Dto.EnderecoDto;
 import com.fiap.spring.Controller.Dto.RestauranteDto;
 import infraTest.UtilsTest;
@@ -54,7 +53,7 @@ public class RestauranteControllerSpringIT {
                     .post("/restaurante")
                 .then()
                     .statusCode(HttpStatus.SC_CREATED)
-                .body(is(UtilsTest.convertJson(restauranteDto)));
+                    .body(is(UtilsTest.convertJson(restauranteDto)));
         }
 
 
@@ -76,7 +75,7 @@ public class RestauranteControllerSpringIT {
                 .   post("/restaurante")
                 .then()
                     .statusCode(HttpStatus.SC_BAD_REQUEST)
-                .body("message", is("Restaurante não pode ser cadastrado, pois já existe"));
+                    .body("message", is("Restaurante não pode ser cadastrado, pois já existe"));
         }
     }
 
@@ -100,7 +99,7 @@ public class RestauranteControllerSpringIT {
                     .put("/restaurante")
                 .then()
                     .statusCode(HttpStatus.SC_CREATED)
-                .body(is(UtilsTest.convertJson(restauranteAtualizadoDto)));
+                    .body(is(UtilsTest.convertJson(restauranteAtualizadoDto)));
         }
 
         @Test
@@ -121,7 +120,7 @@ public class RestauranteControllerSpringIT {
                     .put("/restaurante")
                 .then()
                     .statusCode(HttpStatus.SC_NOT_FOUND)
-                .body("message", is("Restaurante não pode ser alterado, pois não foi encontrado"));
+                    .body("message", is("Restaurante não pode ser alterado, pois não foi encontrado"));
         }
     }
 
@@ -132,154 +131,106 @@ public class RestauranteControllerSpringIT {
             final String cnpj = "64292159000100";
 
             given()
-                    .pathParam("cnpj", "64292159000100")
-                    .when()
-                        .delete("/restaurante/{cnpj}", cnpj)
-                    .then()
-                        .statusCode(HttpStatus.SC_NO_CONTENT);
+                .pathParam("cnpj", cnpj)
+                .when()
+                    .delete("/restaurante/{cnpj}", cnpj)
+                .then()
+                    .statusCode(HttpStatus.SC_NO_CONTENT);
         }
 
         @Test
         void naoDeveExcluirRestauranteInexistente() {
+            final String cnpjInexistente = "12345678901234";
+
             given()
-                    .pathParam("cnpj", "12345678901234")
-                    .when()
-                        .delete("/restaurante/{cnpj}")
-                    .then()
-                        .statusCode(HttpStatus.SC_NOT_FOUND)
+                .pathParam("cnpj", cnpjInexistente)
+                .when()
+                    .delete("/restaurante/{cnpj}")
+                .then()
+                    .statusCode(HttpStatus.SC_NOT_FOUND)
                     .body("message", is("Restaurante não pode ser excluído, pois não foi encontrado"));
         }
     }
-//
-//    @Nested
-//    class BuscarRestaurante {
-//        @Test
-//        void deveBuscarRestaurantePorCnpj() throws BusinessException, JsonProcessingException {
-//            String cnpj = "12345678901234";
-//            RestauranteDto restauranteDto = new RestauranteDto(
-//                    cnpj,
-//                    "Restaurante Teste",
-//                    20,
-//                    TipoCozinha.ITALIANA,
-//                    new ArrayList<>(),
-//                    new EnderecoDto("00000-000", "Rua Teste", "123", null, "Bairro Teste", "Cidade Teste", "Estado Teste")
-//            );
-//
-//            when(restauranteControllerApplication.getBuscarPor(cnpj)).thenReturn(restauranteDto);
-//
-//            given()
-//                    .contentType(ContentType.JSON)
-//                    .when()
-//                        .get("/restaurante/{cnpj}", cnpj)
-//                    .then()
-//                        .statusCode(HttpStatus.SC_OK)
-//                    .body(is(UtilsTest.convertJson(restauranteDto)));
-//
-//            verify(restauranteControllerApplication).getBuscarPor(cnpj);
-//        }
-//
-//        @Test
-//        void naoDeveEncontrarRestaurantePorCnpjInexistente() throws BusinessException {
-//            String cnpjInexistente = "00000000000000";
-//            when(restauranteControllerApplication.getBuscarPor(cnpjInexistente))
-//                    .thenThrow(new EntidadeNaoEncontrada("Restaurante não encontrado"));
-//
-//            given()
-//                    .contentType(ContentType.JSON)
-//                    .when()
-//                        .get("/restaurante/{cnpj}", cnpjInexistente)
-//                    .then()
-//                        .statusCode(HttpStatus.SC_NOT_FOUND)
-//                    .body("message", is("Restaurante não encontrado"));
-//
-//            verify(restauranteControllerApplication).getBuscarPor(cnpjInexistente);
-//        }
-//
-//        @Test
-//        void deveBuscarRestaurantePorNome() throws JsonProcessingException, BusinessException {
-//            String nome = "Restaurante Teste";
-//            RestauranteDto restauranteDto = new RestauranteDto(
-//                    "12345678901234",
-//                    nome,
-//                    20,
-//                    TipoCozinha.ITALIANA,
-//                    new ArrayList<>(),
-//                    new EnderecoDto("00000-000", "Rua Teste", "123", null, "Bairro Teste", "Cidade Teste", "Estado Teste")
-//            );
-//
-//            when(restauranteControllerApplication.getBuscarPorNome(nome)).thenReturn(restauranteDto);
-//
-//            given()
-//                    .contentType(ContentType.JSON)
-//                    .when()
-//                        .get("/restaurante/nome/{nome}", nome)
-//                    .then()
-//                        .statusCode(HttpStatus.SC_OK)
-//                    .body(is(UtilsTest.convertJson(restauranteDto)));
-//
-//            verify(restauranteControllerApplication).getBuscarPorNome(nome);
-//        }
-//
-//        @Test
-//        void naoDeveEncontrarRestaurantePorNomeInexistente() throws BusinessException {
-//            String nomeInexistente = "Nome Inexistente";
-//            when(restauranteControllerApplication.getBuscarPorNome(nomeInexistente))
-//                    .thenThrow(new EntidadeNaoEncontrada("Restaurante não encontrado para o nome: " + nomeInexistente));
-//
-//            given()
-//                    .contentType(ContentType.JSON)
-//                    .when()
-//                        .get("/restaurante/nome/{nome}", nomeInexistente)
-//                    .then()
-//                        .statusCode(HttpStatus.SC_NOT_FOUND)
-//                    .body("message", is("Restaurante não encontrado para o nome: " + nomeInexistente));
-//
-//            verify(restauranteControllerApplication).getBuscarPorNome(nomeInexistente);
-//        }
-//
-//        @Test
-//        void deveBuscarRestaurantePorTipoCozinha() throws JsonProcessingException, BusinessException {
-//            String tipoCozinha = "ITALIANA";
-//            List<RestauranteDto> restaurantes = List.of(
-//                    new RestauranteDto(
-//                            "12345678901234",
-//                            "Restaurante Italiano",
-//                            20,
-//                            TipoCozinha.ITALIANA,
-//                            new ArrayList<>(),
-//                            new EnderecoDto("00000-000", "Rua Italiana", "123", null, "Bairro Italiano", "Cidade", "Estado")
-//                    )
-//            );
-//
-//            when(restauranteControllerApplication.getBuscarPorTipoCozinha(tipoCozinha)).thenReturn(restaurantes);
-//
-//            given()
-//                    .contentType(ContentType.JSON)
-//                    .when()
-//                        .get("/restaurante/tipo-cozinha/{tipoCozinha}", tipoCozinha)
-//                    .then()
-//                        .statusCode(HttpStatus.SC_OK)
-//                    .body(is(UtilsTest.convertJson(restaurantes)));
-//
-//            verify(restauranteControllerApplication).getBuscarPorTipoCozinha(tipoCozinha);
-//        }
-//
-//        @Test
-//        void naoDeveEncontrarRestaurantePorTipoCozinhaInexistente() throws BusinessException {
-//            String tipoCozinhaInexistente = "ETÍOPE";
-//            when(restauranteControllerApplication.getBuscarPorTipoCozinha(tipoCozinhaInexistente))
-//                    .thenThrow(new EntidadeNaoEncontrada("Nenhum restaurante encontrado para o tipo de cozinha: " + tipoCozinhaInexistente));
-//
-//            given()
-//                    .contentType(ContentType.JSON)
-//                    .when()
-//                        .get("/restaurante/tipo-cozinha/{tipoCozinha}", tipoCozinhaInexistente)
-//                    .then()
-//                        .statusCode(HttpStatus.SC_NOT_FOUND)
-//                    .body("message", is("Nenhum restaurante encontrado para o tipo de cozinha: " + tipoCozinhaInexistente));
-//
-//            verify(restauranteControllerApplication).getBuscarPorTipoCozinha(tipoCozinhaInexistente);
-//        }
-//    }
+
+    @Nested
+    class BuscarRestaurante {
+        @Test
+        void deveBuscarRestaurantePorCnpj() {
+            final String cnpj = "95856819000161";
+
+            given()
+                .contentType(ContentType.JSON)
+                .when()
+                    .get("/restaurante/{cnpj}", cnpj)
+                .then()
+                    .statusCode(HttpStatus.SC_OK)
+                    .body("cnpj", equalTo(cnpj));
+        }
+
+        @Test
+        void naoDeveEncontrarRestaurantePorCnpjInexistente() {
+            final String cnpjInexistente = "47794381000191";
+
+            given()
+                .contentType(ContentType.JSON)
+                .when()
+                    .get("/restaurante/{cnpj}", cnpjInexistente)
+                .then()
+                    .statusCode(HttpStatus.SC_NOT_FOUND)
+                    .body("message", is("Restaurante não encontrado"));
+        }
+
+        @Test
+        void deveBuscarRestaurantePorNome() {
+            final String nomeRestaurante  = "Restaurante Denis Benjamim";
+
+            given()
+                .contentType(ContentType.JSON)
+                .when()
+                    .get("/restaurante/nome/{nome}", nomeRestaurante)
+                .then()
+                    .statusCode(HttpStatus.SC_OK)
+                    .body("nome", equalTo(nomeRestaurante));
+        }
+
+        @Test
+        void naoDeveEncontrarRestaurantePorNomeInexistente() {
+            final String nomeInexistente = "Nome Inexistente";
+
+            given()
+                .contentType(ContentType.JSON)
+                .when()
+                    .get("/restaurante/nome/{nome}", nomeInexistente)
+                .then()
+                    .statusCode(HttpStatus.SC_NOT_FOUND)
+                    .body("message", equalTo("Restaurante não encontrado para o nome: " + nomeInexistente));
+        }
+
+        @Test
+        void deveBuscarRestaurantePorTipoCozinha() {
+            String tipoCozinha = "JAPONESA";
+
+            given()
+                .contentType(ContentType.JSON)
+                .when()
+                    .get("/restaurante/tipo-cozinha/{tipoCozinha}", tipoCozinha)
+                .then()
+                    .statusCode(HttpStatus.SC_OK)
+                    .body("tipoCozinha", everyItem(equalTo(tipoCozinha)));
+        }
+
+        @Test
+        void naoDeveEncontrarRestaurantePorTipoCozinhaInexistente() {
+            String tipoCozinhaInexistente = "VEGANA";
+
+            given()
+                .contentType(ContentType.JSON)
+                .when()
+                    .get("/restaurante/tipo-cozinha/{tipoCozinha}", tipoCozinhaInexistente)
+                .then()
+                    .statusCode(HttpStatus.SC_NOT_FOUND)
+                    .body("message", is("Nenhum restaurante encontrado para o tipo de cozinha: " + tipoCozinhaInexistente));
+        }
+    }
 }
 

@@ -5,9 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import com.fiap.reserva.domain.entity.HorarioFuncionamento;
 import com.fiap.reserva.domain.entity.Restaurante;
 import com.fiap.reserva.domain.entity.TipoCozinha;
 import com.fiap.reserva.domain.exception.BusinessException;
@@ -237,13 +237,38 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
     }
 
     private Restaurante contruirRestaurante(ResultSet rs) throws SQLException, BusinessException {
-        return new Restaurante(
-                rs.getString("cd_cnpj"),
-                rs.getString("nm_restaurante"),
-               null,// enderecoRepository.construirEndereco(rs),
-                Collections.emptyList(), // horarioFuncionamentoRepository.construirHorarioFuncionamento(rs), <- ta errado tem de ser uma lista
-                rs.getInt("qt_capacidade_mesas"),
-                TipoCozinha.valueOf(rs.getString("ds_tipo_cozinha"))
+        CnpjVo cnpj = new CnpjVo(rs.getString("cd_cnpj"));
+        String nome = rs.getString("nm_restaurante");
+        TipoCozinha tipoCozinha = TipoCozinha.valueOf(rs.getString("ds_tipo_cozinha"));
+        int capacidadeMesas = rs.getInt("qt_capacidade_mesas");
+
+        EnderecoVo endereco = new EnderecoVo(
+                rs.getString("cd_cep"),
+                rs.getString("ds_logradouro"),
+                rs.getString("ds_numero"),
+                rs.getString("ds_complemento"),
+                rs.getString("nm_bairro"),
+                rs.getString("nm_cidade"),
+                rs.getString("uf_estado")
         );
+
+        // lista de HorarioFuncionamento
+        List<HorarioFuncionamento> horariosFuncionamento = new ArrayList<>();
+        // Lógica para adicionar horários ao horariosFuncionamento
+
+        return new Restaurante(cnpj, nome, endereco, horariosFuncionamento, capacidadeMesas, tipoCozinha);
     }
+
+//    private Restaurante contruirRestaurante(ResultSet rs) throws SQLException, BusinessException {
+//        return new Restaurante(
+//                rs.getString("cd_cnpj"),
+//                rs.getString("nm_restaurante"),
+//               null,// enderecoRepository.construirEndereco(rs),
+//                Collections.emptyList(), // horarioFuncionamentoRepository.construirHorarioFuncionamento(rs), <- ta errado tem de ser uma lista
+//                rs.getInt("qt_capacidade_mesas"),
+//                TipoCozinha.valueOf(rs.getString("ds_tipo_cozinha"))
+//        );
+//    }
+
+
 }
