@@ -208,7 +208,7 @@ public class RestauranteControllerSpringIT {
 
         @Test
         void deveBuscarRestaurantePorTipoCozinha() {
-            String tipoCozinha = "JAPONESA";
+            final String tipoCozinha = "JAPONESA";
 
             given()
                 .contentType(ContentType.JSON)
@@ -221,7 +221,7 @@ public class RestauranteControllerSpringIT {
 
         @Test
         void naoDeveEncontrarRestaurantePorTipoCozinhaInexistente() {
-            String tipoCozinhaInexistente = "VEGANA";
+            final String tipoCozinhaInexistente = "VEGANA";
 
             given()
                 .contentType(ContentType.JSON)
@@ -230,6 +230,32 @@ public class RestauranteControllerSpringIT {
                 .then()
                     .statusCode(HttpStatus.SC_NOT_FOUND)
                     .body("message", is("Nenhum restaurante encontrado para o tipo de cozinha: " + tipoCozinhaInexistente));
+        }
+
+        @Test
+        void deveBuscarRestaurantesPorCep() {
+            final String cep = "66816810";
+
+            given()
+                .contentType(ContentType.JSON)
+                .when()
+                    .get("/restaurante/localizacao/cep/{cep}", cep)
+                .then()
+                    .statusCode(HttpStatus.SC_OK)
+                    .body("endereco.cep", everyItem(equalTo(cep)));
+        }
+
+        @Test
+        void naoDeveEncontrarRestaurantesPorCepInexistente() {
+            String cepInexistente = "66810000";
+
+            given()
+                .contentType(ContentType.JSON)
+                .when()
+                    .get("/restaurante/localizacao/cep/{cep}", cepInexistente)
+                .then()
+                    .statusCode(HttpStatus.SC_NOT_FOUND)
+                    .body("message", is("Nenhum restaurante encontrado para o CEP: " + cepInexistente));
         }
     }
 }

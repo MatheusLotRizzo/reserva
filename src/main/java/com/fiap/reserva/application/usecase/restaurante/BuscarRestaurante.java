@@ -6,19 +6,20 @@ import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.exception.EntidadeNaoEncontrada;
 import com.fiap.reserva.domain.repository.RestauranteRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
-import com.fiap.reserva.domain.vo.EnderecoVo;
 
 import java.util.List;
 
 public class BuscarRestaurante {
 
     private final RestauranteRepository repository;
+
     public BuscarRestaurante(RestauranteRepository restauranteRepository) {
-        this.repository =  restauranteRepository;
+        this.repository = restauranteRepository;
     }
 
     /**
      * Busca um restaurante por cnpj no repositorio
+     *
      * @param cnpjRestaurante
      * @return
      * @throws EntidadeNaoEncontrada caso não encontre o restaurante
@@ -33,6 +34,7 @@ public class BuscarRestaurante {
 
     /**
      * Busca um restaurante pelo nome no repositorio
+     *
      * @param cnpjRestaurante
      * @return
      * @throws EntidadeNaoEncontrada caso não encontre o restaurante
@@ -49,7 +51,7 @@ public class BuscarRestaurante {
         return repository.buscarPorTipoCozinha(tipoCozinha);
     }
 
-    public List<Restaurante> getRestaurantePorLocalizacao(EnderecoVo enderecoVo) throws BusinessException {
-        return repository.buscarPorLocalizacao(enderecoVo);
+    public List<Restaurante> getRestaurantePorCep(String cep) throws BusinessException {
+        return repository.buscarPorCep(cep);
     }
 }

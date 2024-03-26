@@ -106,14 +106,16 @@ class BuscarRestauranteTest {
     }
 
     @Test
-    void deveRetornarRestaurantesPorLocalizacao() throws BusinessException {
-        EnderecoVo enderecoVo = new EnderecoVo("05020-000", "Rua Exemplo", "123", "Apto 1", "Bairro", "Cidade", "Estado");
-        List<Restaurante> esperados = List.of(new Restaurante(new CnpjVo("12345678901234"), "Restaurante Local"));
-        when(repository.buscarPorLocalizacao(enderecoVo)).thenReturn(esperados);
+    void deveRetornarRestaurantesPorCep() throws BusinessException {
+        String cep = "12345678";
+        Restaurante restauranteEsperado = new Restaurante(new CnpjVo("12345678901234"), "Restaurante Teste", new EnderecoVo(cep, "Rua Teste", "123", "", "Bairro", "Cidade", "Estado"), null, 100, TipoCozinha.ITALIANA);
+        List<Restaurante> esperados = List.of(restauranteEsperado);
+        when(repository.buscarPorCep(cep)).thenReturn(esperados);
 
-        List<Restaurante> resultados = buscarRestaurante.getRestaurantePorLocalizacao(enderecoVo);
+        List<Restaurante> resultados = buscarRestaurante.getRestaurantePorCep(cep);
 
+        assertNotNull(resultados);
         assertEquals(esperados, resultados);
-        verify(repository).buscarPorLocalizacao(enderecoVo);
+        verify(repository).buscarPorCep(cep);
     }
 }

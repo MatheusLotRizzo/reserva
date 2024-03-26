@@ -122,40 +122,16 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
     }
 
     @Override
-    public List<Restaurante> buscarPorLocalizacao(EnderecoVo enderecoVo) throws BusinessException {
-        final List<Restaurante> list = new ArrayList<>();
+    public List<Restaurante> buscarPorCep(String cep) throws BusinessException {
+        List<Restaurante> list = new ArrayList<>();
         final StringBuilder query = new StringBuilder()
                 .append("SELECT * FROM tb_restaurante re ")
-                .append("INNER JOIN tb_restaurante_horarios hf ")
-                .append("ON re.cd_cnpj = hf.cd_restaurante ")
                 .append("INNER JOIN tb_restaurante_endereco e ")
                 .append("ON re.cd_cnpj = e.cd_restaurante ")
-                .append("WHERE 1 = 1 ")
-                ;
+                .append("WHERE e.cd_cep = ? ");
 
         try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
-            int i = 1;
-            
-            if (enderecoVo.getCep() != null) {
-                query.append("AND e.cd_cep = ? ");
-                ps.setString(i++, enderecoVo.getCep());
-            }
-            if (enderecoVo.getLogradouro() != null) {
-                query.append("AND e.ds_logradouro = ? ");
-                ps.setString(i++, enderecoVo.getLogradouro());
-            }
-            if (enderecoVo.getBairro() != null) {
-                query.append("AND e.nm_bairro = ? ");
-                ps.setString(i++, enderecoVo.getBairro());
-            }
-            if (enderecoVo.getCidade() != null) {
-                query.append("AND e.nm_cidade = ? ");
-                ps.setString(i++, enderecoVo.getCidade());
-            }
-            if (enderecoVo.getEstado() != null) {
-                query.append("AND e.uf_estado = ? ");
-                ps.setString(i++, enderecoVo.getEstado());
-            }
+            ps.setString(1, cep);
 
             try (final ResultSet rs = ps.executeQuery()) {
                 while(rs.next()){

@@ -51,8 +51,8 @@ public class RestauranteControllerApplication {
                 .collect(Collectors.toList());
     }
 
-    public List<RestauranteDto> getBuscarPorLocalizacao(final RestauranteDto restauranteDto) throws BusinessException{
-        final List<Restaurante> restaurantes = service.getBuscarPorLocalizacao(restauranteDto.toEntity().getEndereco());
+    public List<RestauranteDto> getBuscarPorCep(final String cep) throws BusinessException {
+        List<Restaurante> restaurantes = service.getBuscarPorCep(cep);
 
         return restaurantes.stream()
                 .map(this::toDto)

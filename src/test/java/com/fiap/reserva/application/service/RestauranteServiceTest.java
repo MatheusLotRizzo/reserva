@@ -199,32 +199,30 @@ class RestauranteServiceTest {
     }
 
     @Test
-    void deveLancarExcecaoQuandoNaoEncontrarRestaurantesPorLocalizacao() throws BusinessException {
-        EnderecoVo enderecoVo = new EnderecoVo("00000-000", "Rua Teste", "123", "Complemento", "Bairro", "Cidade", "Estado");
-        when(repository.buscarPorLocalizacao(enderecoVo)).thenReturn(Collections.emptyList());
+    void deveLancarExcecaoQuandoNaoEncontrarRestaurantesPorCep() throws BusinessException {
+        String cep = "00000000";
+        when(repository.buscarPorCep(cep)).thenReturn(List.of());
 
-        final Throwable throwable = assertThrows(EntidadeNaoEncontrada.class, () -> service.getBuscarPorLocalizacao(enderecoVo));
-        assertEquals("Nenhum restaurante encontrado para a localização especificada.", throwable.getMessage());
+        final Throwable throwable = assertThrows(BusinessException.class, () -> service.getBuscarPorCep(cep));
 
-        verify(repository).buscarPorLocalizacao(enderecoVo);
+        assertEquals("Nenhum restaurante encontrado para o CEP: " + cep, throwable.getMessage());
+        verify(repository).buscarPorCep(cep);
     }
 
     @Test
-    void deveRetornarRestaurantesPorLocalizacaoQuandoEncontrados() throws BusinessException {
-        EnderecoVo enderecoVo = new EnderecoVo("00000-000", "Rua Exemplo", "123", "Apto 1", "Bairro", "Cidade", "Estado");
+    void deveRetornarRestaurantesPorCep() throws BusinessException {
+        String cep = "12345678";
         List<Restaurante> restaurantesEsperados = List.of(
-                new Restaurante(new CnpjVo("12345678901234"), "Restaurante Local 1"),
-                new Restaurante(new CnpjVo("23456789012345"), "Restaurante Local 2")
+                new Restaurante(new CnpjVo("12345678901234"), "Restaurante A", new EnderecoVo(cep, "", "", "", "", "", ""), null, 0, TipoCozinha.BRASILEIRA)
         );
+        when(repository.buscarPorCep(cep)).thenReturn(restaurantesEsperados);
 
-        when(repository.buscarPorLocalizacao(enderecoVo)).thenReturn(restaurantesEsperados);
-
-        List<Restaurante> resultado = service.getBuscarPorLocalizacao(enderecoVo);
+        List<Restaurante> resultado = service.getBuscarPorCep(cep);
 
         assertNotNull(resultado);
         assertFalse(resultado.isEmpty());
         assertEquals(restaurantesEsperados, resultado);
-        verify(repository).buscarPorLocalizacao(enderecoVo);
+        verify(repository).buscarPorCep(cep);
     }
 
     @Test

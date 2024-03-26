@@ -74,20 +74,20 @@ public class RestauranteService {
         return restaurantes;
     }
 
-    public List<Restaurante> getBuscarPorLocalizacao(final EnderecoVo enderecoVo) throws BusinessException {
-        List<Restaurante> restaurantes = new BuscarRestaurante(repository).getRestaurantePorLocalizacao(enderecoVo);
-        if (restaurantes == null || restaurantes.isEmpty()) {
-            throw new EntidadeNaoEncontrada("Nenhum restaurante encontrado para a localização especificada.");
-        }
-        return restaurantes;
-    }
-
     public Restaurante getBuscarPor(final CnpjVo cnpj) throws BusinessException {
         Restaurante restaurante = repository.buscarPorCnpj(cnpj);
         if (restaurante == null) {
             throw new EntidadeNaoEncontrada("Restaurante não encontrado");
         }
         return restaurante;
+    }
+
+    public List<Restaurante> getBuscarPorCep(String cep) throws BusinessException {
+        List<Restaurante> restaurantes = new BuscarRestaurante(repository).getRestaurantePorCep(cep);
+        if (restaurantes == null || restaurantes.isEmpty()) {
+            throw new EntidadeNaoEncontrada("Nenhum restaurante encontrado para o CEP: " + cep);
+        }
+        return restaurantes;
     }
 
     public Integer obterLocacaoMaxRestaurante(Restaurante restaurante) throws BusinessException {

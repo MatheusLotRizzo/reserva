@@ -319,5 +319,45 @@ public class RestauranteControllerSpringTest {
 
             verify(restauranteControllerApplication).getBuscarPorTipoCozinha(tipoCozinhaInexistente);
         }
+
+        @Test
+        void deveBuscarRestaurantesPorCep() throws Exception {
+            String cep = "12345678";
+            List<RestauranteDto> restaurantesEsperados = List.of(new RestauranteDto(
+                    "12345678901234",
+                    "Restaurante Teste",
+                    20,
+                    TipoCozinha.ITALIANA,
+                    new ArrayList<>(),
+                    new EnderecoDto(cep, "Rua Teste", "123", null, "Bairro", "Cidade", "Estado"))
+            );
+
+            when(restauranteControllerApplication.getBuscarPorCep(cep)).thenReturn(restaurantesEsperados);
+
+            mockMvc.perform(MockMvcRequestBuilders
+                            .get("/restaurante/localizacao/cep/{cep}", cep)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.content().json(UtilsTest.convertJson(restaurantesEsperados)));
+
+            verify(restauranteControllerApplication).getBuscarPorCep(cep);
+        }
+
+        @Test
+        void naoDeveEncontrarRestaurantesPorCepInexistente() throws Exception {
+            String cepInexistente = "00000000";
+            when(restauranteControllerApplication.getBuscarPorCep(cepInexistente))
+                    .thenThrow(new EntidadeNaoEncontrada("Nenhum restaurante encontrado para o CEP: " + cepInexistente));
+
+            mockMvc.perform(MockMvcRequestBuilders
+                            .get("/restaurante/localizacao/cep/{cep}", cepInexistente)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isNotFound())
+                    .andExpect(MockMvcResultMatchers.content().json(
+                            UtilsTest.convertJson(MessageErrorHandler.create("Nenhum restaurante encontrado para o CEP: " + cepInexistente))
+                    ));
+
+            verify(restauranteControllerApplication).getBuscarPorCep(cepInexistente);
+        }
     }
 }
