@@ -7,12 +7,18 @@ import com.fiap.reserva.domain.exception.BusinessException;
 import com.fiap.reserva.domain.repository.HorarioFuncionamentoRepository;
 import com.fiap.reserva.domain.vo.CnpjVo;
 
+import java.time.DayOfWeek;
+
 public class HorarioSuncionamentoService {
     private final HorarioFuncionamentoRepository repository;
 
     public HorarioSuncionamentoService(HorarioFuncionamentoRepository repository) {
 		this.repository = repository;
 	}
+
+    public boolean existeHorario(CnpjVo cnpj, DayOfWeek diaDaSemana) {
+        return repository.existeHorario(cnpj, diaDaSemana);
+    }
 
 	public void cadastrar(final CnpjVo cnpj, final HorarioFuncionamento horarioFuncionamento) throws BusinessException  {
         new CadastrarHorarioFuncionamento(repository).executar(cnpj,horarioFuncionamento);

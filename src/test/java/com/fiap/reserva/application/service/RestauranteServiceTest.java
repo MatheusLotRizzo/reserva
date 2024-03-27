@@ -217,8 +217,12 @@ class RestauranteServiceTest {
     @Test
     void deveRetornarRestaurantesPorCep() throws BusinessException {
         String cep = "12345678";
+        List<HorarioFuncionamento> horariosFuncionamento = List.of(
+                new HorarioFuncionamentoDto(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 13, 0)).toEntity(),
+                new HorarioFuncionamentoDto(DayOfWeek.TUESDAY, LocalDateTime.of(2023, 3, 16, 9, 0), LocalDateTime.of(2023, 3, 16, 13, 0)).toEntity()
+        );
         List<Restaurante> restaurantesEsperados = List.of(
-                new Restaurante(new CnpjVo("12345678901234"), "Restaurante A", new EnderecoVo(cep, "", "", "", "", "", ""), null, 0, TipoCozinha.BRASILEIRA)
+                new Restaurante(new CnpjVo("12345678901234"), "Restaurante A", new EnderecoVo(cep, "", "", "", "", "", ""), horariosFuncionamento, 10, TipoCozinha.BRASILEIRA)
         );
         when(repository.buscarPorCep(cep)).thenReturn(restaurantesEsperados);
 
@@ -281,9 +285,13 @@ class RestauranteServiceTest {
 
     @Test
     void deveCadastrarEnderecoQuandoNaoExistente() throws BusinessException {
+        List<HorarioFuncionamento> horariosFuncionamento = List.of(
+                new HorarioFuncionamentoDto(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 13, 0)).toEntity(),
+                new HorarioFuncionamentoDto(DayOfWeek.TUESDAY, LocalDateTime.of(2023, 3, 16, 9, 0), LocalDateTime.of(2023, 3, 16, 13, 0)).toEntity()
+        );
         CnpjVo cnpj = new CnpjVo("12345678901234");
         EnderecoVo novoEndereco = new EnderecoVo("00000-000", "Rua Exemplo", "123", null, "Bairro", "Cidade", "Estado");
-        Restaurante restaurante = new Restaurante(cnpj, "Restaurante Teste", novoEndereco, null, 0, null);
+        Restaurante restaurante = new Restaurante(cnpj, "Restaurante Teste", novoEndereco, horariosFuncionamento, 10, TipoCozinha.ITALIANA);
 
         // Simula que o endereço não existe
         when(enderecoService.getObter(cnpj, novoEndereco)).thenReturn(null);
@@ -298,9 +306,13 @@ class RestauranteServiceTest {
 
     @Test
     void deveAlterarEnderecoQuandoExistente() throws BusinessException {
+        List<HorarioFuncionamento> horariosFuncionamento = List.of(
+                new HorarioFuncionamentoDto(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 13, 0)).toEntity(),
+                new HorarioFuncionamentoDto(DayOfWeek.TUESDAY, LocalDateTime.of(2023, 3, 16, 9, 0), LocalDateTime.of(2023, 3, 16, 13, 0)).toEntity()
+        );
         CnpjVo cnpj = new CnpjVo("12345678901234");
         EnderecoVo enderecoExistente = new EnderecoVo("00000-000", "Rua Exemplo", "123", null, "Bairro", "Cidade", "Estado");
-        Restaurante restaurante = new Restaurante(cnpj, "Restaurante Teste", enderecoExistente, null, 0, null);
+        Restaurante restaurante = new Restaurante(cnpj, "Restaurante Teste", enderecoExistente, horariosFuncionamento, 10, TipoCozinha.ITALIANA);
 
         when(enderecoService.getObter(cnpj, enderecoExistente)).thenReturn(enderecoExistente);
 

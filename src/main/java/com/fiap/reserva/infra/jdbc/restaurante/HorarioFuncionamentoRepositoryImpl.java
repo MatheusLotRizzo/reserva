@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 
 import com.fiap.reserva.domain.entity.HorarioFuncionamento;
 import com.fiap.reserva.domain.repository.HorarioFuncionamentoRepository;
@@ -49,8 +48,7 @@ public class HorarioFuncionamentoRepositoryImpl implements HorarioFuncionamentoR
                 .append("UPDATE tb_restaurante_horarios ")
                 .append("SET hr_abertura = ?, ")
                 .append("hr_fechamento = ? ")
-                .append("WHERE cd_restaurante = ? ")
-                ;
+                .append("WHERE cd_restaurante = ? AND nm_dia_semana = ?");
 
         try (final PreparedStatement ps = connection.prepareStatement(query.toString())) {
             int i = 1;
@@ -59,11 +57,29 @@ public class HorarioFuncionamentoRepositoryImpl implements HorarioFuncionamentoR
 
             //WHERE
             ps.setString(i++, cnpj.getNumero());
+            ps.setString(i++, horarioFuncionamento.getDiaDaSemana().name());
 
             ps.executeUpdate();
 
         } catch (SQLException e) {
             throw new TechnicalException(e);
         }
+    }
+
+    @Override
+    public boolean existeHorario(CnpjVo cnpj, DayOfWeek diaDaSemana) {
+        final String query = "SELECT COUNT(*) > 0 FROM tb_restaurante_horarios WHERE cd_restaurante = ? AND nm_dia_semana = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, cnpj.getNumero());
+            ps.setString(2, diaDaSemana.name());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBoolean(1);
+                }
+            }
+        } catch (SQLException e) {
+            throw new TechnicalException(e);
+        }
+        return false;
     }
 }

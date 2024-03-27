@@ -42,7 +42,7 @@ class HorarioSuncionamentoServiceTest {
     @Test
     void deveAlterarHorarioFuncionamentoComSucesso() throws BusinessException {
         CnpjVo cnpj = new CnpjVo("12345678901234");
-        HorarioFuncionamento horario = new HorarioFuncionamento(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 17, 0));
+        HorarioFuncionamento horario = new HorarioFuncionamento(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 18, 0), LocalDateTime.of(2023, 3, 15, 23, 0));
 
         service.alterar(cnpj, horario);
 

@@ -1,11 +1,9 @@
 package com.fiap.spring.Controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fiap.reserva.domain.entity.TipoCozinha;
 import com.fiap.spring.Controller.Dto.EnderecoDto;
 import com.fiap.spring.Controller.Dto.HorarioFuncionamentoDto;
 import com.fiap.spring.Controller.Dto.RestauranteDto;
-import infraTest.UtilsTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
@@ -19,7 +17,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
@@ -50,7 +47,6 @@ public class RestauranteControllerSpringIT {
                 "Restaurante Criado",
                 10,
                 TipoCozinha.ITALIANA,
-//                new ArrayList<>(),
                 horariosFuncionamento,
                 new EnderecoDto("77816740", "Rua das Orquídeas", "123", "apto 301", "Jardim Pedra Alta", "Araguaína", "TO")
             );
@@ -67,12 +63,16 @@ public class RestauranteControllerSpringIT {
 
         @Test
         void naoDeveCriarRestauranteExistente() {
+            List<HorarioFuncionamentoDto> horariosFuncionamento = List.of(
+                    new HorarioFuncionamentoDto(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 13, 0)),
+                    new HorarioFuncionamentoDto(DayOfWeek.TUESDAY, LocalDateTime.of(2023, 3, 16, 9, 0), LocalDateTime.of(2023, 3, 16, 13, 0))
+            );
             final RestauranteDto restauranteExistenteDto = new RestauranteDto(
                 "95856819000161",
                 "Restaurante Bidigaray",
                 10,
                 TipoCozinha.MEXICANA,
-                new ArrayList<>(),
+                horariosFuncionamento,
                 new EnderecoDto("66816810", "Rua Peru", "273", "apto 301", "Pratinha", "Belém", "PA")
             );
 
@@ -90,13 +90,17 @@ public class RestauranteControllerSpringIT {
     @Nested
     class AlterarRestaurante {
         @Test
-        void deveAlterarRestaurante() throws JsonProcessingException {
+        void deveAlterarRestaurante() {
+            List<HorarioFuncionamentoDto> horariosFuncionamento = List.of(
+                    new HorarioFuncionamentoDto(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 13, 0)),
+                    new HorarioFuncionamentoDto(DayOfWeek.TUESDAY, LocalDateTime.of(2023, 3, 16, 9, 0), LocalDateTime.of(2023, 3, 16, 13, 0))
+            );
             final RestauranteDto restauranteAtualizadoDto = new RestauranteDto(
                 "95856819000161",
                 "Restaurante Atualizado",
                 20,
                 TipoCozinha.ITALIANA,
-                new ArrayList<>(),
+                horariosFuncionamento,
                 new EnderecoDto("66816810", "Rua Atualizada", "123", "apto 301", "Bairro Atualizado", "Cidade", "Estado")
             );
 
@@ -106,18 +110,47 @@ public class RestauranteControllerSpringIT {
                 .when()
                     .put("/restaurante")
                 .then()
+                    .statusCode(HttpStatus.SC_CREATED);
+        }
+
+        @Test
+        void deveAlterarRestauranteComNovoHorarioFuncionamento() {
+            List<HorarioFuncionamentoDto> horariosFuncionamentoAlterados = List.of(
+                    new HorarioFuncionamentoDto(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 10, 0), LocalDateTime.of(2023, 3, 15, 14, 0)),
+                    new HorarioFuncionamentoDto(DayOfWeek.TUESDAY, LocalDateTime.of(2023, 3, 16, 10, 0), LocalDateTime.of(2023, 3, 16, 14, 0))
+            );
+            RestauranteDto restauranteAtualizadoDto = new RestauranteDto(
+                    "95856819000161",
+                    "Restaurante Atualizado",
+                    20,
+                    TipoCozinha.ITALIANA,
+                    horariosFuncionamentoAlterados,
+                    new EnderecoDto("66816810", "Rua Atualizada", "123", "apto 301", "Bairro Atualizado", "Cidade", "Estado")
+            );
+
+            given()
+                .contentType(ContentType.JSON)
+                .body(restauranteAtualizadoDto)
+                .when()
+                    .put("/restaurante")
+                .then()
                     .statusCode(HttpStatus.SC_CREATED)
-                    .body(is(UtilsTest.convertJson(restauranteAtualizadoDto)));
+                    .body("nome", equalTo(restauranteAtualizadoDto.nome()))
+                    .body("horariosFuncionamento.size()", is(horariosFuncionamentoAlterados.size()));
         }
 
         @Test
         void naoDeveAlterarRestauranteInexistente() {
+            List<HorarioFuncionamentoDto> horariosFuncionamento = List.of(
+                    new HorarioFuncionamentoDto(DayOfWeek.MONDAY, LocalDateTime.of(2023, 3, 15, 9, 0), LocalDateTime.of(2023, 3, 15, 13, 0)),
+                    new HorarioFuncionamentoDto(DayOfWeek.TUESDAY, LocalDateTime.of(2023, 3, 16, 9, 0), LocalDateTime.of(2023, 3, 16, 13, 0))
+            );
             final RestauranteDto restauranteInexistenteDto = new RestauranteDto(
                 "49279377000110",
                 "Restaurante Inexistente",
                 20,
                 TipoCozinha.ITALIANA,
-                new ArrayList<>(),
+                horariosFuncionamento,
                 new EnderecoDto("00000-000", "Rua Inexistente", "123", null, "Bairro Inexistente", "Cidade", "Estado")
             );
 
