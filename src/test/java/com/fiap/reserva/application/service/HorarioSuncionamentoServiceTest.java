@@ -1,20 +1,20 @@
 package com.fiap.reserva.application.service;
 
-import com.fiap.reserva.domain.entity.HorarioFuncionamento;
-import com.fiap.reserva.domain.exception.BusinessException;
-import com.fiap.reserva.domain.repository.HorarioFuncionamentoRepository;
-import com.fiap.reserva.domain.vo.CnpjVo;
+import static org.mockito.Mockito.verify;
+
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import com.fiap.reserva.domain.entity.HorarioFuncionamento;
+import com.fiap.reserva.domain.exception.BusinessException;
+import com.fiap.reserva.domain.repository.HorarioFuncionamentoRepository;
+import com.fiap.reserva.domain.vo.CnpjVo;
 
 class HorarioSuncionamentoServiceTest {
 
